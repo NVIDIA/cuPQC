@@ -1,181 +1,20 @@
-/* ===== NVIDIA COLOR PALETTE ===== */
+/* Minimal custom CSS - Material theme defaults */
 
+/* NVIDIA black color - matching logo */
 :root {
-  /* NVIDIA Green - Primary brand color */
-  --md-primary-fg-color: #000000;        /* Black for header */
+  --md-primary-fg-color: #000000;
   --md-primary-fg-color--light: #1a1a1a;
   --md-primary-fg-color--dark: #000000;
   --md-accent-fg-color: #76b900;         /* NVIDIA Green */
   --md-accent-fg-color--transparent: rgba(118, 185, 0, 0.1);
 }
 
-/* ===== TYPOGRAPHY IMPROVEMENTS ===== */
-
-/* Better heading hierarchy */
-.md-typeset h1 {
-  font-size: 2rem;
-  font-weight: 700;
-  line-height: 1.2;
-  margin-top: 0;
-  margin-bottom: 1.5rem;
-  color: #1a1a1a;
-  letter-spacing: -0.02em;
-}
-
-.md-typeset h2 {
-  font-size: 1.5rem;
-  font-weight: 600;
-  line-height: 1.3;
-  margin-top: 3rem;
-  margin-bottom: 1rem;
-  color: #2c3e50;
-  letter-spacing: -0.01em;
-  border-bottom: 2px solid #e5e7eb;
-  padding-bottom: 0.5rem;
-}
-
-.md-typeset h3 {
-  font-size: 1.15rem;
-  font-weight: 600;
-  line-height: 1.4;
-  margin-top: 2rem;
-  margin-bottom: 0.75rem;
-  color: #374151;
-}
-
-.md-typeset h4 {
-  font-size: 1rem;
-  font-weight: 600;
-  line-height: 1.5;
-  margin-top: 1.5rem;
-  margin-bottom: 0.5rem;
-  color: #4b5563;
-}
-
-/* Better paragraph spacing */
-.md-typeset p {
-  margin-bottom: 1.25rem;
-  line-height: 1.7;
-  font-size: 0.9rem;
-  color: #374151;
-}
-
-/* List spacing */
-.md-typeset ul, .md-typeset ol {
-  margin-bottom: 1.5rem;
-  padding-left: 1.5rem;
-}
-
-.md-typeset li {
-  margin-bottom: 0.5rem;
-  line-height: 1.7;
-}
-
-/* Section spacing */
-.md-typeset > * + * {
-  margin-top: 1.5rem;
-}
-
-/* ===== CODE BLOCK IMPROVEMENTS ===== */
-
-/* Inline code */
-.md-typeset code {
-  background-color: #f3f4f6;
-  color: #1a1a1a;
-  padding: 0.2em 0.4em;
-  border-radius: 4px;
-  font-size: 0.85em;
-  font-weight: 500;
-  border: 1px solid #e5e7eb;
-}
-
-/* Code blocks */
-.md-typeset pre {
-  margin: 1.5rem 0;
-  border-radius: 6px;
-  border: 1px solid #e5e7eb;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-}
-
-.md-typeset pre code {
-  background-color: transparent;
-  border: none;
-  padding: 0;
-  font-size: 0.85rem;
-  line-height: 1.6;
-}
-
-/* Code block with title */
-.md-typeset .highlight {
-  margin: 1.5rem 0;
-}
-
-/* ===== IMPROVED SPACING ===== */
-
-/* Content wrapper spacing */
-.md-content__inner {
-  padding-top: 2rem;
-  padding-bottom: 3rem;
-}
-
-/* Add breathing room between major sections */
-.md-typeset h2 {
-  margin-top: 4rem !important;
-}
-
-/* Horizontal rules */
-.md-typeset hr {
-  margin: 2.5rem 0;
-  border: none;
-  border-top: 1px solid #e5e7eb;
-}
-
-/* Blockquotes */
-.md-typeset blockquote {
-  margin: 1.5rem 0;
-  padding: 1rem 1.5rem;
-  border-left: 4px solid #76b900;
-  background-color: rgba(118, 185, 0, 0.05);
-  border-radius: 4px;
-}
-
-/* Tables */
-.md-typeset table {
-  margin: 1.5rem 0;
-  border-radius: 6px;
-  overflow: hidden;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-}
-
-.md-typeset table th {
-  background-color: #f9fafb;
-  font-weight: 600;
-  color: #1a1a1a;
-  padding: 0.75rem 1rem;
-}
-
-.md-typeset table td {
-  padding: 0.75rem 1rem;
-  border-top: 1px solid #e5e7eb;
-}
-
-/* ===== HIDE TABLE OF CONTENTS ===== */
-.md-sidebar--secondary {
-  display: none !important;
-}
-
-/* Expand content area to use full width */
-.md-content {
-  max-width: 100%;
-}
-
-/* ===== HEADER & LOGO ===== */
 /* Make header pure black to match logo */
 .md-header {
   background-color: #000000 !important;
 }
 
-/* Make NVIDIA logo much larger to fill header */
+/* Make NVIDIA logo larger to match header bar height */
 .md-header__button.md-logo img,
 .md-header__button.md-logo svg {
   width: auto !important;
@@ -183,47 +22,65 @@
   max-height: 3.5rem !important;
 }
 
-/* Ensure logo container doesn't constrain it */
 .md-header__button.md-logo {
   padding: 0.2rem 0.4rem !important;
 }
 
-/* ===== SIDEBAR ALIGNMENT & SEPARATOR ===== */
-/* Push sidebar to absolute left edge */
-.md-sidebar--primary {
-  left: 0 !important;
-  border-right: 2px solid #e0e0e0;
-  min-height: 100vh !important;
-}
-
-/* Remove left padding from grid */
-.md-grid {
-  margin-left: 0 !important;
-  padding-left: 0 !important;
-}
-
-/* ===== SIDEBAR FONT SIZE ADJUSTMENTS ===== */
-
-/* Site title - larger for prominence with separator bar */
-.md-nav__title {
-  font-size: 0.75rem !important;
+/* Active/selected page color - NVIDIA green and bold */
+.md-nav__link--active {
+  color: #76b900 !important;
   font-weight: 700 !important;
-  border-bottom: 1px solid #e0e0e0 !important;
-  padding-bottom: 12px !important;
-  margin-bottom: 0 !important;
 }
 
-/* Main navigation items (Home, Releases, etc.) */
-.md-nav--primary > .md-nav__list > .md-nav__item > .md-nav__link {
-  font-size: 0.82rem !important;
+.md-nav__link[data-md-state="blur"] {
+  color: #76b900 !important;
+  font-weight: 700 !important;
 }
 
-/* Sub-items (v0.5, v0.4, etc.) */
-.md-nav--primary .md-nav__item .md-nav__item .md-nav__link {
-  font-size: 0.78rem !important;
+/* Active navigation items in sidebar */
+.md-nav__item--active > .md-nav__link {
+  color: #76b900 !important;
+  font-weight: 700 !important;
 }
 
-/* ===== CONTENTS SECTION HEADER ===== */
+/* All links - NVIDIA green (except release-link buttons) */
+.md-typeset a:not(.release-link) {
+  color: #76b900 !important;
+}
+
+.md-typeset a:not(.release-link):hover {
+  color: #5a8f00 !important;
+  text-decoration: underline !important;
+}
+
+/* Navigation links hover - darker green and underline */
+.md-nav__link:hover {
+  color: #5a8f00 !important;
+  text-decoration: underline !important;
+}
+
+/* Header links */
+.md-header__button {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+
+.md-header__button:hover {
+  color: #76b900 !important;
+}
+
+/* Remove border-bottom from h1 only */
+.md-typeset h1 {
+  border-bottom: none !important;
+}
+
+/* Add border-bottom line to h2 subtitles like "Overview" */
+.md-typeset h2 {
+  border-bottom: 2px solid #e5e7eb;
+  padding-bottom: 0.5rem;
+}
+
+/* ===== SIDEBAR GROUPING - CONTENTS & QUICK LINKS ===== */
+
 /* Style the first empty separator as "Contents" header */
 .md-nav--primary > .md-nav__list > .md-nav__item:nth-child(1) {
   pointer-events: none;
@@ -247,7 +104,6 @@
   margin-left: 0 !important;
 }
 
-/* ===== QUICK LINKS SECTION HEADER ===== */
 /* Style the second empty separator as "Quick Links" header */
 .md-nav--primary > .md-nav__list > .md-nav__item:nth-child(6) {
   pointer-events: none;
@@ -283,75 +139,6 @@
   opacity: 0.5;
 }
 
-/* ===== SIDEBAR NAVIGATION HOVER EFFECTS ===== */
-
-/* Override default hover - use underline and NVIDIA green */
-.md-nav__link:hover {
-  color: #76b900 !important;
-  text-decoration: underline !important;
-  font-weight: inherit !important; /* Don't change weight on hover */
-}
-
-/* Active/current page styling */
-.md-nav__link--active {
-  color: #76b900 !important;
-  font-weight: 600 !important;
-}
-
-/* Prevent bold on hover for all nav items */
-.md-nav--primary .md-nav__link:hover {
-  font-weight: inherit !important;
-}
-
-/* Apply NVIDIA green to links */
-.md-typeset a {
-  color: #76b900;
-}
-
-.md-typeset a:hover {
-  color: #5a8f00;
-}
-
-/* ===== KEY FEATURES GRID ===== */
-
-/* Feature grid - 2x2 layout */
-.feature-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 16px;
-  margin: 24px 0;
-}
-
-/* Feature card */
-.feature-card {
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
-  border-radius: 6px;
-  padding: 16px 18px;
-  transition: all 0.2s ease;
-}
-
-.feature-card:hover {
-  border-color: #76b900;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-}
-
-/* Feature card heading */
-.feature-card h3 {
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: #1a1a1a;
-  margin: 0 0 8px 0;
-}
-
-/* Feature card description */
-.feature-card p {
-  font-size: 0.8rem;
-  color: #6b7280;
-  line-height: 1.5;
-  margin-bottom: 0;
-}
-
 /* ===== SDK LIBRARY CARDS ===== */
 
 /* Compact grid for library cards */
@@ -384,18 +171,6 @@
   margin: 0 0 5px 0;
 }
 
-/* Library title link - make it look like a heading with hover effect */
-.library-title-link {
-  color: #1a1a1a !important;
-  text-decoration: none !important;
-  transition: color 0.2s ease;
-}
-
-.library-title-link:hover {
-  color: #76b900 !important;
-  text-decoration: none !important;
-}
-
 /* Library card description */
 .library-card p {
   font-size: 0.75rem;
@@ -419,33 +194,50 @@
   text-decoration: underline;
 }
 
-/* Library links container */
-.library-links {
+/* ===== GETTING STARTED BUTTONS ===== */
+
+.release-links {
   display: flex;
   gap: 6px;
   flex-wrap: wrap;
 }
 
-/* Library link buttons */
-.library-link {
+.md-typeset .release-link,
+.release-link {
   display: inline-block;
-  padding: 3px 8px;
-  background-color: transparent;
-  color: #76b900 !important;
-  text-decoration: none;
-  border: 1px solid #76b900;
-  border-radius: 3px;
-  font-size: 0.7rem;
-  font-weight: 500;
-  transition: all 0.2s ease;
-}
-
-.library-link:hover {
+  padding: 5px 12px;
   background-color: #76b900;
   color: white !important;
+  text-decoration: none !important;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
 }
 
-/* ===== HOME PAGE RESOURCE CARDS ===== */
+.md-typeset .release-link:hover,
+.release-link:hover {
+  background-color: #5a8f00;
+  color: white !important;
+  text-decoration: none !important;
+}
+
+.md-typeset .release-link.secondary,
+.release-link.secondary {
+  background-color: transparent;
+  color: #76b900 !important;
+  border: 2px solid #76b900;
+  text-decoration: none !important;
+}
+
+.md-typeset .release-link.secondary:hover,
+.release-link.secondary:hover {
+  background-color: #76b900;
+  color: white !important;
+  text-decoration: none !important;
+}
+
+/* ===== RESOURCE CARDS (Documentation, Resources) ===== */
 
 /* Grid layout for resource cards */
 .resource-grid {
@@ -502,27 +294,7 @@
   text-decoration: underline;
 }
 
-/* Primary buttons - NVIDIA green */
-.md-button--primary {
-  background-color: #76b900 !important;
-  border-color: #76b900 !important;
-  color: white !important;
-}
-
-.md-button--primary:hover {
-  background-color: #5a8f00 !important;
-}
-
-/* Active navigation items */
-.md-nav__link--active {
-  color: #76b900 !important;
-}
-
-.md-nav__link:hover {
-  color: #76b900;
-}
-
-/* ===== RELEASE CARDS ===== */
+/* ===== RELEASE CARDS (for Release Blog and Technical Blog) ===== */
 
 /* Release card container */
 .release-card {
@@ -580,49 +352,4 @@
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
-}
-
-/* Release links */
-.release-links {
-  display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
-}
-
-.release-link {
-  display: inline-block;
-  padding: 5px 12px;
-  background-color: #76b900;
-  color: white !important;
-  text-decoration: none;
-  border-radius: 4px;
-  font-size: 0.75rem;
-  font-weight: 500;
-  transition: background-color 0.2s ease;
-}
-
-.release-link:hover {
-  background-color: #5a8f00;
-}
-
-.release-link.secondary {
-  background-color: transparent;
-  color: #76b900 !important;
-  border: 2px solid #76b900;
-}
-
-.release-link.secondary:hover {
-  background-color: #76b900;
-  color: white !important;
-}
-
-/* Coming soon badge */
-.coming-soon-badge {
-  display: inline-block;
-  padding: 5px 12px;
-  background-color: #f3f4f6;
-  color: #6b7280;
-  border-radius: 4px;
-  font-size: 0.7rem;
-  font-weight: 500;
 }

@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="cuPQC SDK Architecture Diagram showing the layered structure from Application Layer through Cryptographic Schemes to Hardware">
+    <title>cuPQC SDK Architecture</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+            background: transparent;
+            padding: 15px 15px 5px 15px;
+            margin: 0;
+            display: block;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            overflow: visible;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            body {
+                background: transparent;
+            }
+
+            .architecture-diagram {
+                background: transparent;
+                box-shadow: none;
+            }
+        }
+
+        .architecture-diagram {
+            width: 100%;
+            max-width: 850px;
+            background: transparent;
+            border-radius: 10px;
+            padding: 12px 18px 8px 18px;
+            box-shadow: none;
+            margin: 0 auto;
+            will-change: transform;
+            overflow: visible;
+        }
+
+        /* Application Layer */
+        .app-layer {
+            background: #000000;
+            border-radius: 10px;
+            padding: 10px 18px;
+            margin: 0 auto 10px;
+            max-width: 90%;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12), 0 2px 6px rgba(0, 0, 0, 0.08);
+            text-align: center;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 2px solid rgba(118, 185, 0, 0.3);
+            position: relative;
+        }
+
+        .app-layer::after {
+            content: "";
+            position: absolute;
+            bottom: -2px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 2px;
+            background: linear-gradient(to bottom, rgba(118, 185, 0, 0.3), transparent);
+            border-radius: 1px;
+        }
+
+        .app-layer:hover {
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2), 0 4px 8px rgba(0, 0, 0, 0.1);
+            /* transform: translateY(-2px); - disabled */
+            /* border-color: rgba(118, 185, 0, 0.5); - disabled */
+        }
+
+        .app-layer h2 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+            letter-spacing: -0.02em;
+            color: #ffffff;
+            line-height: 1.3;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .app-layer h2 i {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .app-layer .subtitle {
+            font-size: 0.875rem;
+            color: #e5e7eb;
+            font-weight: 400;
+            line-height: 1.5;
+        }
+
+        /* Arrow */
+        .arrow {
+            width: 6px;
+            height: 20px;
+            background: linear-gradient(to bottom, #000000, #1a1a1a);
+            margin: 8px auto 12px;
+            position: relative;
+            border-radius: 3px;
+            display: block;
+            box-shadow: 0 2px 8px rgba(118, 185, 0, 0.2), 0 1px 3px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .arrow::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 2px;
+            height: 100%;
+            background: linear-gradient(to bottom, rgba(118, 185, 0, 0.4), transparent);
+            border-radius: 1px;
+        }
+
+        .arrow::after {
+            content: "";
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-top: 14px solid #000000;
+            filter: drop-shadow(0 2px 4px rgba(118, 185, 0, 0.3));
+        }
+
+        .arrow:hover {
+            box-shadow: 0 3px 12px rgba(118, 185, 0, 0.35), 0 1px 4px rgba(0, 0, 0, 0.4);
+        }
+
+        /* API Layer Container - Larger for hierarchy */
+        .api-container {
+            background: #000000;
+            border-radius: 10px;
+            padding: 16px 20px;
+            margin: 0 auto 10px;
+            max-width: 90%;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.14), 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 2px solid rgba(118, 185, 0, 0.4);
+            position: relative;
+        }
+
+        .api-container::before {
+            content: "";
+            position: absolute;
+            top: -2px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 2px;
+            background: linear-gradient(to top, rgba(118, 185, 0, 0.4), transparent);
+            border-radius: 1px;
+        }
+
+        .api-container::after {
+            content: "";
+            position: absolute;
+            bottom: -2px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 2px;
+            background: linear-gradient(to bottom, rgba(118, 185, 0, 0.4), transparent);
+            border-radius: 1px;
+        }
+
+        .api-container:hover {
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.22), 0 4px 12px rgba(0, 0, 0, 0.15);
+            /* transform: translateY(-3px); - disabled */
+            /* border-color: rgba(118, 185, 0, 0.6); - disabled */
+        }
+
+        .api-header {
+            text-align: center;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .api-header h2 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+            letter-spacing: -0.02em;
+            color: #ffffff;
+            line-height: 1.3;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .api-header h2 i {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .api-header .subtitle {
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: #e5e7eb;
+            line-height: 1.5;
+            margin-bottom: 4px;
+        }
+
+        .api-header .note {
+            font-size: 0.825rem;
+            font-weight: 400;
+            color: #d1d5db;
+            font-style: italic;
+            line-height: 1.4;
+        }
+
+        .api-header .math-note {
+            font-size: 0.8rem;
+            font-weight: 400;
+            color: #d1d5db;
+            margin-top: 6px;
+            line-height: 1.4;
+        }
+
+        /* Libraries Grid */
+        .libraries-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 10px;
+            align-items: stretch;
+        }
+
+        .library-box {
+            background: #1a1a1a;
+            border-radius: 8px;
+            padding: 14px 16px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid #374151;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 50px;
+        }
+
+        .library-box:hover {
+            /* transform: translateY(-3px) scale(1.02); - disabled */
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4), 0 2px 8px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+            /* border-color: #4b5563; - disabled */
+            /* background: #262626; - disabled to avoid brighter color */
+        }
+
+        .library-box:focus-visible {
+            outline: 2px solid #ffffff;
+            outline-offset: 2px;
+        }
+
+        .library-box h3 {
+            font-size: 0.95rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            text-align: center;
+            margin: 0;
+            color: #ffffff;
+            line-height: 1.3;
+        }
+
+        /* Hardware Layer */
+        .hardware-layer {
+            background: #000000;
+            border-radius: 10px;
+            padding: 10px 18px;
+            margin: 0 auto;
+            max-width: 90%;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12), 0 2px 6px rgba(0, 0, 0, 0.08);
+            text-align: center;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 2px solid rgba(118, 185, 0, 0.3);
+            position: relative;
+        }
+
+        .hardware-layer::before {
+            content: "";
+            position: absolute;
+            top: -2px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 2px;
+            background: linear-gradient(to top, rgba(118, 185, 0, 0.3), transparent);
+            border-radius: 1px;
+        }
+
+        .hardware-layer:hover {
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2), 0 4px 8px rgba(0, 0, 0, 0.1);
+            /* transform: translateY(-2px); - disabled */
+            /* border-color: rgba(118, 185, 0, 0.5); - disabled */
+        }
+
+        .hardware-layer h2 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+            letter-spacing: -0.02em;
+            color: #ffffff;
+            line-height: 1.3;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .hardware-layer h2 i {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .hardware-layer .subtitle {
+            font-size: 0.875rem;
+            font-weight: 400;
+            color: #e5e7eb;
+            line-height: 1.5;
+        }
+
+        /* Crypto Algorithms Layer - Slightly smaller */
+        .crypto-layer {
+            background: #000000;
+            border-radius: 10px;
+            padding: 10px 14px;
+            margin: 0 auto 10px;
+            max-width: 90%;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12), 0 2px 6px rgba(0, 0, 0, 0.08);
+            text-align: center;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 2px solid rgba(118, 185, 0, 0.25);
+            position: relative;
+        }
+
+        .crypto-layer::before {
+            content: "";
+            position: absolute;
+            top: -2px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 2px;
+            background: linear-gradient(to top, rgba(118, 185, 0, 0.3), transparent);
+            border-radius: 1px;
+        }
+
+        .crypto-layer::after {
+            content: "";
+            position: absolute;
+            bottom: -2px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 2px;
+            background: linear-gradient(to bottom, rgba(118, 185, 0, 0.3), transparent);
+            border-radius: 1px;
+        }
+
+        .crypto-layer:hover {
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2), 0 4px 8px rgba(0, 0, 0, 0.1);
+            /* transform: translateY(-2px); - disabled */
+            /* border-color: rgba(118, 185, 0, 0.45); - disabled */
+        }
+
+        .crypto-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 4px;
+            margin-top: 12px;
+            align-items: stretch;
+        }
+
+        .crypto-item {
+            background: #1a1a1a;
+            border: 1px solid #374151;
+            border-radius: 6px;
+            padding: 8px 3px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 32px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.03);
+        }
+
+        .crypto-item:hover {
+            /* background: #262626; - disabled to avoid brighter color */
+            /* border-color: #4b5563; - disabled */
+            /* transform: translateY(-2px) scale(1.03); - disabled */
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35), 0 2px 6px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+        }
+
+        .crypto-item:focus-visible {
+            outline: 2px solid #ffffff;
+            outline-offset: 2px;
+        }
+
+        .crypto-item h4 {
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            line-height: 1.2;
+            text-align: center;
+        }
+
+        .crypto-layer h2 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+            letter-spacing: -0.02em;
+            color: #ffffff;
+            line-height: 1.3;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .crypto-layer h2 i {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .crypto-layer .subtitle {
+            font-size: 0.875rem;
+            color: #e5e7eb;
+            font-weight: 400;
+            line-height: 1.5;
+        }
+
+        /* Arrow variations - all consistent with flow indicators */
+        .arrow-green {
+            background: linear-gradient(to bottom, #000000, #1a1a1a);
+        }
+
+        .arrow-green::after {
+            border-top-color: #000000;
+        }
+
+        .arrow-black {
+            background: linear-gradient(to bottom, #000000, #1a1a1a);
+        }
+
+        .arrow-black::after {
+            border-top-color: #000000;
+        }
+
+        /* Responsive - Tablet */
+        @media (max-width: 1024px) {
+            .architecture-diagram {
+                max-width: 100%;
+                padding: 22px 24px;
+            }
+
+            .crypto-grid {
+                grid-template-columns: repeat(5, 1fr);
+                gap: 4px;
+            }
+        }
+
+        /* Responsive - Mobile */
+        @media (max-width: 768px) {
+            body {
+                padding: 20px 12px;
+            }
+
+            .architecture-diagram {
+                padding: 20px 16px;
+            }
+
+            .app-layer,
+            .crypto-layer,
+            .hardware-layer {
+                padding: 16px 20px;
+                margin-bottom: 14px;
+            }
+
+            .api-container {
+                padding: 24px 24px;
+                margin-bottom: 14px;
+            }
+
+            .arrow {
+                height: 28px;
+                margin: 0 auto 14px;
+            }
+
+            .arrow::after {
+                border-top-width: 14px;
+                border-left-width: 10px;
+                border-right-width: 10px;
+                bottom: -10px;
+            }
+
+            .libraries-grid {
+                grid-template-columns: 1fr;
+                gap: 12px;
+                margin-top: 14px;
+            }
+
+            .library-box {
+                padding: 16px 18px;
+            }
+
+            .crypto-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 8px;
+                margin-top: 10px;
+            }
+
+            .crypto-item {
+                padding: 12px 8px;
+            }
+
+            .app-layer h2,
+            .hardware-layer h2,
+            .crypto-layer h2 {
+                font-size: 1.15rem;
+            }
+
+            .api-header h2 {
+                font-size: 1.4rem;
+            }
+
+            .api-header {
+                margin-bottom: 16px;
+                padding-bottom: 12px;
+            }
+
+            .app-layer .subtitle,
+            .crypto-layer .subtitle,
+            .hardware-layer .subtitle {
+                font-size: 0.8rem;
+            }
+
+            .api-header .subtitle {
+                font-size: 0.875rem;
+            }
+
+            .api-header .note,
+            .api-header .math-note {
+                font-size: 0.75rem;
+            }
+
+            .library-box h3 {
+                font-size: 1rem;
+            }
+
+            .crypto-item h4 {
+                font-size: 0.85rem;
+            }
+
+            .app-layer h2 i,
+            .hardware-layer h2 i,
+            .crypto-layer h2 i,
+            .api-header h2 i {
+                font-size: 1rem;
+            }
+        }
+
+        /* Responsive - Small Mobile */
+        @media (max-width: 480px) {
+            body {
+                padding: 16px 8px;
+            }
+
+            .architecture-diagram {
+                padding: 16px 12px;
+            }
+
+            .app-layer,
+            .crypto-layer,
+            .hardware-layer {
+                padding: 14px 16px;
+                margin-bottom: 12px;
+            }
+
+            .api-container {
+                padding: 20px 20px;
+                margin-bottom: 12px;
+            }
+
+            .arrow {
+                height: 24px;
+                margin: 0 auto 12px;
+            }
+
+            .crypto-grid {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+
+            .app-layer h2,
+            .hardware-layer h2,
+            .crypto-layer h2,
+            .api-header h2 {
+                font-size: 1.05rem;
+            }
+
+            .app-layer h2 i,
+            .hardware-layer h2 i,
+            .crypto-layer h2 i,
+            .api-header h2 i {
+                font-size: 0.95rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="architecture-diagram" role="img" aria-label="cuPQC SDK Architecture Diagram showing layers from Application Layer through Cryptographic Schemes, cuPQC SDK API with cuPQC-PK and cuPQC-Hash libraries, to Hardware">
+        <!-- Application Layer -->
+        <section class="app-layer" aria-label="Application Layer">
+            <h2><i class="fas fa-desktop"></i> Applications</h2>
+            <div class="subtitle">End-user applications and services</div>
+        </section>
+
+        <div class="arrow" aria-hidden="true"></div>
+
+        <!-- Crypto Algorithms Layer -->
+        <section class="crypto-layer" aria-label="Cryptographic Schemes Layer">
+            <h2><i class="fas fa-shield-alt"></i> Cryptographic Schemes</h2>
+            <div class="subtitle">Cryptographic protocols and algorithms</div>
+            <div class="crypto-grid" role="list">
+                <div class="crypto-item" role="listitem">
+                    <h4>ZKP</h4>
+                </div>
+                <div class="crypto-item" role="listitem">
+                    <h4>FHE</h4>
+                </div>
+                <div class="crypto-item" role="listitem">
+                    <h4>PQC</h4>
+                </div>
+                <div class="crypto-item" role="listitem">
+                    <h4>Classical</h4>
+                </div>
+                <div class="crypto-item" role="listitem">
+                    <h4>Others</h4>
+                </div>
+            </div>
+        </section>
+
+        <div class="arrow" aria-hidden="true"></div>
+
+        <!-- cuPQC SDK API Container with Libraries -->
+        <section class="api-container" aria-label="cuPQC SDK API Layer">
+            <div class="api-header">
+                <h2><i class="fas fa-code"></i> cuPQC SDK API</h2>
+                <div class="subtitle">Low-level GPU-accelerated primitives</div>
+                <div class="math-note">CUDA kernels for operations</div>
+            </div>
+
+            <div class="libraries-grid" role="list">
+                <div class="library-box library-pk" role="listitem">
+                    <h3>cuPQC-PK</h3>
+                </div>
+
+                <div class="library-box library-hash" role="listitem">
+                    <h3>cuPQC-Hash</h3>
+                </div>
+            </div>
+        </section>
+
+        <div class="arrow arrow-green" aria-hidden="true"></div>
+
+        <!-- Hardware Layer -->
+        <section class="hardware-layer" aria-label="Hardware Layer">
+            <h2><i class="fas fa-microchip"></i> Hardware</h2>
+            <div class="subtitle">NVIDIA CUDA-enabled GPUs</div>
+        </section>
+    </div>
+</body>
+</html>
