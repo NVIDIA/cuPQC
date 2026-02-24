@@ -353,3 +353,18 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+/* Responsive iframe height for architecture diagram */
+@media (max-width: 768px) {
+  iframe[src*="cupqc_architecture.html"] {
+    height: 750px !important;
+    min-height: 750px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  iframe[src*="cupqc_architecture.html"] {
+    height: 800px !important;
+    min-height: 800px !important;
+  }
+}

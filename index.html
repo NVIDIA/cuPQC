@@ -796,11 +796,13 @@
 <p class="homepage-tagline">GPU-accelerated cryptographic math primitives for developers.</p>
 
 <h2 id="overview">Overview</h2>
-<p>The NVIDIA cuPQC SDK provides the foundational layer of GPU-accelerated cryptographic math primitives optimized for NVIDIA GPUs. Build any cryptographic scheme you need on top of cuPQC SDK, and use those schemes to build your applications.</p>
+<p>cuPQC is a CUDA-based SDK that provides GPU-accelerated building blocks for modern cryptography.</p>
+<p>cuPQC is designed to serve as a GPU-accelerated foundation for higher-level cryptographic implementations, whether embedded as a backend in existing libraries or used to build new, GPU-native components and applications. It focuses on accelerating performance-critical computations rather than providing complete end-to-end protocol stacks, so applications and libraries can compose these building blocks into full schemes and systems.</p>
+<p>For developers, cuPQC SDK Developer Hub provides a practical integration path with clear APIs, example code, and benchmarks to help validate correctness and measure performance.</p>
 <div style="margin: 40px 0; text-align: center;">
   <iframe 
-    src="assets/cupqc_architecture.html?v=2" 
-    style="width: 100%; max-width: 900px; height: 680px; border: none; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); display: inline-block;"
+    src="assets/cupqc_architecture.html?v=5" 
+    style="width: 100%; max-width: 900px; height: 680px; min-height: 680px; border: none; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); display: inline-block;"
     scrolling="no"
     loading="lazy">
   </iframe>
@@ -811,22 +813,22 @@
   <div class="library-card">
     <h3>cuPQC-PK</h3>
     <p>Public key cryptography: ML-KEM (key encapsulation) and ML-DSA (digital signatures)</p>
-    <a href="https://docs.nvidia.com/cuda/cupqc/overview/features.html#cupqc-pk-post-quantum-cryptography" class="library-learn-link">Learn More →</a>
+    <a href="https://docs.nvidia.com/cuda/cupqc/overview/features.html#cupqc-pk-post-quantum-cryptography" class="library-learn-link" target="_blank">Learn More →</a>
   </div>
 
   <div class="library-card">
     <h3>cuPQC-Hash</h3>
     <p>Hash functions (SHA-2, SHA-3, SHAKE, Poseidon2) and Merkle tree implementations</p>
-    <a href="https://docs.nvidia.com/cuda/cupqc/overview/features.html#cupqc-hash-cryptographic-hash-functions" class="library-learn-link">Learn More →</a>
+    <a href="https://docs.nvidia.com/cuda/cupqc/overview/features.html#cupqc-hash-cryptographic-hash-functions" class="library-learn-link" target="_blank">Learn More →</a>
   </div>
 </div>
 
 <h2 id="getting-started">Getting Started</h2>
 <p>New to cuPQC? Download the latest SDK and explore our comprehensive documentation to start building GPU-accelerated cryptographic applications.</p>
 <div style="margin: 20px 0;">
-  <a href="https://developer.nvidia.com/cupqc-download/" class="release-link" style="margin-right: 8px;">Download SDK</a>
-  <a href="https://docs.nvidia.com/cuda/cupqc/guides/getting_started.html" class="release-link secondary" style="margin-right: 8px;">Getting Started Guide</a>
-  <a href="https://docs.nvidia.com/cuda/cupqc/overview/requirements.html" class="release-link secondary">System Requirements</a>
+  <a href="https://developer.nvidia.com/cupqc-download/" class="release-link" style="margin-right: 8px;" target="_blank">Download SDK</a>
+  <a href="https://docs.nvidia.com/cuda/cupqc/guides/getting_started.html" class="release-link secondary" style="margin-right: 8px;" target="_blank">Getting Started Guide</a>
+  <a href="https://docs.nvidia.com/cuda/cupqc/overview/requirements.html" class="release-link secondary" target="_blank">System Requirements</a>
 </div>
 
 <h2 id="documentation">Documentation</h2>
@@ -835,8 +837,8 @@
     <h3>cuPQC-PK Documentation</h3>
     <p>Complete implementation guides and API reference</p>
     <div style="display: flex; gap: 8px; margin-top: 8px;">
-      <a href="https://docs.nvidia.com/cuda/cupqc/guides/cupqc_pk_usage.html" class="card-link">Usage Guide →</a>
-      <a href="https://docs.nvidia.com/cuda/cupqc/api/cupqc_pk_api.html" class="card-link">API Reference →</a>
+      <a href="https://docs.nvidia.com/cuda/cupqc/guides/cupqc_pk_usage.html" class="card-link" target="_blank">Usage Guide →</a>
+      <a href="https://docs.nvidia.com/cuda/cupqc/api/cupqc_pk_api.html" class="card-link" target="_blank">API Reference →</a>
     </div>
   </div>
 
@@ -844,18 +846,18 @@
     <h3>cuPQC-Hash Documentation</h3>
     <p>Complete implementation guides and API reference</p>
     <div style="display: flex; gap: 8px; margin-top: 8px;">
-      <a href="https://docs.nvidia.com/cuda/cupqc/guides/cupqc_hash_usage.html" class="card-link">Usage Guide →</a>
-      <a href="https://docs.nvidia.com/cuda/cupqc/api/cupqc_hash_api.html" class="card-link">API Reference →</a>
+      <a href="https://docs.nvidia.com/cuda/cupqc/guides/cupqc_hash_usage.html" class="card-link" target="_blank">Usage Guide →</a>
+      <a href="https://docs.nvidia.com/cuda/cupqc/api/cupqc_hash_api.html" class="card-link" target="_blank">API Reference →</a>
     </div>
   </div>
 </div>
 
 <h2 id="quick-links">Quick Links</h2>
 <ul>
-<li><a href="https://developer.nvidia.com/cupqc">Product Page</a> - Overview, features, and latest news</li>
-<li><a href="https://developer.nvidia.com/cupqc-download/">Download SDK</a> - Get the latest release</li>
-<li><a href="https://docs.nvidia.com/cuda/cupqc/index.html">Documentation</a> - Complete API reference, user guides, release notes, and security information</li>
-<li><a href="https://forums.developer.nvidia.com/c/cuda/cupqc">Developer Forums</a> - Community support and discussions</li>
+<li><a href="https://developer.nvidia.com/cupqc" target="_blank">Product Page</a> - Overview, features, and latest news</li>
+<li><a href="https://developer.nvidia.com/cupqc-download/" target="_blank">Download SDK</a> - Get the latest release</li>
+<li><a href="https://docs.nvidia.com/cuda/cupqc/index.html" target="_blank">Documentation</a> - Complete API reference, user guides, release notes, and security information</li>
+<li><a href="https://forums.developer.nvidia.com/c/cuda/cupqc" target="_blank">Developer Forums</a> - Community support and discussions</li>
 </ul>
 
 
