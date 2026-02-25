@@ -16,12 +16,14 @@
         <link rel="prev" href="../blogs/">
       
       
+        <link rel="next" href="sha2-hash/">
+      
       
         
       
       
       <link rel="icon" href="../assets/nvidia-logo.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.2">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.3">
     
     
       
@@ -438,16 +440,33 @@
   
   
   
-    <li class="md-nav__item md-nav__item--active">
+    
+    
       
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
+        
+          
+        
       
         
       
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
         
+      
+        
+      
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="./" class="md-nav__link md-nav__link--active">
+              
   
   
   <span class="md-ellipsis">
@@ -461,7 +480,114 @@
   
   
 
+            </a>
+            
+              
+              <label class="md-nav__link md-nav__link--active" for="__nav_5" id="__nav_5_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Applications
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="sha2-hash/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SHA-2 Hash Function
+  
+
+    
+  </span>
+  
+  
+
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="poseidon2-hash/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Poseidon2 Hash Function
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="merkle-tree-membership-proof/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Merkle Tree Membership Proof
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
       
     </li>
   
@@ -639,6 +765,50 @@
 
 <h1 id="applications">Applications</h1>
 <p>Code samples and example implementations using cuPQC SDK.</p>
+<div class="release-card">
+  <div class="release-header">
+    <h3>SHA-2 Hash Function</h3>
+    <div class="app-tags">
+      <span class="app-tag">Tutorial</span>
+      <span class="app-tag">Hash Function</span>
+    </div>
+  </div>
+  <p>Step-by-step guide to building a SHA-256 hash application using cuPQC SDK. Learn how to use GPU-accelerated SHA-2 hashing for data integrity verification.</p>
+  <div class="release-links">
+    <a href="sha2-hash/" class="release-link">Read Tutorial →</a>
+    <a href="https://github.com/NVIDIA/cuPQC/blob/main/examples/hash/example_sha2.cu" class="release-link secondary" target="_blank">Source Code →</a>
+  </div>
+</div>
+
+<div class="release-card">
+  <div class="release-header">
+    <h3>Poseidon2 Hash Function</h3>
+    <div class="app-tags">
+      <span class="app-tag">Tutorial</span>
+      <span class="app-tag">Hash Function</span>
+    </div>
+  </div>
+  <p>Step-by-step guide to building a Poseidon2 hash application using cuPQC SDK. Learn how to use GPU-accelerated Poseidon2, a zero-knowledge-friendly hash function designed for efficient use in ZK proof systems.</p>
+  <div class="release-links">
+    <a href="poseidon2-hash/" class="release-link">Read Tutorial →</a>
+    <a href="https://github.com/NVIDIA/cuPQC/blob/main/examples/hash/example_poseidon2.cu" class="release-link secondary" target="_blank">Source Code →</a>
+  </div>
+</div>
+
+<div class="release-card">
+  <div class="release-header">
+    <h3>Merkle Tree Membership Proof</h3>
+    <div class="app-tags">
+      <span class="app-tag">Tutorial</span>
+      <span class="app-tag">Merkle Proof</span>
+    </div>
+  </div>
+  <p>Step-by-step guide to building a complete Merkle tree membership proof application using cuPQC SDK. Learn how to generate trees, create proofs, and verify them with GPU acceleration.</p>
+  <div class="release-links">
+    <a href="merkle-tree-membership-proof/" class="release-link">Read Tutorial →</a>
+    <a href="https://github.com/NVIDIA/cuPQC/blob/main/applications/merkle_proof_poseidon2_bb/merkle_proof.cu" class="release-link secondary" target="_blank">Source Code →</a>
+  </div>
+</div>
 
 
 
@@ -689,6 +859,22 @@
             </div>
           </a>
         
+        
+          
+          <a href="sha2-hash/" class="md-footer__link md-footer__link--next" aria-label="Next: SHA-2 Hash Function">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                SHA-2 Hash Function
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
         
       </nav>
     

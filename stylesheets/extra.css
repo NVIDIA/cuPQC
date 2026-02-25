@@ -302,8 +302,8 @@
   border: 1px solid #e5e7eb;
   border-left: 4px solid #76b900;
   border-radius: 6px;
-  padding: 14px 18px;
-  margin-bottom: 15px;
+  padding: 10px 16px;
+  margin-bottom: 12px;
   transition: box-shadow 0.2s ease;
 }
 
@@ -316,7 +316,13 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
+}
+
+/* Release header h3 - title on the left */
+.release-header h3 {
+  margin: 0;
+  flex: 1;
 }
 
 .release-version {
@@ -332,12 +338,38 @@
   font-weight: 500;
 }
 
+/* Application tags */
+.app-tag {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #6b7280;
+  background: #f3f4f6;
+  padding: 4px 10px;
+  border-radius: 12px;
+  margin-right: 6px;
+  letter-spacing: 0.3px;
+}
+
+/* Tags container - groups all tags on the right */
+.app-tags {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+/* First tag (Tutorial) - NVIDIA green */
+.app-tags .app-tag:first-child {
+  color: #ffffff;
+  background: #76b900;
+}
+
 /* Release card title */
 .release-card h3 {
   font-size: 0.9rem;
   font-weight: 600;
   color: #1a1a1a;
-  margin: 0 0 6px 0;
+  margin: 0 0 4px 0;
   line-height: 1.3;
 }
 
@@ -346,7 +378,7 @@
   font-size: 0.75rem;
   color: #4b5563;
   line-height: 1.4;
-  margin-bottom: 10px;
+  margin-bottom: 6px;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
@@ -368,3 +400,38 @@
     min-height: 800px !important;
   }
 }
+
+/* ===== CODE BLOCK FONT SIZES ===== */
+
+/* Code block font size options:
+ * - Original: 0.85rem (Material default, ~13.6px)
+ * - Recommended: 0.8rem (~12.8px) - currently active
+ * - Compact: 0.75rem (~12px)
+ */
+
+/* Code font size - currently using 0.6rem */
+.md-typeset pre,
+.md-typeset pre code,
+.md-typeset code,
+.md-typeset .highlight,
+.md-typeset .highlight code {
+  font-size: 0.6rem !important;
+}
+
+/* To use original size (0.85rem), replace above with:
+.md-typeset pre {
+  font-size: 0.85rem;
+}
+.md-typeset code {
+  font-size: 0.85rem;
+}
+*/
+
+/* To use compact size (0.75rem), replace above with:
+.md-typeset pre {
+  font-size: 0.75rem;
+}
+.md-typeset code {
+  font-size: 0.75rem;
+}
+*/
