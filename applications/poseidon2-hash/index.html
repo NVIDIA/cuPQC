@@ -1104,6 +1104,10 @@
 
 <h1 id="tutorial-poseidon2-hash-function">Tutorial: Poseidon2 Hash Function</h1>
 <p>This tutorial walks you through building a Poseidon2 hash application using cuPQC-Hash. You'll learn how to use GPU-accelerated Poseidon2, a zero-knowledge-friendly hash function designed for efficient use in ZK proof systems.</p>
+<div class="admonition info">
+<p class="admonition-title">API reference</p>
+<p><strong>Configurations &amp; constants:</strong> Supported parameter combinations (field, width, capacity) and the <strong>round constants and MDS matrix</strong> for BabyBear and KoalaBear are in the <a href="https://docs.nvidia.com/cuda/cupqc/api/cupqc_hash/hash/operators.html#description-operators-poseidon2-specific">Poseidon2 operators section</a> of the cuPQC-Hash API docs.</p>
+</div>
 <h2 id="step-1-project-setup">Step 1: Project Setup</h2>
 <p>Clone the cuPQC repository to get the example files:</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/NVIDIA/cuPQC.git
@@ -1318,12 +1322,13 @@ Only single thread 0 runs it</p>
 </span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="c1">// KoalaBear field, Capacity 8, Width 16 (as used in this tutorial)</span>
 </span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="k">using</span><span class="w"> </span><span class="n">HASH_KB_16</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">decltype</span><span class="p">(</span><span class="n">POSEIDON2_KB_8_16</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">Thread</span><span class="p">());</span>
 </span></code></pre></div>
-A complete list of supported Poseidon2 configurations is available here: <a href="https://docs.nvidia.com/cuda/cupqc/api/cupqc_hash/hash/operators.html">Hash Operators Documentation</a></p>
+A complete list of supported Poseidon2 configurations is available in the <a href="https://docs.nvidia.com/cuda/cupqc/api/cupqc_hash/hash/operators.html">Hash Operators Documentation</a>.</p>
 <h2 id="learn-more">Learn More</h2>
 <ul>
 <li><a href="https://github.com/NVIDIA/cuPQC/blob/main/examples/hash/example_poseidon2.cu">Example Source Code</a> - Complete Poseidon2 hash example implementation</li>
 <li><a href="https://docs.nvidia.com/cuda/cupqc/guides/cupqc_hash_usage.html">cuPQC-Hash User Guide</a> - Usage guide with examples</li>
 <li><a href="https://docs.nvidia.com/cuda/cupqc/api/cupqc_hash_api.html">cuPQC-Hash API Reference</a> - Complete API documentation</li>
+<li><a href="https://docs.nvidia.com/cuda/cupqc/api/cupqc_hash/hash/operators.html#description-operators-poseidon2-specific">Hash Operators — Poseidon2 (configurations &amp; constants)</a> - Supported parameter combinations and round constants / MDS matrix per field</li>
 <li><a href="https://docs.nvidia.com/cuda/cupqc/overview/features.html#cupqc-hash-label">cuPQC-Hash Features</a> - Supported hash functions and capabilities</li>
 </ul>
 
