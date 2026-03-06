@@ -43,12 +43,12 @@
   font-weight: 700 !important;
 }
 
-/* All links - NVIDIA green (except release-link buttons) */
-.md-typeset a:not(.release-link) {
+/* All links - NVIDIA green (except release-link and hero-cta buttons) */
+.md-typeset a:not(.release-link):not(.hero-cta) {
   color: #76b900 !important;
 }
 
-.md-typeset a:not(.release-link):hover {
+.md-typeset a:not(.release-link):not(.hero-cta):hover {
   color: #5a8f00 !important;
   text-decoration: underline !important;
 }
@@ -68,15 +68,136 @@
   color: #76b900 !important;
 }
 
-/* Remove border-bottom from h1 only */
+/* Remove border-bottom from h1 only; ensure title is bold and black */
 .md-typeset h1 {
   border-bottom: none !important;
+  font-weight: 700 !important;
+  color: #000 !important;
 }
 
-/* Add border-bottom line to h2 subtitles like "Overview" */
+/* Add border-bottom line to h2 subtitles like "Overview"; titles black */
 .md-typeset h2 {
   border-bottom: 2px solid #e5e7eb;
   padding-bottom: 0.5rem;
+  color: #000 !important;
+}
+
+.md-typeset h3 {
+  color: #000 !important;
+}
+
+/* ===== HOMEPAGE HERO ===== */
+
+/* Inline subtitle next to h1 – smaller, muted */
+.md-typeset h1 .homepage-subtitle {
+  font-size: 0.75em;
+  font-weight: 700;
+  color: inherit;
+  margin-left: 0.35em;
+  vertical-align: middle;
+}
+
+.homepage-tagline {
+  margin-bottom: 1.75rem;
+}
+
+.hero-box {
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background-color: #fff;
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.hero-ctas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  margin: 0 0 0.75rem 0;
+  justify-content: center;
+}
+
+.hero-cta,
+.md-typeset .hero-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 14px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-decoration: none !important;
+  border: 1px solid transparent;
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  box-sizing: border-box;
+  color: #fff !important;
+}
+
+.hero-cta:focus {
+  outline: 2px solid #76b900;
+  outline-offset: 2px;
+}
+
+.hero-cta--green,
+.md-typeset .hero-cta--green {
+  background-color: #76b900;
+  color: #fff !important;
+  border-color: #76b900;
+}
+
+.hero-cta--green:hover,
+.md-typeset .hero-cta--green:hover {
+  background-color: #5a8f00;
+  border-color: #5a8f00;
+  color: #fff !important;
+}
+
+.hero-cta--black,
+.md-typeset .hero-cta--black {
+  background-color: #000;
+  color: #fff !important;
+  border-color: #000;
+}
+
+.hero-cta--black:hover,
+.md-typeset .hero-cta--black:hover {
+  background-color: #333;
+  border-color: #333;
+  color: #fff !important;
+}
+
+.hero-cta--outline,
+.md-typeset .hero-cta--outline {
+  background-color: #000;
+  color: #fff !important;
+  border-color: #000;
+}
+
+.hero-cta--outline:hover,
+.md-typeset .hero-cta--outline:hover {
+  background-color: #333;
+  border-color: #333;
+  color: #fff !important;
+}
+
+.hero-box .hero-more {
+  margin: 0;
+}
+
+.hero-more {
+  font-size: 0.85rem;
+  color: #6b7280;
+  margin: 0 0 2rem 0;
+}
+
+.hero-more a {
+  color: #76b900 !important;
+}
+
+.hero-more a:hover {
+  color: #5a8f00 !important;
+  text-decoration: underline !important;
 }
 
 /* ===== SIDEBAR GROUPING - CONTENTS & QUICK LINKS ===== */
