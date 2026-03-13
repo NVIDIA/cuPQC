@@ -16,12 +16,21 @@
             box-sizing: border-box;
         }
 
+        html {
+            height: 100%;
+        }
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
-            background: transparent;
-            padding: 15px 15px 5px 15px;
+            background: #f9fafb;
+            padding: 24px;
             margin: 0;
-            display: block;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100%;
+            box-sizing: border-box;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
             overflow: visible;
@@ -40,12 +49,13 @@
 
         .architecture-diagram {
             width: 100%;
-            max-width: 850px;
-            background: transparent;
+            max-width: 700px;
+            background: #f9fafb;
             border-radius: 10px;
-            padding: 12px 18px 8px 18px;
+            padding: 12px 14px;
             box-shadow: none;
             margin: 0 auto;
+            flex-shrink: 0;
             will-change: transform;
             overflow: visible;
         }
@@ -54,8 +64,8 @@
         .app-layer {
             background: #000000;
             border-radius: 10px;
-            padding: 12px 18px;
-            margin: 0 auto 10px;
+            padding: 8px 14px;
+            margin: 0 auto 6px;
             max-width: 90%;
             box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12), 0 2px 6px rgba(0, 0, 0, 0.08);
             text-align: center;
@@ -146,8 +156,8 @@
         .api-container {
             background: #000000;
             border-radius: 10px;
-            padding: 12px 18px;
-            margin: 0 auto 10px;
+            padding: 8px 14px;
+            margin: 0 auto 6px;
             max-width: 90%;
             min-width: 0;
             box-shadow: 0 6px 18px rgba(0, 0, 0, 0.14), 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -269,8 +279,8 @@
         .hardware-layer {
             background: #000000;
             border-radius: 10px;
-            padding: 12px 18px;
-            margin: 0 auto;
+            padding: 8px 14px;
+            margin: 0 auto 0;
             max-width: 90%;
             box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12), 0 2px 6px rgba(0, 0, 0, 0.08);
             text-align: center;
@@ -318,8 +328,8 @@
         .crypto-layer {
             background: #000000;
             border-radius: 10px;
-            padding: 12px 18px;
-            margin: 0 auto 10px;
+            padding: 8px 14px;
+            margin: 0 auto 6px;
             max-width: 90%;
             min-width: 0;
             box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12), 0 2px 6px rgba(0, 0, 0, 0.08);

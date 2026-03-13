@@ -507,18 +507,18 @@
   text-overflow: ellipsis;
 }
 
-/* Responsive iframe height for architecture diagram */
+/* Architecture diagram iframe: fixed height at all viewport sizes */
 @media (max-width: 768px) {
   iframe[src*="cupqc_architecture.html"] {
-    height: 750px !important;
-    min-height: 750px !important;
+    height: 520px !important;
+    max-height: 520px !important;
   }
 }
 
 @media (max-width: 480px) {
   iframe[src*="cupqc_architecture.html"] {
-    height: 800px !important;
-    min-height: 800px !important;
+    height: 520px !important;
+    max-height: 520px !important;
   }
 }
 
