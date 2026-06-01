@@ -14,6 +14,37 @@
   background-color: #000000 !important;
 }
 
+/*
+ * Search bar on black header: default theme uses a dark translucent pill — nearly invisible.
+ * Use a light field + dark text so the input and placeholder read clearly.
+ */
+.md-header .md-search__form {
+  background-color: #e8eaed !important;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.06);
+}
+
+.md-header .md-search__form:hover {
+  background-color: #f3f4f6 !important;
+}
+
+[data-md-toggle="search"]:checked ~ .md-header .md-search__form {
+  background-color: #ffffff !important;
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
+.md-header .md-search__input {
+  color: #111827 !important;
+}
+
+.md-header .md-search__input::placeholder {
+  color: #6b7280 !important;
+}
+
+.md-header .md-search__icon {
+  color: #6b7280 !important;
+}
+
 /* Make NVIDIA logo larger to match header bar height */
 .md-header__button.md-logo img,
 .md-header__button.md-logo svg {
@@ -24,6 +55,51 @@
 
 .md-header__button.md-logo {
   padding: 0.2rem 0.4rem !important;
+}
+
+/*
+ * Header: Applications label on first line; cuPQC SDK version under tag icon (extra.sdk_version).
+ */
+.md-header .md-source .cupqc-source-repo {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  line-height: 1.2;
+  gap: 0.12rem;
+  max-width: calc(100% - 1.2rem);
+}
+
+.md-header .md-source .cupqc-source-name {
+  display: block;
+}
+
+.md-header .md-source .cupqc-source-version-line {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.28rem;
+  font-size: 0.55rem;
+  font-weight: 500;
+  opacity: 0.82;
+  white-space: nowrap;
+}
+
+.md-header .md-source .cupqc-source-tag-icon {
+  display: inline-flex;
+  flex-shrink: 0;
+  width: 0.65rem;
+  height: 0.65rem;
+  vertical-align: middle;
+}
+
+.md-header .md-source .cupqc-source-tag-icon svg {
+  width: 100%;
+  height: 100%;
+  fill: currentColor;
+}
+
+.md-header .md-source .cupqc-source-version {
+  line-height: 1.2;
 }
 
 /* Active/selected page color - NVIDIA green and bold */
@@ -57,6 +133,16 @@
 .md-nav__link:hover {
   color: #5a8f00 !important;
   text-decoration: underline !important;
+}
+
+/*
+ * Material sets .md-nav__link[for]:focus to accent (green). The expand chevron is a
+ * <label>; after a click, focus stays on it and looks “stuck” green. Reset pointer
+ * focus only; keyboard :focus-visible keeps the theme outline for accessibility.
+ */
+.md-nav__container > label.md-nav__link[for]:not(.md-nav__link--active):focus:not(:focus-visible) {
+  color: var(--md-default-fg-color) !important;
+  outline: none;
 }
 
 /* Header links */
@@ -260,6 +346,14 @@
   opacity: 0.5;
 }
 
+/* Primary sidebar: bold main section labels only (not nested children or TOC) */
+.md-nav--primary > .md-nav__list > .md-nav__item:nth-child(2) > .md-nav__link .md-ellipsis,
+.md-nav--primary > .md-nav__list > .md-nav__item:nth-child(3) .md-nav__container > a.md-nav__link .md-ellipsis,
+.md-nav--primary > .md-nav__list > .md-nav__item:nth-child(4) .md-nav__container > a.md-nav__link .md-ellipsis,
+.md-nav--primary > .md-nav__list > .md-nav__item:nth-child(5) .md-nav__container > a.md-nav__link .md-ellipsis {
+  font-weight: 700;
+}
+
 /* ===== SDK LIBRARY CARDS ===== */
 
 /* Compact grid for library cards */
@@ -440,6 +534,68 @@
   margin-bottom: 4px;
 }
 
+/* Technical Blog index cards: title + date stacked; tags stay top-right */
+.tech-blog-card-header {
+  align-items: flex-start;
+}
+
+.release-card-title-block {
+  flex: 1;
+  min-width: 0;
+}
+
+.tech-blog-card-header .release-card-title-block .release-date {
+  display: block;
+  margin-top: 2px;
+}
+
+/* Date line under article title on tech blog posts */
+.blog-post-date {
+  margin: -0.5rem 0 1rem 0;
+  font-size: 0.8rem;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.blog-post-date time {
+  color: inherit;
+}
+
+/* Post title row: date + SDK version as metadata chips */
+.blog-post-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: -0.5rem 0 1rem 0;
+}
+
+.blog-meta-tag {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #6b7280;
+  background: #f3f4f6;
+  padding: 4px 10px;
+  border-radius: 12px;
+  letter-spacing: 0.2px;
+}
+
+.blog-meta-tag time {
+  color: inherit;
+}
+
+.blog-meta-tag--sdk {
+  color: #4b5563;
+  background: #eef6e4;
+  border: 1px solid rgba(118, 185, 0, 0.35);
+}
+
+/* SDK line on Technical Blog index cards (neutral; not the green “first tag”) */
+.app-tag--sdk {
+  font-variant-numeric: tabular-nums;
+}
+
 /* Release header h3 - title on the left */
 .release-header h3 {
   margin: 0;
@@ -556,3 +712,27 @@
   font-size: 0.75rem;
 }
 */
+
+/* Mode / Use case / How it works tables: extra padding on first two columns */
+.md-typeset .cupqc-mode-table th:nth-child(1),
+.md-typeset .cupqc-mode-table td:nth-child(1) {
+  padding-left: 0.85rem;
+  padding-right: 2.25rem;
+  /* Line 1: **Single‑Block** / **Multi‑Block** — line 2: (high throughput) / (low latency) */
+  min-width: 19rem;
+  max-width: 22rem;
+  white-space: normal;
+  line-height: 1.45;
+  vertical-align: top;
+  hyphens: none;
+  -webkit-hyphens: none;
+  word-break: normal;
+  overflow-wrap: normal;
+}
+
+.md-typeset .cupqc-mode-table th:nth-child(2),
+.md-typeset .cupqc-mode-table td:nth-child(2) {
+  padding-left: 0.65rem;
+  padding-right: 1.35rem;
+  min-width: 9.5rem;
+}

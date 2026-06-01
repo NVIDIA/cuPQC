@@ -9,4 +9,3 @@ document.addEventListener('DOMContentLoaded', function() {
     link.setAttribute('rel', 'noopener noreferrer');
   });
 });
-

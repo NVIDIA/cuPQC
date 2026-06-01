@@ -6,35 +6,35 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Code samples and tutorials for the cuPQC SDK—SHA-2, Poseidon2, Merkle membership proofs, ML-KEM, and ML-DSA on GPU.">
+        <meta name="description" content="CPU vs GPU throughput for SHA2, SHA3, and SHAKE with cuPQC-Hash—AMD EPYC vs NVIDIA RTX PRO 6000, 8 KB messages.">
       
       
       
-        <link rel="canonical" href="https://nvidia.github.io/cuPQC/applications/">
+        <link rel="canonical" href="https://nvidia.github.io/cuPQC/blogs/hash-rates/">
       
       
-        <link rel="prev" href="../blogs/hash-rates/">
+        <link rel="prev" href="../">
       
       
-        <link rel="next" href="sha2-hash/">
+        <link rel="next" href="../../applications/">
       
       
         
       
       
-      <link rel="icon" href="../assets/nvidia-logo.png">
+      <link rel="icon" href="../../assets/nvidia-logo.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
     
     
       
-        <title>Applications - cuPQC SDK Developer Hub</title>
+        <title>Hash Performance (SHA2, SHA3, SHAKE) - Benchmark - cuPQC SDK Developer Hub</title>
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
       
         
-        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
       
       
 
@@ -53,9 +53,9 @@
       
     
     
-      <link rel="stylesheet" href="../stylesheets/extra.css">
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
     
-    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -86,7 +86,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#applications" class="md-skip">
+        <a href="#hash-performance-sha2-sha3-shake-benchmark" class="md-skip">
           Skip to content
         </a>
       
@@ -102,9 +102,9 @@
 
 <header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href=".." title="cuPQC SDK Developer Hub" class="md-header__button md-logo" aria-label="cuPQC SDK Developer Hub" data-md-component="logo">
+    <a href="../.." title="cuPQC SDK Developer Hub" class="md-header__button md-logo" aria-label="cuPQC SDK Developer Hub" data-md-component="logo">
       
-  <img src="../assets/nvidia-logo.png" alt="logo">
+  <img src="../../assets/nvidia-logo.png" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -121,7 +121,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Applications
+              Hash Performance (SHA2, SHA3, SHAKE) - Benchmark
             
           </span>
         </div>
@@ -240,9 +240,9 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href=".." title="cuPQC SDK Developer Hub" class="md-nav__button md-logo" aria-label="cuPQC SDK Developer Hub" data-md-component="logo">
+    <a href="../.." title="cuPQC SDK Developer Hub" class="md-nav__button md-logo" aria-label="cuPQC SDK Developer Hub" data-md-component="logo">
       
-  <img src="../assets/nvidia-logo.png" alt="logo">
+  <img src="../../assets/nvidia-logo.png" alt="logo">
 
     </a>
     cuPQC SDK Developer Hub
@@ -279,7 +279,7 @@
   
   
     <li class="md-nav__item">
-      <a href=".." class="md-nav__link">
+      <a href="../.." class="md-nav__link">
         
   
   
@@ -306,7 +306,7 @@
   
   
     <li class="md-nav__item">
-      <a href=".." class="md-nav__link">
+      <a href="../.." class="md-nav__link">
         
   
   
@@ -355,7 +355,7 @@
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../releases/" class="md-nav__link ">
+            <a href="../../releases/" class="md-nav__link ">
               
   
   
@@ -459,6 +459,8 @@
       
   
   
+    
+  
   
   
     
@@ -474,15 +476,15 @@
     
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../blogs/" class="md-nav__link ">
+            <a href="../" class="md-nav__link ">
               
   
   
@@ -506,7 +508,7 @@
             
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
             
@@ -523,10 +525,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../blogs/hash-rates/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Hash Performance (SHA2, SHA3, SHAKE) - Benchmark
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -542,6 +571,98 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#benchmark-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Benchmark Configuration
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#benchmark-analysis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Benchmark Analysis
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Benchmark Analysis">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sha-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SHA-2
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sha-3-and-shake" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SHA-3 and SHAKE
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#performance-impact-on-cryptographic-workloads" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Performance impact on cryptographic workloads
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#get-started" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Get started
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -558,8 +679,6 @@
       
   
   
-    
-  
   
   
     
@@ -581,15 +700,15 @@
     
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="./" class="md-nav__link md-nav__link--active">
+            <a href="../../applications/" class="md-nav__link ">
               
   
   
@@ -607,13 +726,13 @@
             </a>
             
               
-              <label class="md-nav__link md-nav__link--active" for="__nav_5" id="__nav_5_label" tabindex="0">
+              <label class="md-nav__link " for="__nav_5" id="__nav_5_label" tabindex="0">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_5">
             <span class="md-nav__icon md-icon"></span>
             
@@ -633,7 +752,7 @@
   
   
     <li class="md-nav__item">
-      <a href="sha2-hash/" class="md-nav__link">
+      <a href="../../applications/sha2-hash/" class="md-nav__link">
         
   
   
@@ -661,7 +780,7 @@
   
   
     <li class="md-nav__item">
-      <a href="poseidon2-hash/" class="md-nav__link">
+      <a href="../../applications/poseidon2-hash/" class="md-nav__link">
         
   
   
@@ -689,7 +808,7 @@
   
   
     <li class="md-nav__item">
-      <a href="merkle-tree-membership-proof/" class="md-nav__link">
+      <a href="../../applications/merkle-tree-membership-proof/" class="md-nav__link">
         
   
   
@@ -717,7 +836,7 @@
   
   
     <li class="md-nav__item">
-      <a href="post-quantum-cryptography-code-sample/" class="md-nav__link">
+      <a href="../../applications/post-quantum-cryptography-code-sample/" class="md-nav__link">
         
   
   
@@ -752,7 +871,7 @@
   
   
     <li class="md-nav__item">
-      <a href=".." class="md-nav__link">
+      <a href="../.." class="md-nav__link">
         
   
   
@@ -927,6 +1046,86 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#benchmark-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Benchmark Configuration
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#benchmark-analysis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Benchmark Analysis
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Benchmark Analysis">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sha-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SHA-2
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sha-3-and-shake" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SHA-3 and SHAKE
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#performance-impact-on-cryptographic-workloads" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Performance impact on cryptographic workloads
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#get-started" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Get started
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -945,68 +1144,29 @@
   
 
 
-<h1 id="applications">Applications</h1>
-<p>Code samples and example implementations using cuPQC SDK.</p>
-<hr />
-<div class="release-card">
-  <div class="release-header">
-    <h3>SHA-2 Hash Function</h3>
-    <div class="app-tags">
-      <span class="app-tag">Tutorial</span>
-      <span class="app-tag">Hash Function</span>
-    </div>
-  </div>
-  <p>Step-by-step guide to building a SHA-256 hash application using cuPQC SDK. Learn how to use GPU-accelerated SHA-2 hashing for data integrity verification.</p>
-  <div class="release-links">
-    <a href="sha2-hash/" class="release-link">Read Tutorial →</a>
-    <a href="https://github.com/NVIDIA/cuPQC/blob/main/examples/hash/example_sha2.cu" class="release-link secondary" target="_blank">Source Code →</a>
-  </div>
-</div>
+<h1 id="hash-performance-sha2-sha3-shake-benchmark">Hash Performance (SHA2, SHA3, SHAKE) - Benchmark</h1>
+<p class="blog-post-meta">
+  <span class="blog-meta-tag"><time datetime="2026-04-07">April 7, 2026</time></span>
+  <span class="blog-meta-tag blog-meta-tag--sdk">cuPQC SDK v0.4.1</span>
+</p>
 
-<div class="release-card">
-  <div class="release-header">
-    <h3>Poseidon2 Hash Function</h3>
-    <div class="app-tags">
-      <span class="app-tag">Tutorial</span>
-      <span class="app-tag">Hash Function</span>
-    </div>
-  </div>
-  <p>Step-by-step guide to building a Poseidon2 hash application using cuPQC SDK. Learn how to use GPU-accelerated Poseidon2, a zero-knowledge-friendly hash function designed for efficient use in ZK proof systems.</p>
-  <div class="release-links">
-    <a href="poseidon2-hash/" class="release-link">Read Tutorial →</a>
-    <a href="https://github.com/NVIDIA/cuPQC/blob/main/examples/hash/example_poseidon2.cu" class="release-link secondary" target="_blank">Source Code →</a>
-  </div>
-</div>
-
-<div class="release-card">
-  <div class="release-header">
-    <h3>Merkle Tree Membership Proof</h3>
-    <div class="app-tags">
-      <span class="app-tag">Tutorial</span>
-      <span class="app-tag">Merkle Proof</span>
-    </div>
-  </div>
-  <p>Step-by-step guide to building a complete Merkle tree membership proof application using cuPQC SDK. Learn how to generate trees, create proofs, and verify them with GPU acceleration.</p>
-  <div class="release-links">
-    <a href="merkle-tree-membership-proof/" class="release-link">Read Tutorial →</a>
-    <a href="https://github.com/NVIDIA/cuPQC/blob/main/applications/merkle_proof_poseidon2_bb/merkle_proof.cu" class="release-link secondary" target="_blank">Source Code →</a>
-  </div>
-</div>
-
-<div class="release-card">
-  <div class="release-header">
-    <h3>PQC: ML-KEM & ML-DSA</h3>
-    <div class="app-tags">
-      <span class="app-tag">Code Sample</span>
-      <span class="app-tag">PQC</span>
-    </div>
-  </div>
-  <p>Complete ML-KEM and ML-DSA implementation code with minimal explanation. Quick reference for developers familiar with cuPQC SDK.</p>
-  <div class="release-links">
-    <a href="post-quantum-cryptography-code-sample/" class="release-link">View Code Sample →</a>
-    <a href="https://github.com/NVIDIA/cuPQC/tree/main/examples/public_key" class="release-link secondary" target="_blank">Source Code →</a>
-  </div>
-</div>
+<p>Many security and proof-system pipelines spend a large share of time in hashing—integrity checks, commitments, KDFs, and similar steps. When throughput matters, moving that work off the CPU can change the overall cost profile.</p>
+<p>This post reports throughput for SHA2, SHA3, and SHAKE on one server CPU versus one professional GPU, using cuPQC-Hash from the cuPQC SDK, with the same message size and parallel batching setup on both platforms.</p>
+<h2 id="benchmark-configuration">Benchmark Configuration</h2>
+<p>We measured throughput using <strong>cuPQC SDK v0.4.1</strong> on an AMD EPYC 9124 (16-core server processor) as the CPU baseline against an NVIDIA RTX PRO 6000 (Blackwell generation) using cuPQC-Hash. Each hash processes an 8 KB message; the workload uses parallel cores on the CPU and the GPU’s parallel execution model so many independent hash outputs are computed at once, which is how peak GB/s throughput is achieved. The figure below summarizes CPU vs GPU throughput and speedup for each algorithm.</p>
+<p><img alt="Hash rates and speedup: AMD EPYC 9124 vs RTX PRO 6000" src="hashrates.png" /></p>
+<h2 id="benchmark-analysis">Benchmark Analysis</h2>
+<h3 id="sha-2">SHA-2</h3>
+<p>The SHA2-256 algorithm achieves 672 GB/s throughput on the RTX PRO 6000, representing a 14× speedup over the CPU baseline. SHA2-512 shows even more dramatic improvement at 46× faster, reaching 646 GB/s.</p>
+<h3 id="sha-3-and-shake">SHA-3 and SHAKE</h3>
+<p>The SHA-3 family demonstrates the most impressive acceleration results in our benchmark. SHA3-256 achieves a 101× speedup at 710 GB/s, while SHAKE128 reaches the highest absolute hash rate at 891 GB/s with 99× acceleration. SHAKE256 leads in relative performance with 103× speedup, processing 723 GB/s.</p>
+<p>These exceptional gains stem from SHA-3's sponge construction, which exposes substantial parallelism that GPU architectures can exploit effectively. The Keccak permutation at SHA-3's core maps naturally to GPU compute units.</p>
+<p>In cuPQC-Hash, these primitives are implemented as batched CUDA kernels with shared memory and per-family layout choices so the GPU can stay in a throughput-oriented regime rather than serializing work.</p>
+<h3 id="performance-impact-on-cryptographic-workloads">Performance impact on cryptographic workloads</h3>
+<p>When hashing is a dominant part of the workload, higher SHA2/SHA3/SHAKE throughput can shorten wall-clock time for the surrounding pipeline. That pattern shows up in different designs depending on where time goes: for example hash-based signatures, Merkle-tree commitments and updates, and some zero-knowledge / proof-system stacks that evaluate many hashes in parallel can be sensitive to raw hash throughput.</p>
+<p>Taken together, the chart and the sections above highlight where GPU acceleration is strongest: SHA3 and SHAKE see the largest relative gains, while SHA2-256 still improves meaningfully on the GPU even though the CPU baseline is already high.</p>
+<h2 id="get-started">Get started</h2>
+<p>cuPQC-Hash exposes GPU-accelerated SHA2, SHA3, SHAKE, and Posiedon 2 with a consistent API. For the full API (hash primitives), see the <a href="https://docs.nvidia.com/cuda/cupqc/api/cupqc_hash_api.html">cuPQC-Hash API reference</a>. On this hub, the <a href="../../applications/sha2-hash/">SHA-2 Hash Function</a> tutorial walks through an example application. </p>
 
 
 
@@ -1045,7 +1205,7 @@
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../blogs/hash-rates/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Hash Performance (SHA2, SHA3, SHAKE) - Benchmark">
+          <a href="../" class="md-footer__link md-footer__link--prev" aria-label="Previous: Technical Blog">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -1055,20 +1215,20 @@
                 Previous
               </span>
               <div class="md-ellipsis">
-                Hash Performance (SHA2, SHA3, SHAKE) - Benchmark
+                Technical Blog
               </div>
             </div>
           </a>
         
         
           
-          <a href="sha2-hash/" class="md-footer__link md-footer__link--next" aria-label="Next: SHA-2 Hash Function">
+          <a href="../../applications/" class="md-footer__link md-footer__link--next" aria-label="Next: Applications">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                SHA-2 Hash Function
+                Applications
               </div>
             </div>
             <div class="md-footer__button md-icon">
@@ -1109,12 +1269,12 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["content.code.copy", "navigation.footer", "navigation.indexes", "navigation.top", "navigation.tracking", "search.highlight", "search.share", "search.suggest"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["content.code.copy", "navigation.footer", "navigation.indexes", "navigation.top", "navigation.tracking", "search.highlight", "search.share", "search.suggest"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
       
-        <script src="../javascripts/extra.js"></script>
+        <script src="../../javascripts/extra.js"></script>
       
     
   </body>
