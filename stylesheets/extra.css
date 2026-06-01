@@ -1,5 +1,100 @@
 /* Minimal custom CSS - Material theme defaults */
 
+/* Authors sidebar — right column under TOC (see docs/assets/authors/README.md) */
+.md-sidebar--primary .authors-sidebar {
+  display: none !important;
+}
+
+.md-sidebar--secondary .authors-sidebar {
+  --authors-avatar-size: 56px;
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid color-mix(in srgb, var(--md-default-fg-color) 12%, transparent);
+}
+
+.md-sidebar--secondary .authors-sidebar__heading {
+  margin: 0 0 0.65rem;
+  padding: 0 0.6rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--md-default-fg-color--light);
+  border: none;
+}
+
+.md-sidebar--secondary .authors-sidebar__list {
+  margin: 0;
+  padding: 0 0.6rem 0.25rem;
+  list-style: none;
+}
+
+.md-sidebar--secondary .authors-sidebar__card {
+  display: flex;
+  gap: 0.65rem;
+  align-items: flex-start;
+  margin: 0 0 1rem;
+  padding: 0;
+}
+
+.md-sidebar--secondary .authors-sidebar__card:last-child {
+  margin-bottom: 0;
+}
+
+.md-sidebar--secondary .authors-sidebar__avatar {
+  flex-shrink: 0;
+  width: var(--authors-avatar-size);
+  height: var(--authors-avatar-size);
+  border-radius: 50%;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--md-default-fg-color) 6%, transparent);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--md-default-fg-color) 10%, transparent);
+}
+
+.md-sidebar--secondary .authors-sidebar__avatar img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center center;
+}
+
+.md-sidebar--secondary .authors-sidebar__name {
+  display: block;
+  font-size: 0.74rem;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--md-default-fg-color);
+  margin-bottom: 0.2rem;
+}
+
+.md-sidebar--secondary .authors-sidebar__bio {
+  margin: 0;
+  font-size: 0.68rem;
+  line-height: 1.4;
+  color: var(--md-default-fg-color--light, #666);
+}
+
+/* Full bio mode — longer text, slightly tighter typography */
+.md-sidebar--secondary .authors-sidebar--full .authors-sidebar__bio {
+  font-size: 0.64rem;
+  line-height: 1.45;
+}
+
+.md-sidebar--secondary .authors-sidebar--full .authors-sidebar__card {
+  margin-bottom: 1.15rem;
+}
+
+/* Smaller avatars — useful when sidebar is crowded or bios are long */
+.md-sidebar--secondary .authors-sidebar[style*="--authors-avatar-size: 48px"] .authors-sidebar__name {
+  font-size: 0.72rem;
+}
+
+.md-sidebar--secondary .authors-sidebar[style*="--authors-avatar-size: 48px"] .authors-sidebar__bio {
+  font-size: 0.66rem;
+}
+
 /* NVIDIA black color - matching logo */
 :root {
   --md-primary-fg-color: #000000;

@@ -1,0 +1,26 @@
+# Author registry for the cuPQC Developer Hub sidebar.
+# Reference authors from any page via YAML frontmatter (see README.md in this folder).
+
+yarkin-doroz:
+  name: Yarkin Doroz
+  title: Senior Product Manager, cuPQC SDK, NVIDIA Enterprise Product
+  bio_full: >-
+    Yarkin Doroz is a product manager for Encryption Libraries on the NVIDIA
+    Enterprise product team. He ensures the development of cutting-edge encryption
+    solutions to keep NVIDIA's products at the forefront of security technology.
+    Prior to joining NVIDIA, Yarkin co-founded two startups and served as a
+    teaching professor at Worcester Polytechnic Institute (WPI). His expertise
+    includes Post-Quantum Cryptography, Fully Homomorphic Encryption, and
+    Side-Channel Attacks.
+  photo: authors/yarkin-doroz.png
+
+steven-reeves:
+  name: Steven Reeves
+  title: Engineering Lead, cuPQC SDK, NVIDIA Math Libraries
+  bio_full: >-
+    Steven Reeves is an engineering lead for cuPQC within the NVIDIA Math
+    Libraries Group. Steven received his PhD in Applied Mathematics and Statistics
+    from the University of California Santa Cruz. Prior to NVIDIA, Steven worked
+    for a variety of organizations—notably Lawrence Berkeley National
+    Laboratory—bringing up high-performance mathematical libraries.
+  photo: authors/steven-reeves.jpg
