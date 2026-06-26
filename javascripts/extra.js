@@ -18,6 +18,20 @@ document.addEventListener("DOMContentLoaded", function () {
     link.setAttribute("rel", "noopener noreferrer");
   });
 
+  var mobileNavToggle = document.getElementById("cupqc-mobile-nav");
+  if (mobileNavToggle) {
+    document.querySelectorAll(".cupqc-mobile-nav a").forEach(function (link) {
+      link.addEventListener("click", function () {
+        mobileNavToggle.checked = false;
+      });
+    });
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Escape" && mobileNavToggle.checked) {
+        mobileNavToggle.checked = false;
+      }
+    });
+  }
+
   document.querySelectorAll(".cupqc-copy-btn").forEach(function (btn) {
     btn.addEventListener("click", function () {
       var text = (btn.getAttribute("data-copy") || "").replace(/&#10;/g, "\n");

@@ -246,6 +246,21 @@ body {
 
 .cupqc-topbar__menu { display: none; cursor: pointer; color: #fff; }
 
+/* Mobile nav panel (replaces Material drawer for top-level links) */
+.cupqc-mobile-nav__toggle {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+.cupqc-mobile-nav,
+.cupqc-mobile-nav__overlay { display: none; }
+
 /* ---- Main layout ------------------------------------------------------ */
 .md-main__inner {
   max-width: var(--cupqc-max);
@@ -2436,6 +2451,68 @@ a.cupqc-app-card.cupqc-app-card--blog {
 @media screen and (max-width: 76.1875em) {
   .cupqc-topnav, .cupqc-topbar__meta { display: none; }
   .cupqc-topbar__menu { display: block; margin-left: auto; }
+
+  .cupqc-mobile-nav {
+    display: block;
+    position: fixed;
+    top: var(--cupqc-topbar-h);
+    left: 0;
+    right: 0;
+    z-index: 49;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    background: #0d0f0c;
+    border-bottom: 1px solid #1c2018;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+    transition: max-height 0.28s ease, opacity 0.2s ease;
+  }
+  .cupqc-mobile-nav__toggle:checked ~ .cupqc-mobile-nav {
+    max-height: min(80vh, 420px);
+    opacity: 1;
+    overflow-y: auto;
+  }
+  .cupqc-mobile-nav__link {
+    display: block;
+    padding: 14px 24px;
+    font-size: 15px;
+    font-weight: 600;
+    color: #a7a7a7;
+    text-decoration: none;
+    border-bottom: 1px solid #1a1d18;
+  }
+  .cupqc-mobile-nav__link:hover { color: #fff; background: rgba(255, 255, 255, 0.03); }
+  .cupqc-mobile-nav__link.is-active {
+    color: #fff;
+    border-left: 3px solid var(--cupqc-green);
+    padding-left: 21px;
+  }
+  .cupqc-mobile-nav__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 24px 20px;
+    border-top: 1px solid #1a1d18;
+  }
+  .cupqc-mobile-nav__overlay {
+    display: block;
+    position: fixed;
+    inset: 0;
+    top: var(--cupqc-topbar-h);
+    z-index: 48;
+    background: rgba(0, 0, 0, 0.55);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+    cursor: pointer;
+  }
+  .cupqc-mobile-nav__toggle:checked ~ .cupqc-mobile-nav__overlay {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  body:has(.cupqc-mobile-nav__toggle:checked) { overflow: hidden; }
+
   .cupqc-topbar__inner,
   .cupqc-footer__grid,
   .cupqc-footer__legal {
