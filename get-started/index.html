@@ -102,7 +102,6 @@
       
 
 <header class="md-header cupqc-header" data-md-component="header">
-  <input type="checkbox" id="cupqc-mobile-nav" class="cupqc-mobile-nav__toggle" aria-hidden="true" tabindex="-1">
   <nav class="cupqc-topbar" aria-label="Header">
     <div class="cupqc-topbar__inner">
       <a href=".." class="cupqc-topbar__brand" aria-label="cuPQC SDK Developer Hub">
@@ -138,43 +137,49 @@
         
       </div>
 
-      <label class="cupqc-topbar__menu md-icon" for="cupqc-mobile-nav" aria-label="Menu">
+      <button type="button" class="cupqc-topbar__menu md-icon" aria-label="Menu" aria-expanded="false" aria-controls="cupqc-mobile-nav-panel">
         
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
-      </label>
+      </button>
     </div>
   </nav>
-
-  <nav class="cupqc-mobile-nav" aria-label="Site navigation">
-    <a href=".." class="cupqc-mobile-nav__link">Home</a>
-    <a href="./" class="cupqc-mobile-nav__link is-active">Get Started</a>
-    <a href="../applications/" class="cupqc-mobile-nav__link">Applications</a>
-    <a href="../blogs/" class="cupqc-mobile-nav__link">Blog</a>
-    <a href="../docs-hub/" class="cupqc-mobile-nav__link">Docs</a>
-    
-    <div class="cupqc-mobile-nav__meta">
-      
-      <span class="cupqc-version-chip">v0.4.1</span>
-      
-      
-      <a href="https://github.com/NVIDIA/cuPQC" class="cupqc-github-link" target="_blank" rel="noopener">cuPQC SDK Applications</a>
-      
-    </div>
-    
-  </nav>
-  <label class="cupqc-mobile-nav__overlay" for="cupqc-mobile-nav" aria-hidden="true"></label>
   <script>
     (function () {
       var p = location.pathname;
       var b = document.body;
-      if (/\/(cuPQC\/)?(index\.html?)?$/.test(p) || p.endsWith("/cuPQC")) b.classList.add("cupqc-page-home");
-      else if (p.includes("get-started")) b.classList.add("cupqc-page-getstarted");
-      else if (p.includes("applications")) b.classList.add("cupqc-section-apps");
-      else if (p.includes("blogs") || p.includes("releases")) b.classList.add("cupqc-section-blog");
-      else if (p.includes("docs-hub")) b.classList.add("cupqc-page-docs");
+      if (p === "/" || /\/(cuPQC\/)?(index\.html?)?$/.test(p) || p.endsWith("/cuPQC")) {
+        b.classList.add("cupqc-page-home");
+      } else if (p.includes("get-started")) {
+        b.classList.add("cupqc-page-getstarted");
+      } else if (p.includes("applications")) {
+        b.classList.add("cupqc-section-apps");
+      } else if (p.includes("blogs") || p.includes("releases")) {
+        b.classList.add("cupqc-section-blog");
+      } else if (p.includes("docs-hub")) {
+        b.classList.add("cupqc-page-docs");
+      }
     })();
   </script>
 </header>
+<input type="checkbox" id="cupqc-mobile-nav" class="cupqc-mobile-nav__toggle" aria-hidden="true" tabindex="-1">
+<nav class="cupqc-mobile-nav" id="cupqc-mobile-nav-panel" aria-label="Site navigation">
+  <a href=".." class="cupqc-mobile-nav__link">Home</a>
+  <a href="./" class="cupqc-mobile-nav__link is-active">Get Started</a>
+  <a href="../applications/" class="cupqc-mobile-nav__link">Applications</a>
+  <a href="../blogs/" class="cupqc-mobile-nav__link">Blog</a>
+  <a href="../docs-hub/" class="cupqc-mobile-nav__link">Docs</a>
+  
+  <div class="cupqc-mobile-nav__meta">
+    
+    <span class="cupqc-version-chip">v0.4.1</span>
+    
+    
+    <a href="https://github.com/NVIDIA/cuPQC" class="cupqc-github-link" target="_blank" rel="noopener">cuPQC SDK Applications</a>
+    
+  </div>
+  
+</nav>
+<label class="cupqc-mobile-nav__overlay" for="cupqc-mobile-nav" aria-hidden="true"></label>
     
     <div class="md-container" data-md-component="container">
       

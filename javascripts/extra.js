@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", function () {
   var path = window.location.pathname;
 
-  if (path.match(/\/(cuPQC\/)?(index\.html?)?$/) || path.endsWith("/cuPQC")) {
+  if (path === "/" || path.match(/\/(cuPQC\/)?(index\.html?)?$/) || path.endsWith("/cuPQC")) {
     document.body.classList.add("cupqc-page-home");
   } else if (path.includes("get-started")) {
     document.body.classList.add("cupqc-page-getstarted");
@@ -19,15 +19,42 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   var mobileNavToggle = document.getElementById("cupqc-mobile-nav");
-  if (mobileNavToggle) {
+  var mobileNavButton = document.querySelector(".cupqc-topbar__menu");
+  var mobileNavOverlay = document.querySelector(".cupqc-mobile-nav__overlay");
+
+  function setMobileNavOpen(isOpen) {
+    if (!mobileNavToggle) return;
+    mobileNavToggle.checked = isOpen;
+    document.body.classList.toggle("cupqc-mobile-nav-open", isOpen);
+    if (mobileNavButton) {
+      mobileNavButton.setAttribute("aria-expanded", isOpen ? "true" : "false");
+    }
+  }
+
+  if (mobileNavToggle && mobileNavButton) {
+    mobileNavButton.addEventListener("click", function () {
+      setMobileNavOpen(!mobileNavToggle.checked);
+    });
+
+    mobileNavToggle.addEventListener("change", function () {
+      setMobileNavOpen(mobileNavToggle.checked);
+    });
+
+    if (mobileNavOverlay) {
+      mobileNavOverlay.addEventListener("click", function () {
+        setMobileNavOpen(false);
+      });
+    }
+
     document.querySelectorAll(".cupqc-mobile-nav a").forEach(function (link) {
       link.addEventListener("click", function () {
-        mobileNavToggle.checked = false;
+        setMobileNavOpen(false);
       });
     });
+
     document.addEventListener("keydown", function (event) {
       if (event.key === "Escape" && mobileNavToggle.checked) {
-        mobileNavToggle.checked = false;
+        setMobileNavOpen(false);
       }
     });
   }
