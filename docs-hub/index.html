@@ -6,17 +6,15 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Release announcements and technical deep dives for the cuPQC SDK.">
+        <meta name="description" content="Official cuPQC-PK and cuPQC-Hash usage guides and API references on docs.nvidia.com.">
       
       
       
-        <link rel="canonical" href="https://nvidia.github.io/cuPQC/blogs/">
+        <link rel="canonical" href="https://nvidia.github.io/cuPQC/docs-hub/">
       
       
-        <link rel="prev" href="../applications/post-quantum-cryptography-code-sample/">
+        <link rel="prev" href="../blogs/hash-rates/">
       
-      
-        <link rel="next" href="hash-rates/">
       
       
         
@@ -29,7 +27,7 @@
   
     
       
-        <title>Blog - cuPQC SDK Developer Hub</title>
+        <title>Documentation - cuPQC SDK Developer Hub</title>
       
     
   
@@ -74,7 +72,7 @@
     
     
     
-    <body dir="ltr" class="cupqc-section-blog" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="lime">
+    <body dir="ltr" class="cupqc-page-docs" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="lime">
   
     
     <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
@@ -108,8 +106,8 @@
         <a href=".." class="cupqc-topnav__link">Home</a>
         <a href="../get-started/" class="cupqc-topnav__link">Get Started</a>
         <a href="../applications/" class="cupqc-topnav__link">Applications</a>
-        <a href="./" class="cupqc-topnav__link is-active">Blog</a>
-        <a href="../docs-hub/" class="cupqc-topnav__link">Docs</a>
+        <a href="../blogs/" class="cupqc-topnav__link">Blog</a>
+        <a href="./" class="cupqc-topnav__link is-active">Docs</a>
       </div>
 
       <div class="cupqc-topbar__meta">
@@ -156,32 +154,26 @@
         <div class="md-main__inner md-grid">
           
   
+    
+            
+              
+              
+            
+            
+              
+              
+            
+          
+  
 
           
   
-    <div class="md-content" data-md-component="content">
-      <article class="md-content__inner">
-        <div class="cupqc-page-shell cupqc-page-shell--apps">
-          <div class="cupqc-apps-layout">
-            <aside class="cupqc-apps-sidebar" aria-label="Blog navigation">
+    
+            <div class="md-content" data-md-component="content">
               
+              <article class="md-content__inner md-typeset">
                 
-<nav class="cupqc-side-nav" aria-label="Blog navigation">
-  <a href="./" class="cupqc-side-link is-active">Overview</a>
-  <div class="cupqc-side-group">
-    <div class="cupqc-side-group__label">Release Blog</div>
-    <a href="https://developer.nvidia.com/blog/improve-data-integrity-and-security-with-accelerated-hash-functions-and-merkle-trees-in-cupqc-0-4/" class="cupqc-side-link cupqc-side-link--external" target="_blank" rel="noopener">v0.4 · Hash &amp; Merkle</a>
-    <a href="https://developer.nvidia.com/blog/introducing-nvidia-cupqc-for-gpu-accelerated-post-quantum-cryptography/" class="cupqc-side-link cupqc-side-link--external" target="_blank" rel="noopener">v0.2 · Initial Release</a>
-  </div>
-  <div class="cupqc-side-group">
-    <div class="cupqc-side-group__label">Technical Blog</div>
-    <a href="hash-rates/" class="cupqc-side-link">Hash Performance (SHA2, SHA3, SHAKE)</a>
-  </div>
-</nav>
-              
-            </aside>
-            <div class="cupqc-apps-main md-typeset">
-              
+                  
   
 
 
@@ -190,71 +182,54 @@
   
 
 
-<div class="cupqc-blog-overview">
+<div class="cupqc-page-shell">
 
 <div class="cupqc-page-head">
-  <div class="cupqc-section-head"><h1>Blog</h1></div>
-  <p class="cupqc-page-intro">Release announcements and technical deep dives for the cuPQC SDK.</p>
+  <h1>Documentation</h1>
+  <p class="cupqc-page-intro">Implementation guides and complete API reference for each library.</p>
 </div>
 
-<h2 class="cupqc-subsection-title">Technical Blog</h2>
-
-<div class="cupqc-app-card-grid cupqc-app-card-grid--blog">
-<a href="hash-rates/" class="cupqc-app-card cupqc-app-card--blog">
-  <div class="cupqc-app-card__kind">Technical Blog</div>
-  <h3>Hash Performance (SHA2, SHA3, SHAKE)</h3>
-  <div class="cupqc-app-card__tags"><span>Benchmark</span><span>v0.4.1</span></div>
-  <p>CPU vs GPU throughput for SHA2, SHA3, and SHAKE with cuPQC-Hash on an NVIDIA RTX PRO 6000 versus an AMD EPYC 9124.</p>
-  <span class="cupqc-app-card__cta">Read post →</span>
-</a>
-</div>
-
-<h2 class="cupqc-subsection-title">Release Blog</h2>
-
-<div class="cupqc-quicklink-list">
-<a href="https://developer.nvidia.com/blog/improve-data-integrity-and-security-with-accelerated-hash-functions-and-merkle-trees-in-cupqc-0-4/" class="cupqc-quicklink" target="_blank" rel="noopener">
-  <span class="cupqc-quicklink__ver">v0.4</span>
-  <span class="cupqc-quicklink__body">
-    <span class="cupqc-quicklink__title">Improve Data Integrity and Security with Accelerated Hash Functions and Merkle Trees</span>
-    <span class="cupqc-quicklink__meta">cuPQC v0.4 · August 21, 2025</span>
-  </span>
-  <span class="cupqc-quicklink__cta">NVIDIA Blog ↗</span>
-</a>
-<a href="https://developer.nvidia.com/blog/introducing-nvidia-cupqc-for-gpu-accelerated-post-quantum-cryptography/" class="cupqc-quicklink" target="_blank" rel="noopener">
-  <span class="cupqc-quicklink__ver">v0.2</span>
-  <span class="cupqc-quicklink__body">
-    <span class="cupqc-quicklink__title">Introducing NVIDIA cuPQC for GPU-Accelerated Post-Quantum Cryptography</span>
-    <span class="cupqc-quicklink__meta">cuPQC v0.2 · December 3, 2024</span>
-  </span>
-  <span class="cupqc-quicklink__cta">NVIDIA Blog ↗</span>
-</a>
-</div>
-
-</div>
-
-
-
-
-
-
-
-  
-  
-
-
-
-
-  
-
-
-
-              
-            </div>
-          </div>
-          
-        </div>
-      </article>
+<div class="resource-grid">
+  <div class="resource-card">
+    <h3>cuPQC-PK Documentation</h3>
+    <p>Complete implementation guides and API reference for ML-KEM and ML-DSA.</p>
+    <div class="release-links">
+      <a href="https://docs.nvidia.com/cuda/cupqc/guides/cupqc_pk_usage.html" class="release-link" target="_blank" rel="noopener">Usage Guide →</a>
+      <a href="https://docs.nvidia.com/cuda/cupqc/api/cupqc_pk_api.html" class="release-link secondary" target="_blank" rel="noopener">API Reference →</a>
     </div>
+  </div>
+  <div class="resource-card">
+    <h3>cuPQC-Hash Documentation</h3>
+    <p>Complete implementation guides and API reference for hash functions and Merkle trees.</p>
+    <div class="release-links">
+      <a href="https://docs.nvidia.com/cuda/cupqc/guides/cupqc_hash_usage.html" class="release-link" target="_blank" rel="noopener">Usage Guide →</a>
+      <a href="https://docs.nvidia.com/cuda/cupqc/api/cupqc_hash_api.html" class="release-link secondary" target="_blank" rel="noopener">API Reference →</a>
+    </div>
+  </div>
+</div>
+
+</div>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+  
+
+
+
+                
+              </article>
+            </div>
+          
   
 
           
@@ -286,7 +261,7 @@
     </div>
     <div class="cupqc-footer__col">
       <div class="cupqc-footer__label">Resources</div>
-      <a href="./">Blog &amp; Benchmarks</a>
+      <a href="../blogs/">Blog &amp; Benchmarks</a>
       <a href="../applications/">Applications</a>
       <a href="https://docs.nvidia.com/cuda/cupqc/overview/features.html" target="_blank" rel="noopener">SDK Features</a>
     </div>
