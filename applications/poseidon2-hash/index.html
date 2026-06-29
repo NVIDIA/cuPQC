@@ -109,7 +109,7 @@
 <header class="md-header cupqc-header" data-md-component="header">
   <nav class="cupqc-topbar" aria-label="Header">
     <div class="cupqc-topbar__inner">
-      <a href="../.." class="cupqc-topbar__brand" aria-label="cuPQC SDK Developer Hub">
+      <div class="cupqc-topbar__brand">
         
   <img class="cupqc-logo cupqc-logo--dark" src="../../assets/nvidia-logo-white.png" alt="NVIDIA">
   <img class="cupqc-logo cupqc-logo--light" src="../../assets/nvidia-logo.svg" alt="NVIDIA">
@@ -119,7 +119,7 @@
           <span class="cupqc-topbar__product">cuPQC SDK</span>
           <span class="cupqc-topbar__hub">Developer Hub</span>
         </span>
-      </a>
+      </div>
 
       <div class="cupqc-topnav">
         <a href="../.." class="cupqc-topnav__link">Home</a>
@@ -480,7 +480,7 @@ Only single thread 0 runs it</p>
 </span></code></pre></div></p>
 <h2 id="customization-tips">Customization Tips</h2>
 <h3 id="use-different-fields-and-parameters">Use Different Fields and Parameters</h3>
-<p>Poseidon2 supports different prime fields (BabyBear, KoalaBear), widths (16, 24), and capacities (8). You can change these parameters in the <code>HASH</code> descriptor:</p>
+<p>Poseidon2 supports different prime fields (BabyBear, KoalaBear) and widths (16, 24). You can change these parameters in the <code>HASH</code> descriptor:</p>
 <p><div class="language-cpp highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="c1">// BabyBear field, Capacity 8, Width 24</span>
 </span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="k">using</span><span class="w"> </span><span class="nc">HASH_BB_24</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">decltype</span><span class="p">(</span><span class="nc">POSEIDON2_BB_8_24</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nc">Thread</span><span class="p">());</span>
 </span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>

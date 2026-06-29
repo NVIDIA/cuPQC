@@ -273,8 +273,8 @@ body {
   display: flex;
   align-items: center;
   gap: 12px;
-  text-decoration: none;
   flex-shrink: 0;
+  cursor: default;
 }
 .cupqc-topbar__brand .cupqc-logo,
 .cupqc-footer__logo.cupqc-logo,
@@ -1517,8 +1517,60 @@ a.cupqc-btn--outline:hover {
 }
 .cupqc-section-apps .cupqc-page-intro,
 .cupqc-section-blog .cupqc-page-intro {
-  margin: 0 0 32px;
+  margin: 0 0 18px;
   max-width: 620px;
+}
+.cupqc-page-head__link {
+  margin: 0 0 32px;
+  padding-left: 60px;
+  max-width: 620px;
+}
+.cupqc-repo-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  width: fit-content;
+  padding: 10px 16px;
+  max-width: 100%;
+  border: 1px solid var(--cupqc-border);
+  background: var(--cupqc-surface);
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 0.15s;
+}
+.cupqc-repo-link:hover {
+  border-color: var(--cupqc-green);
+}
+.cupqc-repo-link__badge {
+  font-family: var(--md-code-font);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--cupqc-green);
+  border: 1px solid rgba(118, 185, 0, 0.35);
+  background: rgba(118, 185, 0, 0.08);
+  padding: 4px 8px;
+  white-space: nowrap;
+  line-height: 1;
+}
+.cupqc-repo-link__title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--cupqc-heading);
+  line-height: 1.3;
+}
+.cupqc-repo-link:hover .cupqc-repo-link__title {
+  color: var(--cupqc-nav-hover);
+}
+.cupqc-repo-link__cta {
+  margin-left: auto;
+  font-size: 14px;
+  color: var(--cupqc-muted);
+  line-height: 1;
+}
+.cupqc-repo-link:hover .cupqc-repo-link__cta {
+  color: var(--cupqc-green);
 }
 .cupqc-section-apps .cupqc-app-card-grid {
   margin-top: 0;
@@ -2870,6 +2922,7 @@ a.cupqc-app-card.cupqc-app-card--blog {
     padding: 0 !important;
   }
   .cupqc-page-intro { padding-left: 0; }
+  .cupqc-page-head__link { padding-left: 0; }
   .cupqc-page-shell { padding: 40px 24px 64px; }
   .cupqc-hero__title { font-size: 2.2rem; }
   .cupqc-hero__inner { padding: 64px 24px; }
