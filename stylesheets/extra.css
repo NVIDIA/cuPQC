@@ -873,6 +873,7 @@ a.cupqc-version-chip:hover {
   margin: 0;
   max-width: none;
   padding: 0;
+  overflow: visible;
 }
 .cupqc-page-getstarted .md-content,
 .cupqc-page-docs .md-content,
@@ -912,14 +913,26 @@ a.cupqc-version-chip:hover {
   max-width: none;
   width: 100%;
   box-sizing: border-box;
+  overflow: visible;
 }
 
 .cupqc-hero {
   position: relative;
-  overflow: visible;
+  overflow-x: clip;
+  overflow-y: visible;
   border-bottom: 1px solid var(--cupqc-border-soft);
   background: var(--cupqc-bg);
   margin-top: 0;
+}
+.cupqc-hero__lattice {
+  position: absolute;
+  top: 10px;
+  right: 260px;
+  width: min(640px, 58vw);
+  height: auto;
+  pointer-events: none;
+  color: var(--cupqc-heading);
+  z-index: 0;
 }
 .cupqc-hero::before {
   content: "";
@@ -928,11 +941,13 @@ a.cupqc-version-chip:hover {
   right: 0;
   bottom: 0;
   left: 0;
-  background: radial-gradient(840px 420px at 84% 0%, rgba(118, 185, 0, 0.16), transparent 68%);
+  z-index: 0;
+  background: radial-gradient(840px 420px at 88% -5%, rgba(118, 185, 0, 0.16), transparent 68%);
   pointer-events: none;
 }
 .cupqc-hero__inner {
   position: relative;
+  z-index: 1;
   max-width: var(--cupqc-page-max);
   margin: 0 auto;
   padding: 92px 32px 88px;
@@ -2926,7 +2941,17 @@ a.cupqc-app-card.cupqc-app-card--blog {
   .cupqc-page-shell { padding: 40px 24px 64px; }
   .cupqc-hero__title { font-size: 2.2rem; }
   .cupqc-hero__inner { padding: 64px 24px; }
+  .cupqc-hero__lattice {
+    width: min(420px, 75vw);
+    top: 0;
+    right: 140px;
+    opacity: 0.55;
+  }
   .cupqc-section { padding: 40px 24px; }
+}
+
+@media (max-width: 640px) {
+  .cupqc-hero__lattice { display: none; }
 }
 
 /* Unified code panels — home, get started, applications/blog */
@@ -3093,7 +3118,7 @@ a.cupqc-app-card.cupqc-app-card--blog {
   color: var(--cupqc-accent-text);
 }
 [data-md-color-scheme="default"] .cupqc-hero::before {
-  background: radial-gradient(840px 420px at 84% 0%, rgba(118, 185, 0, 0.08), transparent 68%);
+  background: radial-gradient(840px 420px at 88% -5%, rgba(118, 185, 0, 0.08), transparent 68%);
 }
 [data-md-color-scheme="default"] .cupqc-highlights li {
   color: var(--cupqc-text);
