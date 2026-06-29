@@ -918,18 +918,26 @@ a.cupqc-version-chip:hover {
 
 .cupqc-hero {
   position: relative;
+  display: grid;
   overflow-x: clip;
   overflow-y: visible;
   border-bottom: 1px solid var(--cupqc-border-soft);
   background: var(--cupqc-bg);
   margin-top: 0;
 }
-.cupqc-hero__lattice {
+.cupqc-hero__lattice,
+.cupqc-hero__inner {
+  grid-area: 1 / 1;
+}
+.md-typeset .cupqc-hero > .cupqc-hero__lattice,
+.cupqc-hero > .cupqc-hero__lattice {
   position: absolute;
   top: 10px;
   right: 260px;
   width: min(640px, 58vw);
+  max-width: none;
   height: auto;
+  display: block;
   pointer-events: none;
   color: var(--cupqc-heading);
   z-index: 0;
@@ -948,6 +956,9 @@ a.cupqc-version-chip:hover {
 .cupqc-hero__inner {
   position: relative;
   z-index: 1;
+  justify-self: start;
+  align-self: center;
+  width: 100%;
   max-width: var(--cupqc-page-max);
   margin: 0 auto;
   padding: 92px 32px 88px;
@@ -2941,8 +2952,10 @@ a.cupqc-app-card.cupqc-app-card--blog {
   .cupqc-page-shell { padding: 40px 24px 64px; }
   .cupqc-hero__title { font-size: 2.2rem; }
   .cupqc-hero__inner { padding: 64px 24px; }
-  .cupqc-hero__lattice {
+  .md-typeset .cupqc-hero > .cupqc-hero__lattice,
+  .cupqc-hero > .cupqc-hero__lattice {
     width: min(420px, 75vw);
+    max-width: none;
     top: 0;
     right: 140px;
     opacity: 0.55;
@@ -2951,7 +2964,8 @@ a.cupqc-app-card.cupqc-app-card--blog {
 }
 
 @media (max-width: 640px) {
-  .cupqc-hero__lattice { display: none; }
+  .md-typeset .cupqc-hero > .cupqc-hero__lattice,
+  .cupqc-hero > .cupqc-hero__lattice { display: none; }
 }
 
 /* Unified code panels — home, get started, applications/blog */
