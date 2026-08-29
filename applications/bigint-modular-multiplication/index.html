@@ -1,0 +1,718 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      <script>
+        (function () {
+          var root = "/cuPQC/".replace(/\/+$/, "");
+          if (root && location.pathname === root) {
+            location.replace(root + "/" + location.search + location.hash);
+          }
+        })();
+      </script>
+      
+      
+        <meta name="description" content="Developer resources for NVIDIA cuPQC SDK">
+      
+      
+      
+        <link rel="canonical" href="https://nvidia.github.io/cuPQC/applications/bigint-modular-multiplication/">
+      
+      
+        <link rel="prev" href="../bigint-vector-addition/">
+      
+      
+        <link rel="next" href="../bigint-pi-hex-digits/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/nvidia-logo.svg">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+  
+    
+      
+        <title>BigInt Modular Multiplication - cuPQC SDK Developer Hub</title>
+      
+    
+  
+
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;600&display=swap">
+      
+    
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  
+  <script>
+    window.__CUPQC_SDK_VERSION__ = "v0.6.0";
+    window.__CUPQC_GITHUB_REPO__ = "NVIDIA/cuPQC";
+  </script>
+
+  </head>
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" class="cupqc-section-apps" data-md-color-scheme="default" data-md-color-primary="white" data-md-color-accent="lime">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#tutorial-bigint-modular-multiplication" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header cupqc-header" data-md-component="header">
+  <nav class="cupqc-topbar" aria-label="Header">
+    <div class="cupqc-topbar__inner">
+      <div class="cupqc-topbar__brand">
+        
+  <img class="cupqc-logo cupqc-logo--dark" src="../../assets/nvidia-logo-white.png" alt="NVIDIA">
+  <img class="cupqc-logo cupqc-logo--light" src="../../assets/nvidia-logo.svg" alt="NVIDIA">
+
+        <span class="cupqc-topbar__divider" aria-hidden="true"></span>
+        <span class="cupqc-topbar__titles">
+          <span class="cupqc-topbar__product">cuPQC SDK</span>
+          <span class="cupqc-topbar__hub">Developer Hub</span>
+        </span>
+      </div>
+
+      <div class="cupqc-topnav">
+        <a href="../.." class="cupqc-topnav__link">Home</a>
+        <a href="../../get-started/" class="cupqc-topnav__link">Get Started</a>
+        <a href="../" class="cupqc-topnav__link is-active">Applications</a>
+        <a href="../../blogs/" class="cupqc-topnav__link">Blog</a>
+        <a href="../../docs-hub/" class="cupqc-topnav__link">Docs</a>
+      </div>
+
+      <div class="cupqc-topbar__meta">
+        
+          
+          <div class="cupqc-theme-switch">
+            <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="white" data-md-color-accent="lime"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="lime"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+          </div>
+          
+        
+        
+        
+        <a href="https://developer.nvidia.com/cupqc-download" class="cupqc-version-chip" target="_blank" rel="noopener" title="Download cuPQC SDK v0.6.0" aria-label="Download cuPQC SDK v0.6.0">SDK v0.6.0</a>
+        
+        
+        
+        <a href="https://github.com/NVIDIA/cuPQC" class="cupqc-github-link" target="_blank" rel="noopener" aria-label="Sample Applications on GitHub" title="Sample Applications on GitHub — example code, not the SDK download">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+          <span class="cupqc-github-link__title">Sample Applications</span>
+        </a>
+        
+      </div>
+
+      <button type="button" class="cupqc-topbar__menu md-icon" aria-label="Menu" aria-expanded="false" aria-controls="cupqc-mobile-nav-panel">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+      </button>
+    </div>
+  </nav>
+  
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+  
+  <script>
+    (function () {
+      var p = location.pathname;
+      var b = document.body;
+      if (p === "/" || /\/(cuPQC\/)?(index\.html?)?$/.test(p) || p.endsWith("/cuPQC")) {
+        b.classList.add("cupqc-page-home");
+      } else if (p.includes("get-started")) {
+        b.classList.add("cupqc-page-getstarted");
+      } else if (p.includes("applications")) {
+        b.classList.add("cupqc-section-apps");
+      } else if (p.includes("blogs") || p.includes("releases")) {
+        b.classList.add("cupqc-section-blog");
+      } else if (p.includes("docs-hub")) {
+        b.classList.add("cupqc-page-docs");
+      }
+    })();
+  </script>
+</header>
+<input type="checkbox" id="cupqc-mobile-nav" class="cupqc-mobile-nav__toggle" aria-hidden="true" tabindex="-1">
+<nav class="cupqc-mobile-nav" id="cupqc-mobile-nav-panel" aria-label="Site navigation">
+  <a href="../.." class="cupqc-mobile-nav__link">Home</a>
+  <a href="../../get-started/" class="cupqc-mobile-nav__link">Get Started</a>
+  <a href="../" class="cupqc-mobile-nav__link is-active">Applications</a>
+  <a href="../../blogs/" class="cupqc-mobile-nav__link">Blog</a>
+  <a href="../../docs-hub/" class="cupqc-mobile-nav__link">Docs</a>
+  
+  <div class="cupqc-mobile-nav__meta">
+    
+    
+    <a href="https://developer.nvidia.com/cupqc-download" class="cupqc-version-chip" target="_blank" rel="noopener">SDK v0.6.0</a>
+    
+    
+    <a href="https://github.com/NVIDIA/cuPQC" class="cupqc-github-link" target="_blank" rel="noopener">Sample Applications</a>
+    
+  </div>
+  
+</nav>
+<label class="cupqc-mobile-nav__overlay" for="cupqc-mobile-nav" aria-hidden="true"></label>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+  
+
+          
+  
+    <div class="md-content" data-md-component="content">
+      <article class="md-content__inner">
+        <div class="cupqc-page-shell cupqc-page-shell--apps">
+          <div class="cupqc-apps-layout">
+            <aside class="cupqc-apps-sidebar" aria-label="Applications navigation">
+              
+                
+
+
+
+
+  
+  
+  
+<nav class="cupqc-facets" aria-label="Filter applications">
+  
+  <div class="cupqc-facet-group">
+    <div class="cupqc-facet-group__label" id="cupqc-facet-label-type">Type</div>
+    <div role="group" aria-labelledby="cupqc-facet-label-type">
+      
+      <a href="../" class="cupqc-facet-btn">
+        <span class="cupqc-facet-btn__text">All</span><span class="cupqc-facet-btn__count">9</span>
+      </a>
+      
+      
+      <a href="../?type=Tutorials" class="cupqc-facet-btn is-active" aria-current="true">
+        <span class="cupqc-facet-btn__text">Tutorials</span><span class="cupqc-facet-btn__count">8</span>
+      </a>
+      
+      
+      <a href="../?type=Code%20Samples" class="cupqc-facet-btn">
+        <span class="cupqc-facet-btn__text">Code Samples</span><span class="cupqc-facet-btn__count">1</span>
+      </a>
+      
+      
+    </div>
+  </div>
+  
+  <div class="cupqc-facet-group">
+    <div class="cupqc-facet-group__label" id="cupqc-facet-label-primitive">Primitive</div>
+    <div role="group" aria-labelledby="cupqc-facet-label-primitive">
+      
+      <a href="../" class="cupqc-facet-btn">
+        <span class="cupqc-facet-btn__text">All</span><span class="cupqc-facet-btn__count">9</span>
+      </a>
+      
+      
+      <a href="../?primitive=Big%20Integer" class="cupqc-facet-btn is-active" aria-current="true">
+        <span class="cupqc-facet-btn__text">Big Integer</span><span class="cupqc-facet-btn__count">3</span>
+      </a>
+      
+      
+      <a href="../?primitive=NTT" class="cupqc-facet-btn">
+        <span class="cupqc-facet-btn__text">NTT</span><span class="cupqc-facet-btn__count">2</span>
+      </a>
+      
+      
+      <a href="../?primitive=Hash%20Function" class="cupqc-facet-btn">
+        <span class="cupqc-facet-btn__text">Hash Function</span><span class="cupqc-facet-btn__count">2</span>
+      </a>
+      
+      
+      <a href="../?primitive=Merkle%20Tree" class="cupqc-facet-btn">
+        <span class="cupqc-facet-btn__text">Merkle Tree</span><span class="cupqc-facet-btn__count">1</span>
+      </a>
+      
+      
+      <a href="../?primitive=PQC%20%28KEM%20/%20DSA%29" class="cupqc-facet-btn">
+        <span class="cupqc-facet-btn__text">PQC (KEM / DSA)</span><span class="cupqc-facet-btn__count">1</span>
+      </a>
+      
+      
+    </div>
+  </div>
+  
+</nav>
+
+              
+            </aside>
+            <div class="cupqc-apps-main md-typeset">
+              
+
+
+  
+  
+
+
+<h1 id="tutorial-bigint-modular-multiplication">Tutorial: BigInt Modular Multiplication</h1>
+<p>This tutorial walks you through building a 256-bit big-integer application using cuPQC-BigInt. You'll learn how to add two 256-bit values and compute <code>(a * b) mod m</code> inside your own CUDA kernel, with one value per thread.</p>
+<p>cuPQC-BigInt requires <strong>cuPQC SDK 0.6.0 or newer</strong>, the release that introduced the library. cuPQC 0.6 targets compute capabilities 8.0, 8.6, 8.7, 8.9, and 9.0. Unlike the other cuPQC libraries, cuPQC-BigInt is exposed entirely as <code>__device__</code> functions, so every operation is called from inside your own kernel rather than launched from the host.</p>
+<h2 id="step-1-project-setup">Step 1: Project Setup</h2>
+<p>Clone the cuPQC repository:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/NVIDIA/cuPQC.git
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="nb">cd</span><span class="w"> </span>cuPQC/examples/bigint
+</span></code></pre></div>
+<p>This will download all examples including the addition and modular multiplication example. The Makefile in this directory will compile all examples, including <code>example_bigint_addmulmod</code>.</p>
+<h2 id="step-2-include-required-headers">Step 2: Include Required Headers</h2>
+<p>Start by including the necessary cuPQC SDK headers:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;array&gt;</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;cstdint&gt;</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;cstdio&gt;</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;cstdlib&gt;</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;vector&gt;</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;bigint.hpp&gt;</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;cucheck.hpp&gt;</span>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">cupqc</span><span class="p">;</span>
+</span></code></pre></div>
+<p>The <code>bigint.hpp</code> header provides the fixed-width, unsigned multi-precision integer types and their device-side operations. The <code>cucheck.hpp</code> header provides the <code>CUDA_CHECK</code> macro used to wrap CUDA API calls on the host.</p>
+<h2 id="step-3-select-the-target-architecture">Step 3: Select the Target Architecture</h2>
+<p><code>SM&lt;&gt;()</code> selects the architecture the descriptor generates code for. It is optional in a bigint descriptor and defaults to <code>SM&lt;800&gt;</code>, which is what the host compilation pass and any unlisted architecture use. Because the Makefile compiles with <code>-arch=native</code>, the example derives the operator from <code>__CUDA_ARCH__</code> so the descriptor stays in step with whatever architecture is actually being compiled:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="cp">#if defined(__CUDA_ARCH__) &amp;&amp; (__CUDA_ARCH__ == 900)</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="cp">#define BIGINT_EXAMPLE_SM() + SM&lt;900&gt;()</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="cp">#elif defined(__CUDA_ARCH__) &amp;&amp; (__CUDA_ARCH__ == 890)</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="cp">#define BIGINT_EXAMPLE_SM() + SM&lt;890&gt;()</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="cp">#elif defined(__CUDA_ARCH__) &amp;&amp; (__CUDA_ARCH__ == 870)</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="cp">#define BIGINT_EXAMPLE_SM() + SM&lt;870&gt;()</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="cp">#elif defined(__CUDA_ARCH__) &amp;&amp; (__CUDA_ARCH__ == 860)</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="cp">#define BIGINT_EXAMPLE_SM() + SM&lt;860&gt;()</span>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="cp">#elif defined(__CUDA_ARCH__) &amp;&amp; (__CUDA_ARCH__ == 800)</span>
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="cp">#define BIGINT_EXAMPLE_SM() + SM&lt;800&gt;()</span>
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="cp">#else</span>
+</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="cp">#define BIGINT_EXAMPLE_SM()</span>
+</span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="cp">#endif</span>
+</span></code></pre></div>
+<p>The macro stops at 9.0 because that is the highest <code>SM&lt;&gt;</code> specialization the SDK provides, so a newer architecture falls through to the default rather than naming an <code>SM&lt;&gt;</code> that does not exist.</p>
+<h2 id="step-4-define-the-big-integer-type">Step 4: Define the Big-Integer Type</h2>
+<p>Compose the big-integer type from operators, in the same style as the other cuPQC libraries:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1">// 256-bit integers, one thread per value.</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="k">using</span><span class="w"> </span><span class="nc">BI256</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">decltype</span><span class="p">(</span><span class="nc">BitWidth</span><span class="o">&lt;</span><span class="mi">256</span><span class="o">&gt;</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nc">Thread</span><span class="p">()</span><span class="w"> </span><span class="nc">BIGINT_EXAMPLE_SM</span><span class="p">());</span>
+</span></code></pre></div>
+<p><code>BitWidth&lt;256&gt;()</code> sets the width to 256 bits. <code>BW</code> must be a multiple of 32, and the limb count is <code>BW / 32</code>, so <code>BI256::num_limbs</code> is 8.<br>
+<code>Thread()</code> gives a single thread ownership of the whole value. Exactly one of <code>Thread()</code> or <code>Warp()</code> is required; <code>Warp()</code> instead spreads one value across <code>TPI&lt;T&gt;</code> consecutive warp lanes, which keeps register pressure and carry-propagation cost down for very wide integers.<br>
+<code>SM&lt;...&gt;()</code> selects the target architecture, supplied here by <code>BIGINT_EXAMPLE_SM()</code>.<br></p>
+<p>Only <code>BitWidth</code> is required to form a complete descriptor.</p>
+<p>The descriptor exposes two value types:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="k">using</span><span class="w"> </span><span class="n">bigint</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="k">typename</span><span class="w"> </span><span class="nc">BI256</span><span class="o">::</span><span class="n">bigint</span><span class="p">;</span><span class="w">       </span><span class="c1">// 256-bit value</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="k">using</span><span class="w"> </span><span class="n">bigint_wide</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">typename</span><span class="w"> </span><span class="nc">BI256</span><span class="o">::</span><span class="n">bigint_wide</span><span class="p">;</span><span class="w">  </span><span class="c1">// 512-bit double-width value</span>
+</span></code></pre></div>
+<p>Multiplication and squaring produce a double-width result, which is why <code>bigint_wide</code> exists: for a 256-bit type it carries 512 bits. Both operands of a binary operation must be the same type. Nothing is implicitly promoted or truncated, so mixing widths is a compile error rather than a silent conversion.</p>
+<h2 id="step-5-create-the-kernel">Step 5: Create the Kernel</h2>
+<p>Create a CUDA kernel that processes one value per thread:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="k">__global__</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">add_mulmod_kernel</span><span class="p">(</span><span class="kt">uint32_t</span><span class="o">*</span><span class="w"> </span><span class="n">sums</span><span class="p">,</span><span class="w"> </span><span class="kt">uint32_t</span><span class="o">*</span><span class="w"> </span><span class="n">products</span><span class="p">,</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="w">                                  </span><span class="k">const</span><span class="w"> </span><span class="kt">uint32_t</span><span class="o">*</span><span class="w"> </span><span class="n">global_buf_a</span><span class="p">,</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="w">                                  </span><span class="k">const</span><span class="w"> </span><span class="kt">uint32_t</span><span class="o">*</span><span class="w"> </span><span class="n">global_buf_b</span><span class="p">,</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="w">                                  </span><span class="k">const</span><span class="w"> </span><span class="kt">uint32_t</span><span class="o">*</span><span class="w"> </span><span class="n">global_buf_m</span><span class="p">,</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="w">                                  </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">count</span><span class="p">)</span>
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="p">{</span>
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">index</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">blockIdx</span><span class="p">.</span><span class="n">x</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">blockDim</span><span class="p">.</span><span class="n">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">threadIdx</span><span class="p">.</span><span class="n">x</span><span class="p">;</span>
+</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">index</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">count</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="w">        </span><span class="k">return</span><span class="p">;</span>
+</span><span id="__span-5-10"><a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-5-11"><a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a>
+</span><span id="__span-5-12"><a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a><span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="nc">BI256</span><span class="o">::</span><span class="n">bigint</span><span class="w"> </span><span class="nf">a</span><span class="p">(</span><span class="n">global_buf_a</span><span class="p">,</span><span class="w"> </span><span class="n">index</span><span class="p">);</span>
+</span><span id="__span-5-13"><a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a><span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="nc">BI256</span><span class="o">::</span><span class="n">bigint</span><span class="w"> </span><span class="nf">b</span><span class="p">(</span><span class="n">global_buf_b</span><span class="p">,</span><span class="w"> </span><span class="n">index</span><span class="p">);</span>
+</span><span id="__span-5-14"><a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a><span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="nc">BI256</span><span class="o">::</span><span class="n">bigint</span><span class="w"> </span><span class="nf">m</span><span class="p">(</span><span class="n">global_buf_m</span><span class="p">,</span><span class="w"> </span><span class="n">index</span><span class="p">);</span>
+</span><span id="__span-5-15"><a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a>
+</span><span id="__span-5-16"><a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a><span class="w">    </span><span class="c1">// 256-bit integer addition (wraps on overflow).</span>
+</span><span id="__span-5-17"><a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a><span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">sum</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">b</span><span class="p">;</span>
+</span><span id="__span-5-18"><a id="__codelineno-5-18" name="__codelineno-5-18" href="#__codelineno-5-18"></a><span class="w">    </span><span class="c1">// (a * b) mod m.</span>
+</span><span id="__span-5-19"><a id="__codelineno-5-19" name="__codelineno-5-19" href="#__codelineno-5-19"></a><span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">product</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">a</span><span class="p">.</span><span class="nf">mul_mod</span><span class="p">(</span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">m</span><span class="p">);</span>
+</span><span id="__span-5-20"><a id="__codelineno-5-20" name="__codelineno-5-20" href="#__codelineno-5-20"></a>
+</span><span id="__span-5-21"><a id="__codelineno-5-21" name="__codelineno-5-21" href="#__codelineno-5-21"></a><span class="w">    </span><span class="n">sum</span><span class="p">.</span><span class="nf">store</span><span class="p">(</span><span class="n">sums</span><span class="p">,</span><span class="w"> </span><span class="n">index</span><span class="p">);</span>
+</span><span id="__span-5-22"><a id="__codelineno-5-22" name="__codelineno-5-22" href="#__codelineno-5-22"></a><span class="w">    </span><span class="n">product</span><span class="p">.</span><span class="nf">store</span><span class="p">(</span><span class="n">products</span><span class="p">,</span><span class="w"> </span><span class="n">index</span><span class="p">);</span>
+</span><span id="__span-5-23"><a id="__codelineno-5-23" name="__codelineno-5-23" href="#__codelineno-5-23"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>Values are arrays of little-endian 32-bit limbs, so limb 0 is least significant. Constructors and <code>store</code> optionally take an instance index, which makes a packed array of independent big integers loadable and storable directly by batch index:</p>
+<p><code>BI256::bigint a(global_buf_a, index)</code>: load instance <code>index</code> from a packed limb buffer<br>
+<code>a + b</code>: fixed-width 256-bit addition; the result wraps modulo 2^256<br>
+<code>a.mul_mod(b, m)</code>: forms the full double-width product of <code>a</code> and <code>b</code>, then reduces it modulo <code>m</code><br>
+<code>sum.store(sums, index)</code>: write the value back to instance <code>index</code> of the output buffer<br></p>
+<p>Both results are stored, so the host can verify the sum and the modular product independently.</p>
+<h2 id="step-6-implement-the-host-code">Step 6: Implement the Host Code</h2>
+<p>The host allocates packed limb buffers, copies the inputs to the device, launches the kernel, and copies the results back. Small values keep host-side verification easy; the same layout supports arbitrary 256-bit input values:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="p">{</span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="w">    </span><span class="c1">// ... banner and configuration printouts ...</span>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span>
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="w">    </span><span class="k">using</span><span class="w"> </span><span class="n">host_limb_array</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">array</span><span class="o">&lt;</span><span class="kt">uint32_t</span><span class="p">,</span><span class="w"> </span><span class="nc">BI256</span><span class="o">::</span><span class="n">num_limbs</span><span class="o">&gt;</span><span class="p">;</span>
+</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="w">    </span><span class="k">static_assert</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="n">host_limb_array</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nc">BI256</span><span class="o">::</span><span class="n">num_limbs</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="kt">uint32_t</span><span class="p">));</span>
+</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">host_limb_array</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">a</span><span class="p">(</span><span class="n">count</span><span class="p">,</span><span class="w"> </span><span class="n">host_limb_array</span><span class="p">{});</span>
+</span><span id="__span-6-9"><a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a><span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">host_limb_array</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">b</span><span class="p">(</span><span class="n">count</span><span class="p">,</span><span class="w"> </span><span class="n">host_limb_array</span><span class="p">{});</span>
+</span><span id="__span-6-10"><a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a><span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">host_limb_array</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">m</span><span class="p">(</span><span class="n">count</span><span class="p">,</span><span class="w"> </span><span class="n">host_limb_array</span><span class="p">{});</span>
+</span><span id="__span-6-11"><a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a><span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">host_limb_array</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">sums</span><span class="p">(</span><span class="n">count</span><span class="p">);</span>
+</span><span id="__span-6-12"><a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a><span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">host_limb_array</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">products</span><span class="p">(</span><span class="n">count</span><span class="p">);</span>
+</span><span id="__span-6-13"><a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a>
+</span><span id="__span-6-14"><a id="__codelineno-6-14" name="__codelineno-6-14" href="#__codelineno-6-14"></a><span class="w">    </span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">7u</span><span class="p">;</span>
+</span><span id="__span-6-15"><a id="__codelineno-6-15" name="__codelineno-6-15" href="#__codelineno-6-15"></a><span class="w">    </span><span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5u</span><span class="p">;</span>
+</span><span id="__span-6-16"><a id="__codelineno-6-16" name="__codelineno-6-16" href="#__codelineno-6-16"></a><span class="w">    </span><span class="n">m</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">11u</span><span class="p">;</span><span class="w">   </span><span class="c1">// (7 + 5) = 12, (7 * 5) mod 11 = 2</span>
+</span><span id="__span-6-17"><a id="__codelineno-6-17" name="__codelineno-6-17" href="#__codelineno-6-17"></a><span class="w">    </span><span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">40u</span><span class="p">;</span>
+</span><span id="__span-6-18"><a id="__codelineno-6-18" name="__codelineno-6-18" href="#__codelineno-6-18"></a><span class="w">    </span><span class="n">b</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">9u</span><span class="p">;</span>
+</span><span id="__span-6-19"><a id="__codelineno-6-19" name="__codelineno-6-19" href="#__codelineno-6-19"></a><span class="w">    </span><span class="n">m</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">13u</span><span class="p">;</span><span class="w">   </span><span class="c1">// (40 + 9) = 49, (40 * 9) mod 13 = 3</span>
+</span><span id="__span-6-20"><a id="__codelineno-6-20" name="__codelineno-6-20" href="#__codelineno-6-20"></a>
+</span><span id="__span-6-21"><a id="__codelineno-6-21" name="__codelineno-6-21" href="#__codelineno-6-21"></a><span class="w">    </span><span class="c1">// ... cudaMalloc and cudaMemcpy of d_a, d_b, d_m, d_sums, d_products ...</span>
+</span><span id="__span-6-22"><a id="__codelineno-6-22" name="__codelineno-6-22" href="#__codelineno-6-22"></a>
+</span><span id="__span-6-23"><a id="__codelineno-6-23" name="__codelineno-6-23" href="#__codelineno-6-23"></a><span class="w">    </span><span class="k">constexpr</span><span class="w"> </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">kThreads</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">128</span><span class="p">;</span>
+</span><span id="__span-6-24"><a id="__codelineno-6-24" name="__codelineno-6-24" href="#__codelineno-6-24"></a><span class="w">    </span><span class="n">add_mulmod_kernel</span><span class="o">&lt;&lt;&lt;</span><span class="p">(</span><span class="n">count</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">kThreads</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">kThreads</span><span class="p">,</span><span class="w"> </span><span class="n">kThreads</span><span class="o">&gt;&gt;&gt;</span><span class="p">(</span>
+</span><span id="__span-6-25"><a id="__codelineno-6-25" name="__codelineno-6-25" href="#__codelineno-6-25"></a><span class="w">        </span><span class="n">d_sums</span><span class="p">,</span><span class="w"> </span><span class="n">d_products</span><span class="p">,</span><span class="w"> </span><span class="n">d_a</span><span class="p">,</span><span class="w"> </span><span class="n">d_b</span><span class="p">,</span><span class="w"> </span><span class="n">d_m</span><span class="p">,</span><span class="w"> </span><span class="n">count</span><span class="p">);</span>
+</span><span id="__span-6-26"><a id="__codelineno-6-26" name="__codelineno-6-26" href="#__codelineno-6-26"></a><span class="w">    </span><span class="nc">CUDA_CHECK</span><span class="p">(</span><span class="nf">cudaGetLastError</span><span class="p">());</span>
+</span><span id="__span-6-27"><a id="__codelineno-6-27" name="__codelineno-6-27" href="#__codelineno-6-27"></a><span class="w">    </span><span class="nc">CUDA_CHECK</span><span class="p">(</span><span class="nf">cudaMemcpy</span><span class="p">(</span><span class="n">sums</span><span class="p">.</span><span class="nf">data</span><span class="p">(),</span><span class="w"> </span><span class="n">d_sums</span><span class="p">,</span><span class="w"> </span><span class="n">bytes</span><span class="p">,</span><span class="w"> </span><span class="n">cudaMemcpyDeviceToHost</span><span class="p">));</span>
+</span><span id="__span-6-28"><a id="__codelineno-6-28" name="__codelineno-6-28" href="#__codelineno-6-28"></a><span class="w">    </span><span class="nc">CUDA_CHECK</span><span class="p">(</span><span class="nf">cudaMemcpy</span><span class="p">(</span><span class="n">products</span><span class="p">.</span><span class="nf">data</span><span class="p">(),</span><span class="w"> </span><span class="n">d_products</span><span class="p">,</span><span class="w"> </span><span class="n">bytes</span><span class="p">,</span><span class="w"> </span><span class="n">cudaMemcpyDeviceToHost</span><span class="p">));</span>
+</span><span id="__span-6-29"><a id="__codelineno-6-29" name="__codelineno-6-29" href="#__codelineno-6-29"></a>
+</span><span id="__span-6-30"><a id="__codelineno-6-30" name="__codelineno-6-30" href="#__codelineno-6-30"></a><span class="w">    </span><span class="c1">// ... cudaFree of all device buffers ...</span>
+</span><span id="__span-6-31"><a id="__codelineno-6-31" name="__codelineno-6-31" href="#__codelineno-6-31"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>Because each input value fits in limb 0, verification only has to inspect the least significant limb of each result:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="nf">printf</span><span class="p">(</span><span class="s">"  7 + 5            = %u (expected 12)</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="w"> </span><span class="n">sums</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]);</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="nf">printf</span><span class="p">(</span><span class="s">"  (7 * 5)  mod 11  = %u (expected 2)</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="w"> </span><span class="n">products</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]);</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="nf">printf</span><span class="p">(</span><span class="s">"  40 + 9           = %u (expected 49)</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="w"> </span><span class="n">sums</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]);</span>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="nf">printf</span><span class="p">(</span><span class="s">"  (40 * 9) mod 13  = %u (expected 3)</span><span class="se">\n\n</span><span class="s">"</span><span class="p">,</span><span class="w"> </span><span class="n">products</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]);</span>
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>
+</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">sums</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">12u</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">products</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">2u</span><span class="w"> </span><span class="o">||</span>
+</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="w">        </span><span class="n">sums</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">49u</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">products</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">3u</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-7-8"><a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="nf">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span><span class="w"> </span><span class="s">"FAIL: unexpected sums or products.</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+</span><span id="__span-7-9"><a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nc">EXIT_FAILURE</span><span class="p">;</span>
+</span><span id="__span-7-10"><a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-7-11"><a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a>
+</span><span id="__span-7-12"><a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a><span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="nf">printf</span><span class="p">(</span><span class="s">"Example completed successfully.</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+</span><span id="__span-7-13"><a id="__codelineno-7-13" name="__codelineno-7-13" href="#__codelineno-7-13"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nc">EXIT_SUCCESS</span><span class="p">;</span>
+</span></code></pre></div>
+<h2 id="step-7-build-and-run">Step 7: Build and Run</h2>
+<p>The Makefile will build all examples in the folder. It expects the cuPQC SDK at <code>/usr/local/cupqc-sdk</code> or a user-specified path, which you can set with the <code>CUPQC_SDK_DIR</code> environment variable or by modifying the Makefile. Run the addition and modular multiplication example:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>make
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>./example_bigint_addmulmod
+</span></code></pre></div>
+<p>cuPQC-BigInt is a static library built for a specific set of widths per <code>TPI</code>, and it is linked with LTO (<code>-dlto -lcupqc-bigint</code>). A configuration the type system accepts but the shipped library does not provide — an unsupported width, or a <code>Thread()</code>-only operation used on a warp descriptor — compiles cleanly and then fails to link.</p>
+<h2 id="step-8-understanding-the-output">Step 8: Understanding the Output</h2>
+<p>Expected output:
+<div class="language-text highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>================================================================
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>BigInt Addition and Modular Multiplication Example
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>================================================================
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>
+</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>This example demonstrates two of the most common cuPQC-BigInt
+</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>operations: fixed-width addition, which wraps modulo 2^256, and
+</span><span id="__span-9-7"><a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a>mul_mod, which computes the full double-width product and then
+</span><span id="__span-9-8"><a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a>reduces it modulo m.
+</span><span id="__span-9-9"><a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a>
+</span><span id="__span-9-10"><a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a>Configuration: 256-bit width, thread execution (one value per thread)
+</span><span id="__span-9-11"><a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a>Limb layout:   8 little-endian 32-bit limbs per value
+</span><span id="__span-9-12"><a id="__codelineno-9-12" name="__codelineno-9-12" href="#__codelineno-9-12"></a>
+</span><span id="__span-9-13"><a id="__codelineno-9-13" name="__codelineno-9-13" href="#__codelineno-9-13"></a>========================================
+</span><span id="__span-9-14"><a id="__codelineno-9-14" name="__codelineno-9-14" href="#__codelineno-9-14"></a>Results
+</span><span id="__span-9-15"><a id="__codelineno-9-15" name="__codelineno-9-15" href="#__codelineno-9-15"></a>========================================
+</span><span id="__span-9-16"><a id="__codelineno-9-16" name="__codelineno-9-16" href="#__codelineno-9-16"></a>  7 + 5            = 12 (expected 12)
+</span><span id="__span-9-17"><a id="__codelineno-9-17" name="__codelineno-9-17" href="#__codelineno-9-17"></a>  (7 * 5)  mod 11  = 2 (expected 2)
+</span><span id="__span-9-18"><a id="__codelineno-9-18" name="__codelineno-9-18" href="#__codelineno-9-18"></a>  40 + 9           = 49 (expected 49)
+</span><span id="__span-9-19"><a id="__codelineno-9-19" name="__codelineno-9-19" href="#__codelineno-9-19"></a>  (40 * 9) mod 13  = 3 (expected 3)
+</span><span id="__span-9-20"><a id="__codelineno-9-20" name="__codelineno-9-20" href="#__codelineno-9-20"></a>
+</span><span id="__span-9-21"><a id="__codelineno-9-21" name="__codelineno-9-21" href="#__codelineno-9-21"></a>Example completed successfully.
+</span></code></pre></div></p>
+<h2 id="customization-tips">Customization Tips</h2>
+<h3 id="choose-the-right-modular-reduction-path">Choose the Right Modular Reduction Path</h3>
+<p><code>mul_mod</code> performs a full wide multiply followed by a division-based remainder and requires no precomputation, which makes it the right choice for a one-off operation like the one in this example. When you reuse a single modulus across a loop, a precomputed path amortizes its setup cost instead. Barrett precomputes a reciprocal with <code>setup_barrett</code>, then <code>reduce_barrett</code> reduces a double-width value; setup runs once per modulus, and <code>approx</code> and <code>den_clz</code> are opaque state you pass through unchanged:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="nc">BI256</span><span class="o">::</span><span class="n">bigint</span><span class="w"> </span><span class="n">approx</span><span class="p">;</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="kt">int</span><span class="w"> </span><span class="n">den_clz</span><span class="p">;</span>
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="nc">BI256</span><span class="o">::</span><span class="n">bigint</span><span class="o">::</span><span class="nf">setup_barrett</span><span class="p">(</span><span class="n">m</span><span class="p">,</span><span class="w"> </span><span class="n">approx</span><span class="p">,</span><span class="w"> </span><span class="n">den_clz</span><span class="p">);</span><span class="w">   </span><span class="c1">// once per modulus</span>
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>
+</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="nc">BI256</span><span class="o">::</span><span class="n">bigint_wide</span><span class="w"> </span><span class="n">num</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">a</span><span class="p">.</span><span class="nf">mul_wide</span><span class="p">(</span><span class="n">b</span><span class="p">);</span>
+</span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="nc">BI256</span><span class="o">::</span><span class="n">bigint</span><span class="w"> </span><span class="n">rem</span><span class="p">;</span>
+</span><span id="__span-10-7"><a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a><span class="nc">BI256</span><span class="o">::</span><span class="n">bigint</span><span class="o">::</span><span class="nf">reduce_barrett</span><span class="p">(</span><span class="n">rem</span><span class="p">,</span><span class="w"> </span><span class="n">num</span><span class="p">,</span><span class="w"> </span><span class="n">m</span><span class="p">,</span><span class="w"> </span><span class="n">approx</span><span class="p">,</span><span class="w"> </span><span class="n">den_clz</span><span class="p">);</span>
+</span></code></pre></div>
+<p>The wide numerator must satisfy <code>num.hi &lt; den</code>, which holds for a product when both factors are already reduced.</p>
+<h3 id="stay-in-the-montgomery-domain">Stay in the Montgomery Domain</h3>
+<p>For a chain of repeated multiplications against a fixed modulus, convert once with <code>to_montgomery</code>, multiply with <code>mul_montgomery</code>, and convert back at the end with <code>from_montgomery</code>. Remaining in Montgomery form across the operation chain avoids paying a general reduction on every step.</p>
+<h3 id="make-error-handling-strict-during-development">Make Error Handling Strict During Development</h3>
+<p>Kernels cannot throw exceptions, and only <code>div_rem</code> and <code>inv_mod</code> return a <code>bigint_error</code> enumerator. Operators and functions like <code>/</code>, <code>%</code>, <code>mod</code>, <code>add_mod</code>, <code>mul_mod</code>, and <code>pow_mod</code> have no return channel for error codes, so cuPQC-BigInt embeds the error-handling policy in the compile-time type descriptor. Because the policy is a template parameter, you can debug aggressively during development and then ship with zero runtime cost:</p>
+<ul>
+<li><code>OnErrorNone</code> (default): takes no action; the result is unspecified and the kernel continues.</li>
+<li><code>OnErrorTrap</code>: calls <code>__trap()</code> on the offending thread, halting the kernel without printing a message.</li>
+<li><code>OnErrorPrintTrap</code>: prints the failing block and thread indices along with the error, then traps. Best kept to debugging, since <code>printf</code> from a kernel is expensive.</li>
+</ul>
+<p>Both trapping policies require thread execution (<code>Thread()</code>); warp instances use <code>OnErrorNone</code> only. The <a href="../bigint-vector-addition/">BigInt vector addition tutorial</a> covers the remaining execution-mode and bit-width rules, including which operations are thread-only and how to widen a value.</p>
+<h2 id="learn-more">Learn More</h2>
+<ul>
+<li><a href="https://github.com/NVIDIA/cuPQC/blob/main/examples/bigint/example_bigint_addmulmod.cu">Example Source Code</a> - Complete addition and modular multiplication example</li>
+<li><a href="https://docs.nvidia.com/cuda/cupqc/libraries/cupqc_bigint/cupqc_bigint_usage.html">cuPQC-BigInt User Guide</a> - Usage guide with examples</li>
+<li><a href="https://docs.nvidia.com/cuda/cupqc/libraries/cupqc_bigint/cupqc_bigint_api.html">cuPQC-BigInt API Reference</a> - Complete API documentation</li>
+<li><a href="https://docs.nvidia.com/cuda/cupqc/libraries/cupqc_bigint/cupqc_bigint_feature.html">cuPQC-BigInt Features</a> - Supported widths, operations, and reduction paths</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+              
+            </div>
+          </div>
+          
+          <aside class="cupqc-page-toc" aria-label="Table of contents">
+            
+
+
+
+
+  
+
+
+<nav class="cupqc-page-toc__nav md-nav md-nav--secondary" aria-label="Table of contents">
+  <div class="cupqc-page-toc__heading">Table of contents</div>
+  <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+    
+      <li class="md-nav__item">
+  <a href="#step-1-project-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 1: Project Setup
+      
+    </span>
+  </a>
+</li>
+    
+      <li class="md-nav__item">
+  <a href="#step-2-include-required-headers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 2: Include Required Headers
+      
+    </span>
+  </a>
+</li>
+    
+      <li class="md-nav__item">
+  <a href="#step-3-select-the-target-architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 3: Select the Target Architecture
+      
+    </span>
+  </a>
+</li>
+    
+      <li class="md-nav__item">
+  <a href="#step-4-define-the-big-integer-type" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 4: Define the Big-Integer Type
+      
+    </span>
+  </a>
+</li>
+    
+      <li class="md-nav__item">
+  <a href="#step-5-create-the-kernel" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 5: Create the Kernel
+      
+    </span>
+  </a>
+</li>
+    
+      <li class="md-nav__item">
+  <a href="#step-6-implement-the-host-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 6: Implement the Host Code
+      
+    </span>
+  </a>
+</li>
+    
+      <li class="md-nav__item">
+  <a href="#step-7-build-and-run" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 7: Build and Run
+      
+    </span>
+  </a>
+</li>
+    
+      <li class="md-nav__item">
+  <a href="#step-8-understanding-the-output" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 8: Understanding the Output
+      
+    </span>
+  </a>
+</li>
+    
+      <li class="md-nav__item">
+  <a href="#customization-tips" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Customization Tips
+      
+    </span>
+  </a>
+</li>
+    
+      <li class="md-nav__item">
+  <a href="#learn-more" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Learn More
+      
+    </span>
+  </a>
+</li>
+    
+  </ul>
+</nav>
+
+          </aside>
+          
+        </div>
+      </article>
+    </div>
+  
+
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer cupqc-footer">
+  <div class="cupqc-footer__grid">
+    <div class="cupqc-footer__brand">
+      
+      <img src="../../assets/nvidia-logo-white.png" alt="NVIDIA" class="cupqc-footer__logo cupqc-logo cupqc-logo--dark">
+      <img src="../../assets/nvidia-logo.svg" alt="NVIDIA" class="cupqc-footer__logo cupqc-logo cupqc-logo--light">
+      
+      <div class="cupqc-footer__name">cuPQC SDK Developer Hub</div>
+      <p>GPU-accelerated cryptographic math primitives on the NVIDIA CUDA platform.</p>
+    </div>
+    <div class="cupqc-footer__col">
+      <div class="cupqc-footer__label">Product</div>
+      <a href="https://developer.nvidia.com/cupqc" target="_blank" rel="noopener">Product Page</a>
+      <a href="https://developer.nvidia.com/cupqc-download/" target="_blank" rel="noopener">Download SDK</a>
+      <a href="https://docs.nvidia.com/cuda/cupqc/index.html" target="_blank" rel="noopener">Documentation</a>
+    </div>
+    <div class="cupqc-footer__col">
+      <div class="cupqc-footer__label">Developers</div>
+      <a href="https://github.com/NVIDIA/cuPQC" target="_blank" rel="noopener">Sample Applications</a>
+      <a href="https://forums.developer.nvidia.com/c/cuda/cupqc/703" target="_blank" rel="noopener">Developer Forums</a>
+      <a href="https://docs.nvidia.com/cuda/cupqc/introduction/getting_started.html" target="_blank" rel="noopener">Getting Started</a>
+    </div>
+    <div class="cupqc-footer__col">
+      <div class="cupqc-footer__label">Resources</div>
+      <a href="../../blogs/">Blog &amp; Benchmarks</a>
+      <a href="../">Applications</a>
+      <a href="https://docs.nvidia.com/cuda/cupqc/index.html#highlights" target="_blank" rel="noopener">SDK Features</a>
+    </div>
+  </div>
+  <div class="cupqc-footer__legal">
+    <p>© Copyright 2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved.</p>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["content.code.copy", "navigation.indexes", "navigation.tracking", "search.highlight", "search.share", "search.suggest"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../javascripts/extra.js"></script>
+      
+    
+  </body>
+</html>

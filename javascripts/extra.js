@@ -77,4 +77,100 @@ document.addEventListener("DOMContentLoaded", function () {
       chart.classList.add("is-animated");
     });
   }
+
+  initFacetFilters();
 });
+
+/*
+  Sidebar facet filters on the Applications and Blog overview pages. The filter
+  buttons and their counts are rendered by overrides/partials/facet-nav.html
+  from data computed in hooks/facets.py; this only wires up the filtering.
+
+  Markup contract:
+    panel  <nav data-facets>
+    group  <div data-facet-group="year">
+    option <button data-facet-value="2026">
+    item   <a data-facet-item data-facet-year="2026" ...>
+    section  optional wrapper hidden when it holds no visible items
+    empty    optional message shown when nothing matches
+*/
+function initFacetFilters() {
+  function toArray(list) {
+    return Array.prototype.slice.call(list);
+  }
+
+  var panel = document.querySelector("[data-facets]");
+  var items = toArray(document.querySelectorAll("[data-facet-item]"));
+  if (!panel || !items.length) return;
+
+  var groups = toArray(panel.querySelectorAll("[data-facet-group]"));
+  var sections = toArray(document.querySelectorAll("[data-facet-section]"));
+  var empty = document.querySelector("[data-facet-empty]");
+  var ALL = "__all__";
+  var selection = {};
+
+  function keyOf(group) {
+    return group.getAttribute("data-facet-group");
+  }
+
+  function optionsOf(group) {
+    return toArray(group.querySelectorAll("[data-facet-value]"));
+  }
+
+  function valueOf(item, key) {
+    return item.getAttribute("data-facet-" + key) || "";
+  }
+
+  function matches(item) {
+    return groups.every(function (group) {
+      var key = keyOf(group);
+      return selection[key] === ALL || selection[key] === valueOf(item, key);
+    });
+  }
+
+  /* Detail pages link back here as ?type=Tutorials, so the overview opens
+     with that filter already applied. */
+  function requested(group) {
+    var found = new RegExp("[?&]" + keyOf(group) + "=([^&]*)").exec(location.search);
+    if (!found) return ALL;
+    var value = decodeURIComponent(found[1].replace(/\+/g, " "));
+    var known = optionsOf(group).some(function (option) {
+      return option.getAttribute("data-facet-value") === value;
+    });
+    return known ? value : ALL;
+  }
+
+  function apply() {
+    var shown = 0;
+    items.forEach(function (item) {
+      var visible = matches(item);
+      item.hidden = !visible;
+      if (visible) shown++;
+    });
+    sections.forEach(function (section) {
+      section.hidden = !section.querySelector("[data-facet-item]:not([hidden])");
+    });
+    if (empty) empty.hidden = shown > 0;
+    groups.forEach(function (group) {
+      var selected = selection[keyOf(group)];
+      optionsOf(group).forEach(function (option) {
+        var isActive = option.getAttribute("data-facet-value") === selected;
+        option.classList.toggle("is-active", isActive);
+        option.setAttribute("aria-pressed", isActive ? "true" : "false");
+      });
+    });
+  }
+
+  groups.forEach(function (group) {
+    var key = keyOf(group);
+    selection[key] = requested(group);
+    optionsOf(group).forEach(function (option) {
+      option.addEventListener("click", function () {
+        selection[key] = option.getAttribute("data-facet-value");
+        apply();
+      });
+    });
+  });
+
+  apply();
+}

@@ -1,0 +1,868 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      <script>
+        (function () {
+          var root = "/cuPQC/".replace(/\/+$/, "");
+          if (root && location.pathname === root) {
+            location.replace(root + "/" + location.search + location.hash);
+          }
+        })();
+      </script>
+      
+      
+        <meta name="description" content="Developer resources for NVIDIA cuPQC SDK">
+      
+      
+      
+        <link rel="canonical" href="https://nvidia.github.io/cuPQC/applications/bigint-pi-hex-digits/">
+      
+      
+        <link rel="prev" href="../bigint-modular-multiplication/">
+      
+      
+        <link rel="next" href="../ntt-forward-inverse-transform/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/nvidia-logo.svg">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+  
+    
+      
+        <title>BigInt Hex Digits of Pi - cuPQC SDK Developer Hub</title>
+      
+    
+  
+
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;600&display=swap">
+      
+    
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  
+  <script>
+    window.__CUPQC_SDK_VERSION__ = "v0.6.0";
+    window.__CUPQC_GITHUB_REPO__ = "NVIDIA/cuPQC";
+  </script>
+
+  </head>
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" class="cupqc-section-apps" data-md-color-scheme="default" data-md-color-primary="white" data-md-color-accent="lime">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#tutorial-bigint-hex-digits-of-pi" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header cupqc-header" data-md-component="header">
+  <nav class="cupqc-topbar" aria-label="Header">
+    <div class="cupqc-topbar__inner">
+      <div class="cupqc-topbar__brand">
+        
+  <img class="cupqc-logo cupqc-logo--dark" src="../../assets/nvidia-logo-white.png" alt="NVIDIA">
+  <img class="cupqc-logo cupqc-logo--light" src="../../assets/nvidia-logo.svg" alt="NVIDIA">
+
+        <span class="cupqc-topbar__divider" aria-hidden="true"></span>
+        <span class="cupqc-topbar__titles">
+          <span class="cupqc-topbar__product">cuPQC SDK</span>
+          <span class="cupqc-topbar__hub">Developer Hub</span>
+        </span>
+      </div>
+
+      <div class="cupqc-topnav">
+        <a href="../.." class="cupqc-topnav__link">Home</a>
+        <a href="../../get-started/" class="cupqc-topnav__link">Get Started</a>
+        <a href="../" class="cupqc-topnav__link is-active">Applications</a>
+        <a href="../../blogs/" class="cupqc-topnav__link">Blog</a>
+        <a href="../../docs-hub/" class="cupqc-topnav__link">Docs</a>
+      </div>
+
+      <div class="cupqc-topbar__meta">
+        
+          
+          <div class="cupqc-theme-switch">
+            <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="white" data-md-color-accent="lime"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="lime"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+          </div>
+          
+        
+        
+        
+        <a href="https://developer.nvidia.com/cupqc-download" class="cupqc-version-chip" target="_blank" rel="noopener" title="Download cuPQC SDK v0.6.0" aria-label="Download cuPQC SDK v0.6.0">SDK v0.6.0</a>
+        
+        
+        
+        <a href="https://github.com/NVIDIA/cuPQC" class="cupqc-github-link" target="_blank" rel="noopener" aria-label="Sample Applications on GitHub" title="Sample Applications on GitHub — example code, not the SDK download">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+          <span class="cupqc-github-link__title">Sample Applications</span>
+        </a>
+        
+      </div>
+
+      <button type="button" class="cupqc-topbar__menu md-icon" aria-label="Menu" aria-expanded="false" aria-controls="cupqc-mobile-nav-panel">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+      </button>
+    </div>
+  </nav>
+  
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+  
+  <script>
+    (function () {
+      var p = location.pathname;
+      var b = document.body;
+      if (p === "/" || /\/(cuPQC\/)?(index\.html?)?$/.test(p) || p.endsWith("/cuPQC")) {
+        b.classList.add("cupqc-page-home");
+      } else if (p.includes("get-started")) {
+        b.classList.add("cupqc-page-getstarted");
+      } else if (p.includes("applications")) {
+        b.classList.add("cupqc-section-apps");
+      } else if (p.includes("blogs") || p.includes("releases")) {
+        b.classList.add("cupqc-section-blog");
+      } else if (p.includes("docs-hub")) {
+        b.classList.add("cupqc-page-docs");
+      }
+    })();
+  </script>
+</header>
+<input type="checkbox" id="cupqc-mobile-nav" class="cupqc-mobile-nav__toggle" aria-hidden="true" tabindex="-1">
+<nav class="cupqc-mobile-nav" id="cupqc-mobile-nav-panel" aria-label="Site navigation">
+  <a href="../.." class="cupqc-mobile-nav__link">Home</a>
+  <a href="../../get-started/" class="cupqc-mobile-nav__link">Get Started</a>
+  <a href="../" class="cupqc-mobile-nav__link is-active">Applications</a>
+  <a href="../../blogs/" class="cupqc-mobile-nav__link">Blog</a>
+  <a href="../../docs-hub/" class="cupqc-mobile-nav__link">Docs</a>
+  
+  <div class="cupqc-mobile-nav__meta">
+    
+    
+    <a href="https://developer.nvidia.com/cupqc-download" class="cupqc-version-chip" target="_blank" rel="noopener">SDK v0.6.0</a>
+    
+    
+    <a href="https://github.com/NVIDIA/cuPQC" class="cupqc-github-link" target="_blank" rel="noopener">Sample Applications</a>
+    
+  </div>
+  
+</nav>
+<label class="cupqc-mobile-nav__overlay" for="cupqc-mobile-nav" aria-hidden="true"></label>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+  
+
+          
+  
+    <div class="md-content" data-md-component="content">
+      <article class="md-content__inner">
+        <div class="cupqc-page-shell cupqc-page-shell--apps">
+          <div class="cupqc-apps-layout">
+            <aside class="cupqc-apps-sidebar" aria-label="Applications navigation">
+              
+                
+
+
+
+
+  
+  
+  
+<nav class="cupqc-facets" aria-label="Filter applications">
+  
+  <div class="cupqc-facet-group">
+    <div class="cupqc-facet-group__label" id="cupqc-facet-label-type">Type</div>
+    <div role="group" aria-labelledby="cupqc-facet-label-type">
+      
+      <a href="../" class="cupqc-facet-btn">
+        <span class="cupqc-facet-btn__text">All</span><span class="cupqc-facet-btn__count">9</span>
+      </a>
+      
+      
+      <a href="../?type=Tutorials" class="cupqc-facet-btn is-active" aria-current="true">
+        <span class="cupqc-facet-btn__text">Tutorials</span><span class="cupqc-facet-btn__count">8</span>
+      </a>
+      
+      
+      <a href="../?type=Code%20Samples" class="cupqc-facet-btn">
+        <span class="cupqc-facet-btn__text">Code Samples</span><span class="cupqc-facet-btn__count">1</span>
+      </a>
+      
+      
+    </div>
+  </div>
+  
+  <div class="cupqc-facet-group">
+    <div class="cupqc-facet-group__label" id="cupqc-facet-label-primitive">Primitive</div>
+    <div role="group" aria-labelledby="cupqc-facet-label-primitive">
+      
+      <a href="../" class="cupqc-facet-btn">
+        <span class="cupqc-facet-btn__text">All</span><span class="cupqc-facet-btn__count">9</span>
+      </a>
+      
+      
+      <a href="../?primitive=Big%20Integer" class="cupqc-facet-btn is-active" aria-current="true">
+        <span class="cupqc-facet-btn__text">Big Integer</span><span class="cupqc-facet-btn__count">3</span>
+      </a>
+      
+      
+      <a href="../?primitive=NTT" class="cupqc-facet-btn">
+        <span class="cupqc-facet-btn__text">NTT</span><span class="cupqc-facet-btn__count">2</span>
+      </a>
+      
+      
+      <a href="../?primitive=Hash%20Function" class="cupqc-facet-btn">
+        <span class="cupqc-facet-btn__text">Hash Function</span><span class="cupqc-facet-btn__count">2</span>
+      </a>
+      
+      
+      <a href="../?primitive=Merkle%20Tree" class="cupqc-facet-btn">
+        <span class="cupqc-facet-btn__text">Merkle Tree</span><span class="cupqc-facet-btn__count">1</span>
+      </a>
+      
+      
+      <a href="../?primitive=PQC%20%28KEM%20/%20DSA%29" class="cupqc-facet-btn">
+        <span class="cupqc-facet-btn__text">PQC (KEM / DSA)</span><span class="cupqc-facet-btn__count">1</span>
+      </a>
+      
+      
+    </div>
+  </div>
+  
+</nav>
+
+              
+            </aside>
+            <div class="cupqc-apps-main md-typeset">
+              
+
+
+  
+  
+
+
+<h1 id="tutorial-bigint-hex-digits-of-pi">Tutorial: BigInt Hex Digits of Pi</h1>
+<p>This tutorial walks you through a GPU implementation of Bellard's formula for pi, built with cuPQC-BigInt. Instead of accumulating floating-point terms, every subterm of the series is evaluated in fixed-width big-integer arithmetic, so the program produces 256 exact fractional hex digits of pi and validates them against the known leading digits. Along the way you'll use modular exponentiation, division with remainder, shifts, and a warp-level reduction of 320-bit values.</p>
+<p>This is the most advanced of the three BigInt examples: the series terms are spread across the whole GPU, each thread does real big-integer work, and the partial sums are reduced first inside each warp and then across the grid.</p>
+<p><strong>cuPQC-BigInt requires cuPQC SDK 0.6.0 or newer</strong>, the release that introduced it. cuPQC 0.6 targets compute capabilities 8.0, 8.6, 8.7, 8.9, and 9.0.</p>
+<p>Unlike the other cuPQC libraries, cuPQC-BigInt is exposed entirely as <code>__device__</code> functions. There are no host-side launch helpers: you call every operation from inside your own kernel, which is exactly what this example does.</p>
+<h2 id="step-1-project-setup">Step 1: Project Setup</h2>
+<p>Clone the cuPQC repository:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/NVIDIA/cuPQC.git
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="nb">cd</span><span class="w"> </span>cuPQC/examples/bigint
+</span></code></pre></div>
+<p>This downloads all examples including the hex-digits-of-pi example. The Makefile in this directory will compile all examples, including <code>example_bigint_pihex</code>.</p>
+<h2 id="step-2-include-headers-and-match-the-architecture">Step 2: Include Headers and Match the Architecture</h2>
+<p>Start with the cuPQC SDK headers:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;algorithm&gt;</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;array&gt;</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;cstdint&gt;</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;cstdio&gt;</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;cstdlib&gt;</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;bigint.hpp&gt;</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;cucheck.hpp&gt;</span>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">cupqc</span><span class="p">;</span>
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">std</span><span class="p">;</span>
+</span></code></pre></div>
+<p><code>bigint.hpp</code> provides the big-integer descriptor operators and device operations.<br>
+<code>cucheck.hpp</code> provides the <code>CUDA_CHECK</code> macro the host code wraps every CUDA call in.</p>
+<p>A big-integer descriptor carries an <code>SM&lt;&gt;()</code> operator that selects the architecture code is generated for. The Makefile compiles with <code>-arch=native</code>, so the example derives <code>SM&lt;&gt;</code> from <code>__CUDA_ARCH__</code> to keep the descriptor in step with whatever is actually being compiled:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="cp">#if defined(__CUDA_ARCH__) &amp;&amp; (__CUDA_ARCH__ == 900)</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="cp">#define PIHEX_SM() + SM&lt;900&gt;()</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="cp">#elif defined(__CUDA_ARCH__) &amp;&amp; (__CUDA_ARCH__ == 890)</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="cp">#define PIHEX_SM() + SM&lt;890&gt;()</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="c1">// ... 870, 860, 800 ...</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="cp">#else</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="cp">#define PIHEX_SM()</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="cp">#endif</span>
+</span></code></pre></div>
+<p><code>SM&lt;&gt;()</code> is optional and defaults to <code>SM&lt;800&gt;</code> when omitted, which is what the host compilation pass and any architecture without a specialization use. The macro stops at 9.0 because that is the highest <code>SM&lt;&gt;</code> specialization the SDK provides, so a newer architecture falls through to the default rather than naming a specialization that does not exist.</p>
+<h2 id="step-3-define-the-big-integer-types">Step 3: Define the Big-Integer Types</h2>
+<p>The example needs three widths, all owned by a single thread:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="k">using</span><span class="w"> </span><span class="n">bigint64_cfg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">decltype</span><span class="p">(</span><span class="nc">BitWidth</span><span class="o">&lt;</span><span class="mi">64</span><span class="o">&gt;</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nc">Thread</span><span class="p">()</span><span class="w"> </span><span class="nc">PIHEX_SM</span><span class="p">());</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="k">using</span><span class="w"> </span><span class="n">bigint320_cfg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">decltype</span><span class="p">(</span><span class="nc">BitWidth</span><span class="o">&lt;</span><span class="mi">320</span><span class="o">&gt;</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nc">Thread</span><span class="p">()</span><span class="w"> </span><span class="nc">PIHEX_SM</span><span class="p">());</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="k">using</span><span class="w"> </span><span class="n">bigint384_cfg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">decltype</span><span class="p">(</span><span class="nc">BitWidth</span><span class="o">&lt;</span><span class="mi">384</span><span class="o">&gt;</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nc">Thread</span><span class="p">()</span><span class="w"> </span><span class="nc">PIHEX_SM</span><span class="p">());</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="k">using</span><span class="w"> </span><span class="n">bigint64_t</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">typename</span><span class="w"> </span><span class="nc">bigint64_cfg</span><span class="o">::</span><span class="n">bigint</span><span class="p">;</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="k">using</span><span class="w"> </span><span class="n">bigint320_t</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">typename</span><span class="w"> </span><span class="nc">bigint320_cfg</span><span class="o">::</span><span class="n">bigint</span><span class="p">;</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="k">using</span><span class="w"> </span><span class="n">bigint384_t</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">typename</span><span class="w"> </span><span class="nc">bigint384_cfg</span><span class="o">::</span><span class="n">bigint</span><span class="p">;</span>
+</span></code></pre></div>
+<p><code>BitWidth&lt;BW&gt;()</code> sets the width, which must be a multiple of 32; the limb count is <code>BW / 32</code>.<br>
+<code>Thread()</code> gives one thread ownership of the entire value, so no <code>TPI&lt;&gt;()</code> is set.<br>
+<code>cfg::bigint</code> is the value type produced by the descriptor.</p>
+<p>The three widths each have a job. Denominators in Bellard's formula are always represented as 64-bit values, accumulators are 320 bits wide, and 384 bits gives room to shift a 64-bit residue left by 320 before dividing.</p>
+<p>The limb bookkeeping derives the guard and result sizes from the descriptors rather than hard-coding them:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="k">constexpr</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nc">BIGINT_WORDS</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">bigint320_cfg</span><span class="o">::</span><span class="n">num_limbs</span><span class="p">;</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="c1">// Reserve 64 guard bits because denominators are limited to 64 bits.</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="k">constexpr</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nc">GUARD_WORDS</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">bigint64_cfg</span><span class="o">::</span><span class="n">num_limbs</span><span class="p">;</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="k">constexpr</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nc">RESULT_WORDS</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nc">BIGINT_WORDS</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nc">GUARD_WORDS</span><span class="p">;</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">bigint384_cfg</span><span class="o">::</span><span class="n">num_limbs</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nc">BIGINT_WORDS</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nc">GUARD_WORDS</span><span class="p">);</span>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="k">constexpr</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nc">THREADS_PER_BLOCK</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">64</span><span class="p">;</span>
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="k">constexpr</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nc">REDUCE_THREADS</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1024</span><span class="p">;</span>
+</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="k">constexpr</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nc">BELLARD_TERM_PAIRS</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">7</span><span class="p">;</span>
+</span></code></pre></div>
+<p>The calculation carries 320 fractional bits, of which the low 64 are guard bits that absorb rounding from the per-term divisions. They are dropped at the end, leaving <code>RESULT_WORDS</code> limbs — 256 bits, or 64 hex digits — of trustworthy output. Values are little-endian arrays of 32-bit limbs, so limb 0 is least significant.</p>
+<h2 id="step-4-the-math-as-integer-arithmetic">Step 4: The Math, as Integer Arithmetic</h2>
+<p>Bellard's formula writes pi as seven alternating-sign subterms. The example's header comment carries the <code>2^-6</code> and <code>(-1)^n 2^(-10n)</code> factors into each subterm and splits <code>n</code> into its even and odd cases (<code>n = 2m</code> and <code>n = 2m+1</code>), which turns the seven alternating subterms into seven <strong>fixed-sign pairs</strong> — fourteen subterms in total, each a positive or negative <code>2^p / denom</code>.</p>
+<p>That restructuring is what makes the GPU version simple: there is no sign bookkeeping left, just seven pairs, each contributing one addition and one subtraction per iteration.</p>
+<p>For a single positive subterm <code>2^p / denom</code>, shifting pi by <code>start_bit</code> and retaining <code>B = 320</code> fractional bits asks for</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>floor(2^pow * 2^B / denom) mod 2^B,  pow = start_bit + p
+</span></code></pre></div>
+<p>When <code>pow &gt;= 0</code>, writing <code>2^pow = q*denom + r</code> makes the <code>q*2^B</code> part vanish modulo <code>2^B</code>, leaving <code>floor(r * 2^B / denom)</code> with <code>r = 2^pow mod denom</code>. So one modular exponentiation, one shift, and one division suffice. When <code>-B &lt;= pow &lt; 0</code>, the contribution is directly <code>floor(2^(B+pow) / denom)</code>, and when <code>pow &lt; -B</code> it lies below the retained precision and is zero.</p>
+<h2 id="step-5-evaluate-one-subterm">Step 5: Evaluate One Subterm</h2>
+<p><code>pihex_term</code> is the heart of the example — it turns the derivation above into three big-integer operations:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1">// term = floor(2^pow * 2^320 / denom) mod 2^320.</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="k">__device__</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">pihex_term</span><span class="p">(</span><span class="n">bigint320_t</span><span class="o">&amp;</span><span class="w"> </span><span class="n">term</span><span class="p">,</span><span class="w"> </span><span class="kt">int64_t</span><span class="w"> </span><span class="n">pow</span><span class="p">,</span><span class="w"> </span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">denom</span><span class="p">)</span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="p">{</span>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="w">    </span><span class="n">bigint64_t</span><span class="w"> </span><span class="nf">divisor</span><span class="p">(</span><span class="n">denom</span><span class="p">);</span>
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="w">    </span><span class="n">bigint384_t</span><span class="w"> </span><span class="n">quotient</span><span class="p">;</span>
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="w">    </span><span class="n">bigint64_t</span><span class="w"> </span><span class="n">remainder</span><span class="p">;</span>
+</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>
+</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">pow</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-6-9"><a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a><span class="w">        </span><span class="n">bigint64_t</span><span class="w"> </span><span class="n">residue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">bigint64_t</span><span class="p">(</span><span class="mi">2u</span><span class="p">).</span><span class="nf">pow_mod</span><span class="p">(</span><span class="k">static_cast</span><span class="o">&lt;</span><span class="kt">uint64_t</span><span class="o">&gt;</span><span class="p">(</span><span class="n">pow</span><span class="p">),</span><span class="w"> </span><span class="n">divisor</span><span class="p">);</span>
+</span><span id="__span-6-10"><a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a><span class="w">        </span><span class="n">bigint384_t</span><span class="w"> </span><span class="nf">dividend</span><span class="p">(</span><span class="n">residue</span><span class="p">.</span><span class="nf">to_uint64</span><span class="p">());</span>
+</span><span id="__span-6-11"><a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a><span class="w">        </span><span class="n">dividend</span><span class="w"> </span><span class="o">&lt;&lt;=</span><span class="w"> </span><span class="mi">320</span><span class="p">;</span>
+</span><span id="__span-6-12"><a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a><span class="w">        </span><span class="n">dividend</span><span class="p">.</span><span class="nf">div_rem</span><span class="p">(</span><span class="n">divisor</span><span class="p">,</span><span class="w"> </span><span class="n">quotient</span><span class="p">,</span><span class="w"> </span><span class="n">remainder</span><span class="p">);</span>
+</span><span id="__span-6-13"><a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a><span class="w">        </span><span class="n">term</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">narrow_to_320</span><span class="p">(</span><span class="n">quotient</span><span class="p">);</span>
+</span><span id="__span-6-14"><a id="__codelineno-6-14" name="__codelineno-6-14" href="#__codelineno-6-14"></a><span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">pow</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">-320</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-6-15"><a id="__codelineno-6-15" name="__codelineno-6-15" href="#__codelineno-6-15"></a><span class="w">        </span><span class="c1">// Negative powers occur in the tail (and at small start_bit values).</span>
+</span><span id="__span-6-16"><a id="__codelineno-6-16" name="__codelineno-6-16" href="#__codelineno-6-16"></a><span class="w">        </span><span class="n">bigint384_t</span><span class="w"> </span><span class="nf">dividend</span><span class="p">(</span><span class="mi">1u</span><span class="p">);</span>
+</span><span id="__span-6-17"><a id="__codelineno-6-17" name="__codelineno-6-17" href="#__codelineno-6-17"></a><span class="w">        </span><span class="n">dividend</span><span class="w"> </span><span class="o">&lt;&lt;=</span><span class="w"> </span><span class="k">static_cast</span><span class="o">&lt;</span><span class="kt">uint32_t</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">320</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">pow</span><span class="p">);</span>
+</span><span id="__span-6-18"><a id="__codelineno-6-18" name="__codelineno-6-18" href="#__codelineno-6-18"></a><span class="w">        </span><span class="n">dividend</span><span class="p">.</span><span class="nf">div_rem</span><span class="p">(</span><span class="n">divisor</span><span class="p">,</span><span class="w"> </span><span class="n">quotient</span><span class="p">,</span><span class="w"> </span><span class="n">remainder</span><span class="p">);</span>
+</span><span id="__span-6-19"><a id="__codelineno-6-19" name="__codelineno-6-19" href="#__codelineno-6-19"></a><span class="w">        </span><span class="n">term</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">narrow_to_320</span><span class="p">(</span><span class="n">quotient</span><span class="p">);</span>
+</span><span id="__span-6-20"><a id="__codelineno-6-20" name="__codelineno-6-20" href="#__codelineno-6-20"></a><span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-6-21"><a id="__codelineno-6-21" name="__codelineno-6-21" href="#__codelineno-6-21"></a><span class="w">        </span><span class="n">term</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">bigint320_t</span><span class="p">{};</span>
+</span><span id="__span-6-22"><a id="__codelineno-6-22" name="__codelineno-6-22" href="#__codelineno-6-22"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-6-23"><a id="__codelineno-6-23" name="__codelineno-6-23" href="#__codelineno-6-23"></a><span class="p">}</span>
+</span></code></pre></div>
+<p><code>bigint64_t(2u).pow_mod(pow, divisor)</code> computes <code>2^pow mod denom</code> entirely in 64-bit big-integer arithmetic.<br>
+<code>residue.to_uint64()</code> extracts that residue so it can seed a wider value.<br>
+<code>dividend &lt;&lt;= 320</code> shifts the residue up by the retained precision, which is why the dividend is 384 bits wide.<br>
+<code>dividend.div_rem(divisor, quotient, remainder)</code> produces both the quotient and the remainder. <code>div_rem</code> is the one operation that accepts a narrower divisor than the dividend, which is what allows a 64-bit <code>divisor</code> against a 384-bit <code>dividend</code>.<br>
+<code>bigint320_t{}</code> is the zero contribution used when the subterm falls below the retained precision.</p>
+<p>Note that the strict <code>pow &gt; 0</code> test sends <code>pow == 0</code> into the second branch, where <code>2^(320+0) / denom</code> computes the same value, so both branches agree at the boundary.</p>
+<p>The quotient comes back at the dividend's width, so it is narrowed explicitly. cuPQC-BigInt never implicitly promotes or truncates between widths, so the copy is written out limb by limb:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1">// Explicitly narrow to the low 320 bits.</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="k">__device__</span><span class="w"> </span><span class="n">bigint320_t</span><span class="w"> </span><span class="nf">narrow_to_320</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">bigint384_t</span><span class="o">&amp;</span><span class="w"> </span><span class="n">value</span><span class="p">)</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="p">{</span>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="w">    </span><span class="n">bigint320_t</span><span class="w"> </span><span class="n">result</span><span class="p">;</span>
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="nc">BIGINT_WORDS</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span>
+</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="w">        </span><span class="n">result</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">value</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">result</span><span class="p">;</span>
+</span><span id="__span-7-8"><a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="p">}</span>
+</span></code></pre></div>
+<h2 id="step-6-accumulate-the-term-pairs">Step 6: Accumulate the Term Pairs</h2>
+<p>Each of the seven pairs contributes one positive and one negative subterm, which is a single add and a single subtract on the accumulator:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="k">__device__</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">accum_pihex_terms</span><span class="p">(</span><span class="n">bigint320_t</span><span class="o">&amp;</span><span class="w"> </span><span class="n">accum</span><span class="p">,</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="w">                                 </span><span class="kt">int64_t</span><span class="w"> </span><span class="n">pow_a</span><span class="p">,</span><span class="w"> </span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">denom_a</span><span class="p">,</span>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="w">                                 </span><span class="kt">int64_t</span><span class="w"> </span><span class="n">pow_b</span><span class="p">,</span><span class="w"> </span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">denom_b</span><span class="p">)</span>
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="p">{</span>
+</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="w">    </span><span class="n">bigint320_t</span><span class="w"> </span><span class="n">term_a</span><span class="p">;</span>
+</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="w">    </span><span class="n">bigint320_t</span><span class="w"> </span><span class="n">term_b</span><span class="p">;</span>
+</span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="w">    </span><span class="nf">pihex_term</span><span class="p">(</span><span class="n">term_a</span><span class="p">,</span><span class="w"> </span><span class="n">pow_a</span><span class="p">,</span><span class="w"> </span><span class="n">denom_a</span><span class="p">);</span>
+</span><span id="__span-8-8"><a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a><span class="w">    </span><span class="nf">pihex_term</span><span class="p">(</span><span class="n">term_b</span><span class="p">,</span><span class="w"> </span><span class="n">pow_b</span><span class="p">,</span><span class="w"> </span><span class="n">denom_b</span><span class="p">);</span>
+</span><span id="__span-8-9"><a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a><span class="w">    </span><span class="n">accum</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">term_a</span><span class="p">;</span>
+</span><span id="__span-8-10"><a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a><span class="w">    </span><span class="n">accum</span><span class="w"> </span><span class="o">-=</span><span class="w"> </span><span class="n">term_b</span><span class="p">;</span>
+</span><span id="__span-8-11"><a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>The accumulator is unsigned and fixed-width, so <code>+=</code> and <code>-=</code> wrap modulo <code>2^320</code>. That is precisely the arithmetic the derivation asks for, which is why negative subterms need no special handling.</p>
+<p><code>accum_bellard_pair</code> then selects one of the seven pairs by <code>term_id</code> and supplies the powers and denominators for iteration <code>n</code>:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="k">__device__</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">accum_bellard_pair</span><span class="p">(</span><span class="n">bigint320_t</span><span class="o">&amp;</span><span class="w"> </span><span class="n">accum</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">term_id</span><span class="p">,</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="w">                                  </span><span class="kt">int64_t</span><span class="w"> </span><span class="n">start_bit</span><span class="p">,</span><span class="w"> </span><span class="kt">int64_t</span><span class="w"> </span><span class="n">n</span><span class="p">)</span>
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="p">{</span>
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="w">    </span><span class="k">switch</span><span class="w"> </span><span class="p">(</span><span class="n">term_id</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="mi">0</span><span class="p">:</span>
+</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="w">        </span><span class="nf">accum_pihex_terms</span><span class="p">(</span><span class="n">accum</span><span class="p">,</span><span class="w"> </span><span class="n">start_bit</span><span class="mi">-20</span><span class="o">*</span><span class="n">n</span><span class="mi">-16</span><span class="o">+</span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="mi">8</span><span class="o">*</span><span class="n">n</span><span class="o">+</span><span class="mi">5</span><span class="p">,</span>
+</span><span id="__span-9-7"><a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a><span class="w">                          </span><span class="n">start_bit</span><span class="mi">-20</span><span class="o">*</span><span class="n">n</span><span class="mi">-6</span><span class="o">+</span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="mi">8</span><span class="o">*</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">);</span>
+</span><span id="__span-9-8"><a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a><span class="w">        </span><span class="k">break</span><span class="p">;</span>
+</span><span id="__span-9-9"><a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a><span class="w">    </span><span class="c1">// ... cases 1 through 5 ...</span>
+</span><span id="__span-9-10"><a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a><span class="w">    </span><span class="k">default</span><span class="o">:</span>
+</span><span id="__span-9-11"><a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a><span class="w">        </span><span class="nf">accum_pihex_terms</span><span class="p">(</span><span class="n">accum</span><span class="p">,</span><span class="w"> </span><span class="n">start_bit</span><span class="mi">-20</span><span class="o">*</span><span class="n">n</span><span class="mi">-6</span><span class="p">,</span><span class="w"> </span><span class="mi">20</span><span class="o">*</span><span class="n">n</span><span class="o">+</span><span class="mi">9</span><span class="p">,</span>
+</span><span id="__span-9-12"><a id="__codelineno-9-12" name="__codelineno-9-12" href="#__codelineno-9-12"></a><span class="w">                          </span><span class="n">start_bit</span><span class="mi">-20</span><span class="o">*</span><span class="n">n</span><span class="mi">-16</span><span class="p">,</span><span class="w"> </span><span class="mi">20</span><span class="o">*</span><span class="n">n</span><span class="o">+</span><span class="mi">19</span><span class="p">);</span>
+</span><span id="__span-9-13"><a id="__codelineno-9-13" name="__codelineno-9-13" href="#__codelineno-9-13"></a><span class="w">        </span><span class="k">break</span><span class="p">;</span>
+</span><span id="__span-9-14"><a id="__codelineno-9-14" name="__codelineno-9-14" href="#__codelineno-9-14"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-9-15"><a id="__codelineno-9-15" name="__codelineno-9-15" href="#__codelineno-9-15"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>Every case has the same shape: two <code>pow</code> expressions that decrease by 20 bits per iteration, and two denominators that grow linearly in <code>n</code>. The <code>start_bit</code> offset simply rides along inside each <code>pow</code>.</p>
+<h2 id="step-7-the-calculation-kernel-and-warp-reduction">Step 7: The Calculation Kernel and Warp Reduction</h2>
+<p><code>calc_pihex</code> splits the grid seven ways, one group of blocks per term pair, and walks the series with a grid-stride loop:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="k">__global__</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">calc_pihex</span><span class="p">(</span><span class="kt">uint32_t</span><span class="o">*</span><span class="w"> </span><span class="n">partials</span><span class="p">,</span><span class="w"> </span><span class="kt">int64_t</span><span class="w"> </span><span class="n">start_bit</span><span class="p">,</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="w">                           </span><span class="kt">int64_t</span><span class="w"> </span><span class="n">n_max</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">blocks_per_term</span><span class="p">)</span>
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="p">{</span>
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">term_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">blockIdx</span><span class="p">.</span><span class="n">x</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">blocks_per_term</span><span class="p">;</span>
+</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">local_block</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">blockIdx</span><span class="p">.</span><span class="n">x</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="n">blocks_per_term</span><span class="p">;</span>
+</span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="kt">int64_t</span><span class="w"> </span><span class="n">tid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">static_cast</span><span class="o">&lt;</span><span class="kt">int64_t</span><span class="o">&gt;</span><span class="p">(</span><span class="n">local_block</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">blockDim</span><span class="p">.</span><span class="n">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">threadIdx</span><span class="p">.</span><span class="n">x</span><span class="p">;</span>
+</span><span id="__span-10-7"><a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a><span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="kt">int64_t</span><span class="w"> </span><span class="n">stride</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">static_cast</span><span class="o">&lt;</span><span class="kt">int64_t</span><span class="o">&gt;</span><span class="p">(</span><span class="n">blocks_per_term</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">blockDim</span><span class="p">.</span><span class="n">x</span><span class="p">;</span>
+</span><span id="__span-10-8"><a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a>
+</span><span id="__span-10-9"><a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a><span class="w">    </span><span class="n">bigint320_t</span><span class="w"> </span><span class="n">accum</span><span class="p">;</span>
+</span><span id="__span-10-10"><a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a><span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int64_t</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tid</span><span class="p">;</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">n_max</span><span class="p">;</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">stride</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-10-11"><a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a><span class="w">        </span><span class="nf">accum_bellard_pair</span><span class="p">(</span><span class="n">accum</span><span class="p">,</span><span class="w"> </span><span class="n">term_id</span><span class="p">,</span><span class="w"> </span><span class="n">start_bit</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">);</span>
+</span><span id="__span-10-12"><a id="__codelineno-10-12" name="__codelineno-10-12" href="#__codelineno-10-12"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-10-13"><a id="__codelineno-10-13" name="__codelineno-10-13" href="#__codelineno-10-13"></a><span class="w">    </span><span class="c1">// ... warp reduction, then store ...</span>
+</span><span id="__span-10-14"><a id="__codelineno-10-14" name="__codelineno-10-14" href="#__codelineno-10-14"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>Each thread therefore owns a strided subset of the <code>n</code> values for one term pair, and holds a private 320-bit running sum in registers. Because the whole series is one unsigned sum modulo <code>2^320</code>, the terms can be visited in any order and grouped arbitrarily.</p>
+<p>The per-thread sums are then combined inside each warp with shuffles, one limb at a time:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="w">    </span><span class="n">bigint320_t</span><span class="w"> </span><span class="n">other</span><span class="p">;</span>
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">offset</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">16</span><span class="p">;</span><span class="w"> </span><span class="n">offset</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">offset</span><span class="w"> </span><span class="o">&gt;&gt;=</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">limb</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">limb</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="nc">BIGINT_WORDS</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">limb</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="w">            </span><span class="n">other</span><span class="p">[</span><span class="n">limb</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">__shfl_down_sync</span><span class="p">(</span><span class="mh">0xffffffffu</span><span class="p">,</span><span class="w"> </span><span class="n">accum</span><span class="p">[</span><span class="n">limb</span><span class="p">],</span><span class="w"> </span><span class="n">offset</span><span class="p">);</span>
+</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="w">        </span><span class="p">}</span>
+</span><span id="__span-11-6"><a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="w">        </span><span class="n">accum</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">other</span><span class="p">;</span>
+</span><span id="__span-11-7"><a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-11-8"><a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a>
+</span><span id="__span-11-9"><a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">((</span><span class="n">threadIdx</span><span class="p">.</span><span class="n">x</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="mi">31</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-11-10"><a id="__codelineno-11-10" name="__codelineno-11-10" href="#__codelineno-11-10"></a><span class="w">        </span><span class="k">const</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">partial</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">blockIdx</span><span class="p">.</span><span class="n">x</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="nc">THREADS_PER_BLOCK</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">32</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">threadIdx</span><span class="p">.</span><span class="n">x</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">32</span><span class="p">;</span>
+</span><span id="__span-11-11"><a id="__codelineno-11-11" name="__codelineno-11-11" href="#__codelineno-11-11"></a><span class="w">        </span><span class="n">accum</span><span class="p">.</span><span class="nf">store</span><span class="p">(</span><span class="n">partials</span><span class="p">,</span><span class="w"> </span><span class="n">partial</span><span class="p">);</span>
+</span><span id="__span-11-12"><a id="__codelineno-11-12" name="__codelineno-11-12" href="#__codelineno-11-12"></a><span class="w">    </span><span class="p">}</span>
+</span></code></pre></div>
+<p>Limb access with <code>accum[limb]</code> is what makes this work: the value's limbs are ordinary 32-bit registers, so a standard <code>__shfl_down_sync</code> tree moves a peer's whole 320-bit value into <code>other</code>, and one big-integer <code>+=</code> adds it with correct carry propagation. After five halvings, lane 0 of each warp holds that warp's total and stores it with <code>accum.store(partials, partial)</code>, where the second argument is the instance index into a packed array of 320-bit values.</p>
+<p>With <code>THREADS_PER_BLOCK</code> of 64, each block produces two partials.</p>
+<h2 id="step-8-reduce-the-partials-to-a-single-value">Step 8: Reduce the Partials to a Single Value</h2>
+<p>The second kernel is a single block of <code>REDUCE_THREADS</code> threads that collapses every partial into one 320-bit value:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="k">__global__</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">reduce_pihex</span><span class="p">(</span><span class="kt">uint32_t</span><span class="o">*</span><span class="w"> </span><span class="n">partials</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">num_partials</span><span class="p">)</span>
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="p">{</span>
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="w">    </span><span class="k">__shared__</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">shared</span><span class="p">[</span><span class="nc">REDUCE_THREADS</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="nc">BIGINT_WORDS</span><span class="p">];</span>
+</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">tid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">threadIdx</span><span class="p">.</span><span class="n">x</span><span class="p">;</span>
+</span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="w">    </span><span class="n">bigint320_t</span><span class="w"> </span><span class="n">accum</span><span class="p">;</span>
+</span><span id="__span-12-6"><a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a>
+</span><span id="__span-12-7"><a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a><span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tid</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">num_partials</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="nc">REDUCE_THREADS</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-12-8"><a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a><span class="w">        </span><span class="n">bigint320_t</span><span class="w"> </span><span class="nf">value</span><span class="p">(</span><span class="n">partials</span><span class="p">,</span><span class="w"> </span><span class="n">i</span><span class="p">);</span>
+</span><span id="__span-12-9"><a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a><span class="w">        </span><span class="n">accum</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">value</span><span class="p">;</span>
+</span><span id="__span-12-10"><a id="__codelineno-12-10" name="__codelineno-12-10" href="#__codelineno-12-10"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-12-11"><a id="__codelineno-12-11" name="__codelineno-12-11" href="#__codelineno-12-11"></a><span class="w">    </span><span class="n">accum</span><span class="p">.</span><span class="nf">store</span><span class="p">(</span><span class="n">shared</span><span class="p">,</span><span class="w"> </span><span class="n">tid</span><span class="p">);</span>
+</span><span id="__span-12-12"><a id="__codelineno-12-12" name="__codelineno-12-12" href="#__codelineno-12-12"></a><span class="w">    </span><span class="nf">__syncthreads</span><span class="p">();</span>
+</span><span id="__span-12-13"><a id="__codelineno-12-13" name="__codelineno-12-13" href="#__codelineno-12-13"></a>
+</span><span id="__span-12-14"><a id="__codelineno-12-14" name="__codelineno-12-14" href="#__codelineno-12-14"></a><span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">stride</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nc">REDUCE_THREADS</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span><span class="w"> </span><span class="n">stride</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">stride</span><span class="w"> </span><span class="o">&gt;&gt;=</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-12-15"><a id="__codelineno-12-15" name="__codelineno-12-15" href="#__codelineno-12-15"></a><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">tid</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">stride</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-12-16"><a id="__codelineno-12-16" name="__codelineno-12-16" href="#__codelineno-12-16"></a><span class="w">            </span><span class="n">bigint320_t</span><span class="w"> </span><span class="nf">a</span><span class="p">(</span><span class="n">shared</span><span class="p">,</span><span class="w"> </span><span class="n">tid</span><span class="p">);</span>
+</span><span id="__span-12-17"><a id="__codelineno-12-17" name="__codelineno-12-17" href="#__codelineno-12-17"></a><span class="w">            </span><span class="n">bigint320_t</span><span class="w"> </span><span class="nf">b</span><span class="p">(</span><span class="n">shared</span><span class="p">,</span><span class="w"> </span><span class="n">tid</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">stride</span><span class="p">);</span>
+</span><span id="__span-12-18"><a id="__codelineno-12-18" name="__codelineno-12-18" href="#__codelineno-12-18"></a><span class="w">            </span><span class="n">a</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">b</span><span class="p">;</span>
+</span><span id="__span-12-19"><a id="__codelineno-12-19" name="__codelineno-12-19" href="#__codelineno-12-19"></a><span class="w">            </span><span class="n">a</span><span class="p">.</span><span class="nf">store</span><span class="p">(</span><span class="n">shared</span><span class="p">,</span><span class="w"> </span><span class="n">tid</span><span class="p">);</span>
+</span><span id="__span-12-20"><a id="__codelineno-12-20" name="__codelineno-12-20" href="#__codelineno-12-20"></a><span class="w">        </span><span class="p">}</span>
+</span><span id="__span-12-21"><a id="__codelineno-12-21" name="__codelineno-12-21" href="#__codelineno-12-21"></a><span class="w">        </span><span class="nf">__syncthreads</span><span class="p">();</span>
+</span><span id="__span-12-22"><a id="__codelineno-12-22" name="__codelineno-12-22" href="#__codelineno-12-22"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-12-23"><a id="__codelineno-12-23" name="__codelineno-12-23" href="#__codelineno-12-23"></a>
+</span><span id="__span-12-24"><a id="__codelineno-12-24" name="__codelineno-12-24" href="#__codelineno-12-24"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">tid</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-12-25"><a id="__codelineno-12-25" name="__codelineno-12-25" href="#__codelineno-12-25"></a><span class="w">        </span><span class="n">bigint320_t</span><span class="w"> </span><span class="nf">result</span><span class="p">(</span><span class="n">shared</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
+</span><span id="__span-12-26"><a id="__codelineno-12-26" name="__codelineno-12-26" href="#__codelineno-12-26"></a><span class="w">        </span><span class="n">result</span><span class="p">.</span><span class="nf">store</span><span class="p">(</span><span class="n">partials</span><span class="p">);</span>
+</span><span id="__span-12-27"><a id="__codelineno-12-27" name="__codelineno-12-27" href="#__codelineno-12-27"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-12-28"><a id="__codelineno-12-28" name="__codelineno-12-28" href="#__codelineno-12-28"></a><span class="p">}</span>
+</span></code></pre></div>
+<p><code>bigint320_t value(partials, i)</code> constructs a value directly from instance <code>i</code> of a packed limb array — the same indexed form as <code>store</code>, which is what lets global and shared memory be treated as arrays of big integers.<br>
+<code>a.store(shared, tid)</code> writes back into shared memory at instance <code>tid</code>, so the classic halving tree needs no manual limb indexing.<br>
+<code>result.store(partials)</code> writes the final 320-bit sum to the front of the same buffer.</p>
+<h2 id="step-9-host-orchestration-timing-and-validation">Step 9: Host Orchestration, Timing, and Validation</h2>
+<p>The host picks a launch geometry from the requested <code>start_bit</code> and the device's SM count:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="k">const</span><span class="w"> </span><span class="kt">int64_t</span><span class="w"> </span><span class="n">n_max</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">start_bit</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">320</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">19</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">20</span><span class="p">;</span>
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="k">const</span><span class="w"> </span><span class="kt">int64_t</span><span class="w"> </span><span class="n">wanted_blocks</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">n_max</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nc">THREADS_PER_BLOCK</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="nc">THREADS_PER_BLOCK</span><span class="p">;</span>
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="k">const</span><span class="w"> </span><span class="kt">int64_t</span><span class="w"> </span><span class="n">max_blocks</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">static_cast</span><span class="o">&lt;</span><span class="kt">int64_t</span><span class="o">&gt;</span><span class="p">(</span><span class="n">prop</span><span class="p">.</span><span class="n">multiProcessorCount</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">8</span><span class="p">;</span>
+</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="k">const</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">blocks_per_term</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">static_cast</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="nf">min</span><span class="p">(</span><span class="n">wanted_blocks</span><span class="p">,</span><span class="w"> </span><span class="n">max_blocks</span><span class="p">));</span>
+</span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="k">const</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">num_partials</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">blocks_per_term</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="nc">BELLARD_TERM_PAIRS</span><span class="w"> </span><span class="o">*</span>
+</span><span id="__span-13-6"><a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a><span class="w">                         </span><span class="p">(</span><span class="nc">THREADS_PER_BLOCK</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">32</span><span class="p">);</span>
+</span></code></pre></div>
+<p><code>n_max</code> is how many iterations are needed to cover <code>start_bit</code> plus the 320 retained bits, since each iteration advances the series by 20 bits. <code>blocks_per_term</code> is one block per <code>THREADS_PER_BLOCK</code> iterations, capped at eight blocks per SM, and the grid is that many blocks for each of the seven term pairs.</p>
+<p>The work is then issued on a stream with CUDA events between each phase:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="nc">CUDA_CHECK</span><span class="p">(</span><span class="nf">cudaEventRecord</span><span class="p">(</span><span class="n">begin</span><span class="p">,</span><span class="w"> </span><span class="n">stream</span><span class="p">));</span>
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="n">calc_pihex</span><span class="o">&lt;&lt;&lt;</span><span class="n">blocks_per_term</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="nc">BELLARD_TERM_PAIRS</span><span class="p">,</span><span class="w"> </span><span class="nc">THREADS_PER_BLOCK</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">stream</span><span class="o">&gt;&gt;&gt;</span><span class="p">(</span>
+</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="w">    </span><span class="n">partials</span><span class="p">,</span><span class="w"> </span><span class="n">start_bit</span><span class="p">,</span><span class="w"> </span><span class="n">n_max</span><span class="p">,</span><span class="w"> </span><span class="n">blocks_per_term</span><span class="p">);</span>
+</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="nc">CUDA_CHECK</span><span class="p">(</span><span class="nf">cudaEventRecord</span><span class="p">(</span><span class="n">calculated</span><span class="p">,</span><span class="w"> </span><span class="n">stream</span><span class="p">));</span>
+</span><span id="__span-14-5"><a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="n">reduce_pihex</span><span class="o">&lt;&lt;&lt;</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="nc">REDUCE_THREADS</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">stream</span><span class="o">&gt;&gt;&gt;</span><span class="p">(</span><span class="n">partials</span><span class="p">,</span><span class="w"> </span><span class="n">num_partials</span><span class="p">);</span>
+</span><span id="__span-14-6"><a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a><span class="nc">CUDA_CHECK</span><span class="p">(</span><span class="nf">cudaEventRecord</span><span class="p">(</span><span class="n">reduced</span><span class="p">,</span><span class="w"> </span><span class="n">stream</span><span class="p">));</span>
+</span><span id="__span-14-7"><a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a>
+</span><span id="__span-14-8"><a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a><span class="nc">CUDA_CHECK</span><span class="p">(</span><span class="nf">cudaMemcpyAsync</span><span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="nf">data</span><span class="p">(),</span><span class="w"> </span><span class="n">partials</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nc">GUARD_WORDS</span><span class="p">,</span>
+</span><span id="__span-14-9"><a id="__codelineno-14-9" name="__codelineno-14-9" href="#__codelineno-14-9"></a><span class="w">                           </span><span class="n">result</span><span class="p">.</span><span class="nf">size</span><span class="p">()</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="kt">uint32_t</span><span class="p">),</span><span class="w"> </span><span class="n">cudaMemcpyDeviceToHost</span><span class="p">,</span><span class="w"> </span><span class="n">stream</span><span class="p">));</span>
+</span><span id="__span-14-10"><a id="__codelineno-14-10" name="__codelineno-14-10" href="#__codelineno-14-10"></a><span class="nc">CUDA_CHECK</span><span class="p">(</span><span class="nf">cudaEventRecord</span><span class="p">(</span><span class="n">copied</span><span class="p">,</span><span class="w"> </span><span class="n">stream</span><span class="p">));</span>
+</span><span id="__span-14-11"><a id="__codelineno-14-11" name="__codelineno-14-11" href="#__codelineno-14-11"></a><span class="nc">CUDA_CHECK</span><span class="p">(</span><span class="nf">cudaStreamSynchronize</span><span class="p">(</span><span class="n">stream</span><span class="p">));</span>
+</span></code></pre></div>
+<p>Three intervals are timed and reported: the calculation kernel, the reduction kernel, and the copy back to the host. The destination array is registered with <code>cudaHostRegister</code> before the stream work so the copy is asynchronous, and unregistered afterwards.</p>
+<p>Note the copy offset. Reading from <code>partials + GUARD_WORDS</code> skips the low <code>GUARD_WORDS</code> limbs of the reduced value, which is how the 64 guard bits are discarded — the host only ever sees the trustworthy <code>RESULT_WORDS</code> limbs.</p>
+<p>Validation compares those limbs against a table of known digits, stored in cuPQC limb order:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="c1">// Known leading hex digits of pi (after the leading "3."), used to validate</span>
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="c1">// the start_bit=0 run.  Stored in cuPQC limb order (LSW first); printed in</span>
+</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="c1">// reverse order to recover the natural human-readable hex string.</span>
+</span><span id="__span-15-4"><a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="k">constexpr</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="nc">PI_AT_ZERO</span><span class="p">[</span><span class="nc">RESULT_WORDS</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-15-5"><a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a><span class="w">    </span><span class="mh">0xec4e6c89u</span><span class="p">,</span><span class="w"> </span><span class="mh">0x082efa98u</span><span class="p">,</span><span class="w"> </span><span class="mh">0x299f31d0u</span><span class="p">,</span><span class="w"> </span><span class="mh">0xa4093822u</span><span class="p">,</span>
+</span><span id="__span-15-6"><a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a><span class="w">    </span><span class="mh">0x03707344u</span><span class="p">,</span><span class="w"> </span><span class="mh">0x13198a2eu</span><span class="p">,</span><span class="w"> </span><span class="mh">0x85a308d3u</span><span class="p">,</span><span class="w"> </span><span class="mh">0x243f6a88u</span><span class="p">,</span>
+</span><span id="__span-15-7"><a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a><span class="p">};</span>
+</span></code></pre></div>
+<p>Because limb 0 is least significant, the digits are printed from the top limb down, and the check only applies when <code>start_bit</code> is 0:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nc">RESULT_WORDS</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="o">--</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="w">    </span><span class="nf">printf</span><span class="p">(</span><span class="s">"%08x"</span><span class="p">,</span><span class="w"> </span><span class="n">result</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a><span class="p">}</span>
+</span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a><span class="c1">// ...</span>
+</span><span id="__span-16-5"><a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">start_bit</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="o">!</span><span class="nf">equal</span><span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="nf">begin</span><span class="p">(),</span><span class="w"> </span><span class="n">result</span><span class="p">.</span><span class="nf">end</span><span class="p">(),</span><span class="w"> </span><span class="nc">PI_AT_ZERO</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-16-6"><a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a><span class="w">    </span><span class="nf">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span><span class="w"> </span><span class="s">"FAIL: result does not match the leading hex digits of pi.</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+</span><span id="__span-16-7"><a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nc">EXIT_FAILURE</span><span class="p">;</span>
+</span><span id="__span-16-8"><a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a><span class="p">}</span>
+</span></code></pre></div>
+<p><code>main</code> parses the optional argument with <code>strtoll</code> and rejects anything that is not a fully-consumed nonnegative integer, printing a usage message instead.</p>
+<h2 id="step-10-build-and-run">Step 10: Build and Run</h2>
+<p>The Makefile expects the cuPQC SDK at <code>/usr/local/cupqc-sdk</code>, or at a path you supply through the <code>CUPQC_SDK_DIR</code> environment variable. It builds every example in the folder:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>make
+</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a>./example_bigint_pihex
+</span></code></pre></div>
+<p>The program takes an optional nonnegative starting bit offset, defaulting to 0:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>./example_bigint_pihex<span class="w"> </span><span class="m">1000</span>
+</span></code></pre></div>
+<p>At offset 0 the program validates its output against the known leading hex digits of pi and reports GPU timings for the calculation, reduction, and copy-back phases.</p>
+<p>cuPQC-BigInt is a static library built for a specific set of widths per <code>TPI</code>, and it is linked with link-time optimization: the Makefile compiles with <code>-dlto</code> and links <code>-lcupqc-bigint</code>. It also uses <code>-arch=native</code>, which is why the descriptors derive <code>SM&lt;&gt;</code> from <code>__CUDA_ARCH__</code>.</p>
+<h2 id="step-11-understanding-the-output">Step 11: Understanding the Output</h2>
+<p>Expected output at the default offset:
+<div class="language-text highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>================================================================
+</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a>BigInt pihex Example
+</span><span id="__span-19-3"><a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a>================================================================
+</span><span id="__span-19-4"><a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a>
+</span><span id="__span-19-5"><a id="__codelineno-19-5" name="__codelineno-19-5" href="#__codelineno-19-5"></a>This example computes 256 fractional hex digits of pi starting at
+</span><span id="__span-19-6"><a id="__codelineno-19-6" name="__codelineno-19-6" href="#__codelineno-19-6"></a>bit offset 0, using Bellard's formula evaluated in 320- and
+</span><span id="__span-19-7"><a id="__codelineno-19-7" name="__codelineno-19-7" href="#__codelineno-19-7"></a>384-bit integer arithmetic across the whole GPU. It combines
+</span><span id="__span-19-8"><a id="__codelineno-19-8" name="__codelineno-19-8" href="#__codelineno-19-8"></a>pow_mod, div_rem, shifts and warp-level reduction of big integers.
+</span><span id="__span-19-9"><a id="__codelineno-19-9" name="__codelineno-19-9" href="#__codelineno-19-9"></a>
+</span><span id="__span-19-10"><a id="__codelineno-19-10" name="__codelineno-19-10" href="#__codelineno-19-10"></a>Configuration: 320-bit accumulators, thread execution, 64 guard bits
+</span><span id="__span-19-11"><a id="__codelineno-19-11" name="__codelineno-19-11" href="#__codelineno-19-11"></a>
+</span><span id="__span-19-12"><a id="__codelineno-19-12" name="__codelineno-19-12" href="#__codelineno-19-12"></a>pihex Example Program Results
+</span><span id="__span-19-13"><a id="__codelineno-19-13" name="__codelineno-19-13" href="#__codelineno-19-13"></a>pihex start_bit=0 GPU timings: calc=12.340ms reduce=1.230ms memcpy=0.040ms
+</span><span id="__span-19-14"><a id="__codelineno-19-14" name="__codelineno-19-14" href="#__codelineno-19-14"></a>pihex start_bit=0 (64 hex digits, most-significant first):
+</span><span id="__span-19-15"><a id="__codelineno-19-15" name="__codelineno-19-15" href="#__codelineno-19-15"></a>  243f6a8885a308d313198a2e03707344a4093822299f31d0082efa98ec4e6c89
+</span><span id="__span-19-16"><a id="__codelineno-19-16" name="__codelineno-19-16" href="#__codelineno-19-16"></a>OK: matches the known leading hex digits of pi.
+</span></code></pre></div></p>
+<p>The timing values above are placeholders — actual numbers vary by GPU, and the calculation phase also grows with <code>start_bit</code> because a larger offset requires more series iterations. The digit string is the fractional part of pi in hex, after the leading <code>3.</code>, and the <code>OK:</code> line appears only when the offset is 0. A mismatch prints a <code>FAIL:</code> line on standard error and exits with a failure status.</p>
+<p>Running with a nonzero offset prints the same banner and result lines with the offset substituted, but no validation line, since there is no reference table for arbitrary offsets.</p>
+<h2 id="customization-tips">Customization Tips</h2>
+<h3 id="compute-digits-further-out">Compute Digits Further Out</h3>
+<p>The <code>start_bit</code> argument shifts the window of pi that gets computed, and the program adapts to it automatically: <code>n_max</code> grows with the offset, so more series iterations are needed and the calculation kernel does proportionally more work.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>./example_bigint_pihex<span class="w"> </span><span class="m">0</span>
+</span><span id="__span-20-2"><a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a>./example_bigint_pihex<span class="w"> </span><span class="m">1000000</span>
+</span></code></pre></div>
+<p>The 64 guard bits exist because denominators are limited to 64 bits. Since the largest denominator is approximately <code>start_bit + 338</code>, that reservation corresponds mathematically to <code>start_bit</code> up to roughly <code>2^64</code>; the <code>int64_t</code> indexing used throughout imposes a lower practical limit of approximately <code>2^63</code>.</p>
+<h3 id="why-this-example-stays-on-thread">Why This Example Stays on <code>Thread()</code></h3>
+<p>All three widths use <code>Thread()</code>, giving each thread a complete value in its registers. That is the right fit here: the per-term work is serial, and the interesting parallelism is across series iterations rather than inside a single value. The warp-shuffle reduction in <code>calc_pihex</code> also assumes one value per thread, so moving to <code>Warp()</code> would mean restructuring the reduction as well as the descriptors.</p>
+<p>See the <a href="../bigint-vector-addition/">BigInt vector addition tutorial</a> for the trade-off between the two execution modes, and for why a change to <code>BitWidth&lt;&gt;()</code> or <code>TPI&lt;&gt;()</code> can surface as a link error rather than a compiler diagnostic.</p>
+<h3 id="reuse-the-big-integer-reduction-pattern">Reuse the Big-Integer Reduction Pattern</h3>
+<p>The two-stage reduction is independent of Bellard's formula and transfers to any kernel that sums big integers. The warp stage shuffles limbs and adds with <code>+=</code>; the grid stage stores partials as a packed array and collapses them with the indexed constructor and <code>store</code>:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="n">bigint320_t</span><span class="w"> </span><span class="nf">value</span><span class="p">(</span><span class="n">partials</span><span class="p">,</span><span class="w"> </span><span class="n">i</span><span class="p">);</span><span class="w">   </span><span class="c1">// load instance i</span>
+</span><span id="__span-21-2"><a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a><span class="n">accum</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">value</span><span class="p">;</span>
+</span><span id="__span-21-3"><a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a><span class="n">accum</span><span class="p">.</span><span class="nf">store</span><span class="p">(</span><span class="n">partials</span><span class="p">,</span><span class="w"> </span><span class="n">instance</span><span class="p">);</span><span class="w">  </span><span class="c1">// store instance</span>
+</span></code></pre></div>
+<p>Because the indexed constructor and <code>store</code> work on both global and shared memory, the same pattern serves for staging partials between kernels and for the in-block halving tree.</p>
+<h2 id="learn-more">Learn More</h2>
+<ul>
+<li><a href="https://github.com/NVIDIA/cuPQC/blob/main/examples/bigint/example_bigint_pihex.cu">Example Source Code</a> - Complete hex digits of pi example implementation</li>
+<li><a href="https://docs.nvidia.com/cuda/cupqc/libraries/cupqc_bigint/cupqc_bigint_usage.html">cuPQC-BigInt User Guide</a> - Usage guide with examples</li>
+<li><a href="https://docs.nvidia.com/cuda/cupqc/libraries/cupqc_bigint/cupqc_bigint_api.html">cuPQC-BigInt API Reference</a> - Complete API documentation</li>
+<li><a href="https://docs.nvidia.com/cuda/cupqc/libraries/cupqc_bigint/cupqc_bigint_feature.html">cuPQC-BigInt Features</a> - Supported widths, operations, and reduction paths</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+              
+            </div>
+          </div>
+          
+          <aside class="cupqc-page-toc" aria-label="Table of contents">
+            
+
+
+
+
+  
+
+
+<nav class="cupqc-page-toc__nav md-nav md-nav--secondary" aria-label="Table of contents">
+  <div class="cupqc-page-toc__heading">Table of contents</div>
+  <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+    
+      <li class="md-nav__item">
+  <a href="#step-1-project-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 1: Project Setup
+      
+    </span>
+  </a>
+</li>
+    
+      <li class="md-nav__item">
+  <a href="#step-2-include-headers-and-match-the-architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 2: Include Headers and Match the Architecture
+      
+    </span>
+  </a>
+</li>
+    
+      <li class="md-nav__item">
+  <a href="#step-3-define-the-big-integer-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 3: Define the Big-Integer Types
+      
+    </span>
+  </a>
+</li>
+    
+      <li class="md-nav__item">
+  <a href="#step-4-the-math-as-integer-arithmetic" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 4: The Math, as Integer Arithmetic
+      
+    </span>
+  </a>
+</li>
+    
+      <li class="md-nav__item">
+  <a href="#step-5-evaluate-one-subterm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 5: Evaluate One Subterm
+      
+    </span>
+  </a>
+</li>
+    
+      <li class="md-nav__item">
+  <a href="#step-6-accumulate-the-term-pairs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 6: Accumulate the Term Pairs
+      
+    </span>
+  </a>
+</li>
+    
+      <li class="md-nav__item">
+  <a href="#step-7-the-calculation-kernel-and-warp-reduction" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 7: The Calculation Kernel and Warp Reduction
+      
+    </span>
+  </a>
+</li>
+    
+      <li class="md-nav__item">
+  <a href="#step-8-reduce-the-partials-to-a-single-value" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 8: Reduce the Partials to a Single Value
+      
+    </span>
+  </a>
+</li>
+    
+      <li class="md-nav__item">
+  <a href="#step-9-host-orchestration-timing-and-validation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 9: Host Orchestration, Timing, and Validation
+      
+    </span>
+  </a>
+</li>
+    
+      <li class="md-nav__item">
+  <a href="#step-10-build-and-run" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 10: Build and Run
+      
+    </span>
+  </a>
+</li>
+    
+      <li class="md-nav__item">
+  <a href="#step-11-understanding-the-output" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 11: Understanding the Output
+      
+    </span>
+  </a>
+</li>
+    
+      <li class="md-nav__item">
+  <a href="#customization-tips" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Customization Tips
+      
+    </span>
+  </a>
+</li>
+    
+      <li class="md-nav__item">
+  <a href="#learn-more" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Learn More
+      
+    </span>
+  </a>
+</li>
+    
+  </ul>
+</nav>
+
+          </aside>
+          
+        </div>
+      </article>
+    </div>
+  
+
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer cupqc-footer">
+  <div class="cupqc-footer__grid">
+    <div class="cupqc-footer__brand">
+      
+      <img src="../../assets/nvidia-logo-white.png" alt="NVIDIA" class="cupqc-footer__logo cupqc-logo cupqc-logo--dark">
+      <img src="../../assets/nvidia-logo.svg" alt="NVIDIA" class="cupqc-footer__logo cupqc-logo cupqc-logo--light">
+      
+      <div class="cupqc-footer__name">cuPQC SDK Developer Hub</div>
+      <p>GPU-accelerated cryptographic math primitives on the NVIDIA CUDA platform.</p>
+    </div>
+    <div class="cupqc-footer__col">
+      <div class="cupqc-footer__label">Product</div>
+      <a href="https://developer.nvidia.com/cupqc" target="_blank" rel="noopener">Product Page</a>
+      <a href="https://developer.nvidia.com/cupqc-download/" target="_blank" rel="noopener">Download SDK</a>
+      <a href="https://docs.nvidia.com/cuda/cupqc/index.html" target="_blank" rel="noopener">Documentation</a>
+    </div>
+    <div class="cupqc-footer__col">
+      <div class="cupqc-footer__label">Developers</div>
+      <a href="https://github.com/NVIDIA/cuPQC" target="_blank" rel="noopener">Sample Applications</a>
+      <a href="https://forums.developer.nvidia.com/c/cuda/cupqc/703" target="_blank" rel="noopener">Developer Forums</a>
+      <a href="https://docs.nvidia.com/cuda/cupqc/introduction/getting_started.html" target="_blank" rel="noopener">Getting Started</a>
+    </div>
+    <div class="cupqc-footer__col">
+      <div class="cupqc-footer__label">Resources</div>
+      <a href="../../blogs/">Blog &amp; Benchmarks</a>
+      <a href="../">Applications</a>
+      <a href="https://docs.nvidia.com/cuda/cupqc/index.html#highlights" target="_blank" rel="noopener">SDK Features</a>
+    </div>
+  </div>
+  <div class="cupqc-footer__legal">
+    <p>© Copyright 2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved.</p>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["content.code.copy", "navigation.indexes", "navigation.tracking", "search.highlight", "search.share", "search.suggest"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../javascripts/extra.js"></script>
+      
+    
+  </body>
+</html>

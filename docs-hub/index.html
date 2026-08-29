@@ -15,7 +15,7 @@
       </script>
       
       
-        <meta name="description" content="Official cuPQC-PK and cuPQC-Hash usage guides and API references on docs.nvidia.com.">
+        <meta name="description" content="Official cuPQC-BigInt, cuPQC-NTT, cuPQC-Hash, and cuPQC-PK features, usage guides, and API references on docs.nvidia.com.">
       
       
       
@@ -70,7 +70,7 @@
     
   
   <script>
-    window.__CUPQC_SDK_VERSION__ = "v0.4.1";
+    window.__CUPQC_SDK_VERSION__ = "v0.6.0";
     window.__CUPQC_GITHUB_REPO__ = "NVIDIA/cuPQC";
   </script>
 
@@ -83,7 +83,7 @@
     
     
     
-    <body dir="ltr" class="cupqc-page-docs" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="lime">
+    <body dir="ltr" class="cupqc-page-docs" data-md-color-scheme="default" data-md-color-primary="white" data-md-color-accent="lime">
   
     
     <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
@@ -131,20 +131,20 @@
     
     
     
-    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="lime"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_0">
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="white" data-md-color-accent="lime"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
     
-      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
       </label>
     
   
     
     
     
-    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="white" data-md-color-accent="lime"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="lime"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
     
-      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_0" hidden>
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
       </label>
     
   
@@ -154,7 +154,7 @@
         
         
         
-        <a href="https://developer.nvidia.com/cupqc-download" class="cupqc-version-chip" target="_blank" rel="noopener" title="Download cuPQC SDK v0.4.1" aria-label="Download cuPQC SDK v0.4.1">SDK v0.4.1</a>
+        <a href="https://developer.nvidia.com/cupqc-download" class="cupqc-version-chip" target="_blank" rel="noopener" title="Download cuPQC SDK v0.6.0" aria-label="Download cuPQC SDK v0.6.0">SDK v0.6.0</a>
         
         
         
@@ -206,7 +206,7 @@
   <div class="cupqc-mobile-nav__meta">
     
     
-    <a href="https://developer.nvidia.com/cupqc-download" class="cupqc-version-chip" target="_blank" rel="noopener">SDK v0.4.1</a>
+    <a href="https://developer.nvidia.com/cupqc-download" class="cupqc-version-chip" target="_blank" rel="noopener">SDK v0.6.0</a>
     
     
     <a href="https://github.com/NVIDIA/cuPQC" class="cupqc-github-link" target="_blank" rel="noopener">Sample Applications</a>
@@ -259,24 +259,44 @@
 
 <div class="cupqc-page-head">
   <h1>Documentation</h1>
-  <p class="cupqc-page-intro">Implementation guides and complete API reference for each library.</p>
+  <p class="cupqc-page-intro">Supported features, implementation guides, and complete API reference for each library.</p>
 </div>
 
 <div class="resource-grid">
   <div class="resource-card">
-    <h3>cuPQC-PK Documentation</h3>
-    <p>Complete implementation guides and API reference for ML-KEM and ML-DSA.</p>
+    <h3>cuPQC-BigInt Documentation</h3>
+    <p>Fixed-width multi-precision integer arithmetic: supported widths and operations, implementation guides, and API reference.</p>
     <div class="release-links">
-      <a href="https://docs.nvidia.com/cuda/cupqc/guides/cupqc_pk_usage.html" class="release-link" target="_blank" rel="noopener">Usage Guide →</a>
-      <a href="https://docs.nvidia.com/cuda/cupqc/api/cupqc_pk_api.html" class="release-link secondary" target="_blank" rel="noopener">API Reference →</a>
+      <a href="https://docs.nvidia.com/cuda/cupqc/libraries/cupqc_bigint/cupqc_bigint_feature.html" class="release-link secondary" target="_blank" rel="noopener">Features →</a>
+      <a href="https://docs.nvidia.com/cuda/cupqc/libraries/cupqc_bigint/cupqc_bigint_usage.html" class="release-link" target="_blank" rel="noopener">Usage Guide →</a>
+      <a href="https://docs.nvidia.com/cuda/cupqc/libraries/cupqc_bigint/cupqc_bigint_api.html" class="release-link secondary" target="_blank" rel="noopener">API Reference →</a>
+    </div>
+  </div>
+  <div class="resource-card">
+    <h3>cuPQC-NTT Documentation</h3>
+    <p>Forward and inverse number theoretic transforms: supported primes and transform sizes, implementation guides, and API reference.</p>
+    <div class="release-links">
+      <a href="https://docs.nvidia.com/cuda/cupqc/libraries/cupqc_ntt/cupqc_ntt_feature.html" class="release-link secondary" target="_blank" rel="noopener">Features →</a>
+      <a href="https://docs.nvidia.com/cuda/cupqc/libraries/cupqc_ntt/cupqc_ntt_usage.html" class="release-link" target="_blank" rel="noopener">Usage Guide →</a>
+      <a href="https://docs.nvidia.com/cuda/cupqc/libraries/cupqc_ntt/cupqc_ntt_api.html" class="release-link secondary" target="_blank" rel="noopener">API Reference →</a>
     </div>
   </div>
   <div class="resource-card">
     <h3>cuPQC-Hash Documentation</h3>
-    <p>Complete implementation guides and API reference for hash functions and Merkle trees.</p>
+    <p>Hash functions and Merkle trees: supported algorithms and tree configurations, implementation guides, and API reference.</p>
     <div class="release-links">
-      <a href="https://docs.nvidia.com/cuda/cupqc/guides/cupqc_hash_usage.html" class="release-link" target="_blank" rel="noopener">Usage Guide →</a>
-      <a href="https://docs.nvidia.com/cuda/cupqc/api/cupqc_hash_api.html" class="release-link secondary" target="_blank" rel="noopener">API Reference →</a>
+      <a href="https://docs.nvidia.com/cuda/cupqc/libraries/cupqc_hash/cupqc_hash_feature.html" class="release-link secondary" target="_blank" rel="noopener">Features →</a>
+      <a href="https://docs.nvidia.com/cuda/cupqc/libraries/cupqc_hash/cupqc_hash_usage.html" class="release-link" target="_blank" rel="noopener">Usage Guide →</a>
+      <a href="https://docs.nvidia.com/cuda/cupqc/libraries/cupqc_hash/cupqc_hash_api.html" class="release-link secondary" target="_blank" rel="noopener">API Reference →</a>
+    </div>
+  </div>
+  <div class="resource-card">
+    <h3>cuPQC-PK Documentation</h3>
+    <p>ML-KEM and ML-DSA: supported parameter sets, implementation guides, and API reference.</p>
+    <div class="release-links">
+      <a href="https://docs.nvidia.com/cuda/cupqc/libraries/cupqc_pk/cupqc_pk_feature.html" class="release-link secondary" target="_blank" rel="noopener">Features →</a>
+      <a href="https://docs.nvidia.com/cuda/cupqc/libraries/cupqc_pk/cupqc_pk_usage.html" class="release-link" target="_blank" rel="noopener">Usage Guide →</a>
+      <a href="https://docs.nvidia.com/cuda/cupqc/libraries/cupqc_pk/cupqc_pk_api.html" class="release-link secondary" target="_blank" rel="noopener">API Reference →</a>
     </div>
   </div>
 </div>
@@ -331,13 +351,13 @@
       <div class="cupqc-footer__label">Developers</div>
       <a href="https://github.com/NVIDIA/cuPQC" target="_blank" rel="noopener">Sample Applications</a>
       <a href="https://forums.developer.nvidia.com/c/cuda/cupqc/703" target="_blank" rel="noopener">Developer Forums</a>
-      <a href="https://docs.nvidia.com/cuda/cupqc/guides/getting_started.html" target="_blank" rel="noopener">Getting Started</a>
+      <a href="https://docs.nvidia.com/cuda/cupqc/introduction/getting_started.html" target="_blank" rel="noopener">Getting Started</a>
     </div>
     <div class="cupqc-footer__col">
       <div class="cupqc-footer__label">Resources</div>
       <a href="../blogs/">Blog &amp; Benchmarks</a>
       <a href="../applications/">Applications</a>
-      <a href="https://docs.nvidia.com/cuda/cupqc/overview/features.html" target="_blank" rel="noopener">SDK Features</a>
+      <a href="https://docs.nvidia.com/cuda/cupqc/index.html#highlights" target="_blank" rel="noopener">SDK Features</a>
     </div>
   </div>
   <div class="cupqc-footer__legal">
