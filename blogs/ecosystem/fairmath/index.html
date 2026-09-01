@@ -328,13 +328,13 @@
 <p>However, practical deployment of FHE has been constrained by computational overhead. Modern FHE schemes rely on arithmetic over high-dimensional polynomials with large coefficient moduli, translating into millions of modular arithmetic operations per homomorphic multiplication. While many existing implementations rely on the Residue Number System (RNS), this introduces architectural constraints that limit flexibility. Accelerated computing on GPUs provides a path to explore alternative design choices, specifically BigInt-based arithmetic, which can unlock new performance characteristics on modern hardware.</p>
 <h2 id="advancing-high-performance-cryptographic-primitives">Advancing High-Performance Cryptographic Primitives</h2>
 <p>The broader FHE ecosystem faces a persistent fragmentation problem: performance optimization is often siloed within individual library implementations, with developers repeatedly re-engineering the same modular arithmetic and Number Theoretic Transforms (NTTs) from scratch.</p>
-<p>New challenge tracks on the <a href="https://dev2.fherma.io">FHERMA platform</a> are designed to catalyze the development of reusable, GPU-accelerated cryptographic primitives that can serve as a foundation for diverse FHE projects. By centering development efforts on these core components, the goal is to shift the community toward shared, high-performance kernels that any FHE application can leverage. This initiative aligns with the need to move beyond library-specific implementations toward a robust, GPU-native cryptographic layer.</p>
-<p>You can read more about the technical vision for these challenges in <a href="https://dev2.fherma.io/blog/the-new-fherma">The New FHERMA</a> from Fair Math.</p>
+<p>New challenge tracks on the <a href="https://fherma.io">FHERMA platform</a> are designed to catalyze the development of reusable, GPU-accelerated cryptographic primitives that can serve as a foundation for diverse FHE projects. By centering development efforts on these core components, the goal is to shift the community toward shared, high-performance kernels that any FHE application can leverage. This initiative aligns with the need to move beyond library-specific implementations toward a robust, GPU-native cryptographic layer.</p>
+<p>You can read more about the technical vision for these challenges in <a href="https://fherma.io/blog/the-new-fherma">The New FHERMA</a> from Fair Math.</p>
 <h2 id="optimizing-with-nvidia-cupqc">Optimizing with NVIDIA cuPQC</h2>
 <p>At the heart of this initiative is the NVIDIA cuPQC SDK, which provides the GPU-native cryptographic math layer needed for high-performance FHE.</p>
 <p>Unlike traditional approaches that launch kernels for every pipeline stage, cuPQC is designed for kernel fusion. Its primitives are exposed as device functions, allowing developers to fuse operations such as NTTs, basis conversions, and modular reductions directly into their own CUDA kernels. By keeping intermediate results in registers or shared memory, developers can bypass the global memory bottlenecks that frequently dominate runtime in bandwidth-constrained FHE pipelines.</p>
 <h2 id="join-the-fherma-challenges">Join the FHERMA Challenges</h2>
-<p>We are calling on GPU developers, cryptographers, and optimization engineers to help build this future. Two challenge tracks are launching on the <a href="https://dev2.fherma.io/challenges">FHERMA platform</a>, starting with polynomial multiplication. Fair Math's <a href="https://dev2.fherma.io/blog/fherma-nvidia-cupqc-challenges">challenge announcement</a> walks through both tracks in more detail.</p>
+<p>We are calling on GPU developers, cryptographers, and optimization engineers to help build this future. Two challenge tracks are launching on the <a href="https://fherma.io/challenges">FHERMA platform</a>, starting with polynomial multiplication. Fair Math's <a href="https://fherma.io/blog/fherma-nvidia-cupqc-challenges">challenge announcement</a> walks through both tracks in more detail.</p>
 <div class="cupqc-hub-card-grid">
   <div class="cupqc-hub-card">
     <div class="cupqc-hub-card__kind">Challenge Track</div>
@@ -353,12 +353,12 @@
 <h2 id="getting-started">Getting Started</h2>
 <p>Your contributions will directly help create the reusable building blocks that future FHE applications will rely on.</p>
 <ul>
-<li><strong>Review the challenges.</strong> Visit the <a href="https://dev2.fherma.io/challenges">FHERMA platform</a> to select a track.</li>
+<li><strong>Review the challenges.</strong> Visit the <a href="https://fherma.io/challenges">FHERMA platform</a> to select a track.</li>
 <li><strong>Download cuPQC.</strong> Get started with the <a href="https://developer.nvidia.com/cupqc-download">latest SDK</a> to begin integrating GPU-accelerated primitives into your code.</li>
 <li><strong>Explore.</strong> Check out the <a href="https://docs.nvidia.com/cuda/cupqc/">cuPQC documentation</a> and <a href="https://github.com/NVIDIA/cuPQC">code examples</a> to see how to fuse these cryptographic primitives into your own workflows.</li>
 </ul>
 <div class="cupqc-get-links">
-  <a href="https://dev2.fherma.io/challenges" class="cupqc-btn cupqc-btn--primary" target="_blank" rel="noopener">View the Challenges</a>
+  <a href="https://fherma.io/challenges" class="cupqc-btn cupqc-btn--primary" target="_blank" rel="noopener">View the Challenges</a>
   <a href="https://developer.nvidia.com/cupqc-download" class="cupqc-btn cupqc-btn--outline" target="_blank" rel="noopener">Download cuPQC SDK →</a>
 </div>
 
