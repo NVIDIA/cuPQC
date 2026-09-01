@@ -1,0 +1,1012 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      <script>
+        (function () {
+          var root = "/cuPQC/".replace(/\/+$/, "");
+          if (root && location.pathname === root) {
+            location.replace(root + "/" + location.search + location.hash);
+          }
+        })();
+      </script>
+      
+      
+        <meta name="description" content="Integrating cuPQC NTT kernels into the Lattica Platform and HEAL runtime for encrypted AI, with encrypted MNIST inference benchmarks up to 7,849 inferences per second.">
+      
+      
+      
+        <link rel="canonical" href="https://nvidia.github.io/cuPQC/blogs/ecosystem/lattica/">
+      
+      
+        <link rel="prev" href="../../hash-rates/">
+      
+      
+        <link rel="next" href="../fairmath/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../assets/nvidia-logo.svg">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+  
+    
+      
+        <title>Accelerating Encrypted AI with NVIDIA cuPQC - cuPQC SDK Developer Hub</title>
+      
+    
+  
+
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;600&display=swap">
+      
+    
+    
+      <link rel="stylesheet" href="../../../stylesheets/extra.css?h=1708b007">
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  
+  <script>
+    window.__CUPQC_SDK_VERSION__ = "v0.6.0";
+    window.__CUPQC_GITHUB_REPO__ = "NVIDIA/cuPQC";
+  </script>
+
+  </head>
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" class="cupqc-section-blog" data-md-color-scheme="default" data-md-color-primary="white" data-md-color-accent="lime">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#accelerating-encrypted-ai-with-nvidia-cupqc" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header cupqc-header" data-md-component="header">
+  <nav class="cupqc-topbar" aria-label="Header">
+    <div class="cupqc-topbar__inner">
+      <div class="cupqc-topbar__brand">
+        
+  <img class="cupqc-logo cupqc-logo--dark" src="../../../assets/nvidia-logo-white.png" alt="NVIDIA">
+  <img class="cupqc-logo cupqc-logo--light" src="../../../assets/nvidia-logo.svg" alt="NVIDIA">
+
+        <span class="cupqc-topbar__divider" aria-hidden="true"></span>
+        <span class="cupqc-topbar__titles">
+          <span class="cupqc-topbar__product">cuPQC SDK</span>
+          <span class="cupqc-topbar__hub">Developer Hub</span>
+        </span>
+      </div>
+
+      <div class="cupqc-topnav">
+        <a href="../../.." class="cupqc-topnav__link">Home</a>
+        <a href="../../../get-started/" class="cupqc-topnav__link">Get Started</a>
+        <a href="../../../applications/" class="cupqc-topnav__link">Applications</a>
+        <a href="../../" class="cupqc-topnav__link is-active">Blog</a>
+        <a href="../../../docs-hub/" class="cupqc-topnav__link">Docs</a>
+      </div>
+
+      <div class="cupqc-topbar__meta">
+        
+          
+          <div class="cupqc-theme-switch">
+            <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="white" data-md-color-accent="lime"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="lime"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+          </div>
+          
+        
+        
+        
+        <a href="https://developer.nvidia.com/cupqc-download" class="cupqc-version-chip" target="_blank" rel="noopener" title="Download cuPQC SDK v0.6.0" aria-label="Download cuPQC SDK v0.6.0">SDK v0.6.0</a>
+        
+        
+        
+        <a href="https://github.com/NVIDIA/cuPQC" class="cupqc-github-link" target="_blank" rel="noopener" aria-label="Sample Applications on GitHub" title="Sample Applications on GitHub — example code, not the SDK download">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+          <span class="cupqc-github-link__title">Sample Applications</span>
+        </a>
+        
+      </div>
+
+      <button type="button" class="cupqc-topbar__menu md-icon" aria-label="Menu" aria-expanded="false" aria-controls="cupqc-mobile-nav-panel">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+      </button>
+    </div>
+  </nav>
+  
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+  
+  <script>
+    (function () {
+      var p = location.pathname;
+      var b = document.body;
+      if (p === "/" || /\/(cuPQC\/)?(index\.html?)?$/.test(p) || p.endsWith("/cuPQC")) {
+        b.classList.add("cupqc-page-home");
+      } else if (p.includes("get-started")) {
+        b.classList.add("cupqc-page-getstarted");
+      } else if (p.includes("applications")) {
+        b.classList.add("cupqc-section-apps");
+      } else if (p.includes("blogs") || p.includes("releases")) {
+        b.classList.add("cupqc-section-blog");
+      } else if (p.includes("docs-hub")) {
+        b.classList.add("cupqc-page-docs");
+      }
+    })();
+  </script>
+</header>
+<input type="checkbox" id="cupqc-mobile-nav" class="cupqc-mobile-nav__toggle" aria-hidden="true" tabindex="-1">
+<nav class="cupqc-mobile-nav" id="cupqc-mobile-nav-panel" aria-label="Site navigation">
+  <a href="../../.." class="cupqc-mobile-nav__link">Home</a>
+  <a href="../../../get-started/" class="cupqc-mobile-nav__link">Get Started</a>
+  <a href="../../../applications/" class="cupqc-mobile-nav__link">Applications</a>
+  <a href="../../" class="cupqc-mobile-nav__link is-active">Blog</a>
+  <a href="../../../docs-hub/" class="cupqc-mobile-nav__link">Docs</a>
+  
+  <div class="cupqc-mobile-nav__meta">
+    
+    
+    <a href="https://developer.nvidia.com/cupqc-download" class="cupqc-version-chip" target="_blank" rel="noopener">SDK v0.6.0</a>
+    
+    
+    <a href="https://github.com/NVIDIA/cuPQC" class="cupqc-github-link" target="_blank" rel="noopener">Sample Applications</a>
+    
+  </div>
+  
+</nav>
+<label class="cupqc-mobile-nav__overlay" for="cupqc-mobile-nav" aria-hidden="true"></label>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+  
+
+          
+  
+    <div class="md-content" data-md-component="content">
+      <article class="md-content__inner">
+        <div class="cupqc-page-shell cupqc-page-shell--apps">
+          <div class="cupqc-apps-layout">
+            <aside class="cupqc-apps-sidebar" aria-label="Blog navigation">
+              
+                
+
+
+
+
+  
+  
+  
+<nav class="cupqc-facets" aria-label="Filter posts">
+  
+  <div class="cupqc-facet-group">
+    <div class="cupqc-facet-group__label" id="cupqc-facet-label-category">Categories</div>
+    <div role="group" aria-labelledby="cupqc-facet-label-category">
+      
+      <a href="../../" class="cupqc-facet-btn">
+        <span class="cupqc-facet-btn__text">All posts</span><span class="cupqc-facet-btn__count">7</span>
+      </a>
+      
+      
+      <a href="../../?category=Release%20Blog" class="cupqc-facet-btn">
+        <span class="cupqc-facet-btn__text">Release Blog</span><span class="cupqc-facet-btn__count">3</span>
+      </a>
+      
+      
+      <a href="../../?category=Technical%20Blog" class="cupqc-facet-btn">
+        <span class="cupqc-facet-btn__text">Technical Blog</span><span class="cupqc-facet-btn__count">2</span>
+      </a>
+      
+      
+      <a href="../../?category=Ecosystem" class="cupqc-facet-btn is-active" aria-current="true">
+        <span class="cupqc-facet-btn__text">Ecosystem</span><span class="cupqc-facet-btn__count">2</span>
+      </a>
+      
+      
+    </div>
+  </div>
+  
+  <div class="cupqc-facet-group">
+    <div class="cupqc-facet-group__label" id="cupqc-facet-label-year">Archive</div>
+    <div role="group" aria-labelledby="cupqc-facet-label-year">
+      
+      <a href="../../" class="cupqc-facet-btn">
+        <span class="cupqc-facet-btn__text">All years</span><span class="cupqc-facet-btn__count">7</span>
+      </a>
+      
+      
+      <a href="../../?year=2026" class="cupqc-facet-btn is-active" aria-current="true">
+        <span class="cupqc-facet-btn__text">2026</span><span class="cupqc-facet-btn__count">5</span>
+      </a>
+      
+      
+      <a href="../../?year=2025" class="cupqc-facet-btn">
+        <span class="cupqc-facet-btn__text">2025</span><span class="cupqc-facet-btn__count">1</span>
+      </a>
+      
+      
+      <a href="../../?year=2024" class="cupqc-facet-btn">
+        <span class="cupqc-facet-btn__text">2024</span><span class="cupqc-facet-btn__count">1</span>
+      </a>
+      
+      
+    </div>
+  </div>
+  
+</nav>
+
+              
+            </aside>
+            <div class="cupqc-apps-main md-typeset">
+              
+
+
+  
+  
+
+
+<h1 id="accelerating-encrypted-ai-with-nvidia-cupqc">Accelerating Encrypted AI with NVIDIA cuPQC</h1>
+<p class="blog-post-meta">
+  <span class="blog-meta-tag"><time datetime="2026-08-29">August 29, 2026</time></span>
+  <span class="blog-meta-tag blog-meta-tag--sdk">cuPQC SDK v0.6.0</span>
+</p>
+
+<p>Homomorphic Encryption (HE) enables computation directly on encrypted data, making it possible to build AI systems that process sensitive information without ever decrypting it. As encrypted AI workloads continue to grow in complexity, the computational cost of the underlying cryptographic operations has become one of the primary challenges to practical deployment.</p>
+<p>NVIDIA cuPQC addresses this challenge by providing highly optimized GPU implementations of core cryptographic primitives that form the foundation of modern Homomorphic Encryption schemes. Rather than accelerating complete applications directly, cuPQC accelerates the low-level building blocks that account for much of encrypted execution, allowing higher software layers to transparently benefit from GPU acceleration.</p>
+<p>In this post, we explore how GPU-accelerated cryptographic primitives fit into a modern Homomorphic Encryption software stack. Using the Lattica Platform and HEAL as the execution stack, we show how NVIDIA cuPQC accelerates the Number Theoretic Transform (NTT), where it fits within encrypted AI execution, and the performance improvements observed on real workloads.</p>
+<h2 id="the-homomorphic-encryption-software-stack">The Homomorphic Encryption Software Stack</h2>
+<p>Although Homomorphic Encryption is often viewed as a cryptographic primitive, modern encrypted AI systems are built as layered software stacks. Machine learning models are progressively lowered through multiple abstraction layers, from neural network operations to Homomorphic Encryption operations and finally to the cryptographic primitives executed on the underlying hardware.</p>
+<figure class="cupqc-hash-figure cupqc-hash-figure--raster cupqc-hash-figure--tall">
+  <img src="software-stack.png" alt="Layered encrypted AI software stack: a PyTorch model is compiled by the Lattica Platform into high-level homomorphic encryption operations, lowered by the HEAL runtime into hardware-independent cryptographic primitives, dispatched through the Device Dispatcher to either the default CUDA backend or the NVIDIA cuPQC backend, organized as tensor batches over the modulus chain, and executed as cuPQC NTT kernels on the NVIDIA GPU.">
+  <figcaption class="cupqc-hash-chart__foot">Figure 1. Software stack used throughout this article.</figcaption>
+</figure>
+
+<p>This separation of responsibilities allows each layer to evolve independently while maintaining a consistent programming model for encrypted AI.</p>
+<h2 id="integrating-nvidia-cupqc">Integrating NVIDIA cuPQC</h2>
+<p>One of the strengths of cuPQC is that it is designed to integrate into existing Homomorphic Encryption runtimes rather than replace them.</p>
+<p>Modern runtimes already dispatch cryptographic primitives through hardware-specific backends. In HEAL, this abstraction is exposed through the open-source Device Dispatcher interface, allowing different hardware implementations to provide optimized versions of individual primitives while preserving a common execution model.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="k">class</span><span class="w"> </span><span class="nc">DeviceDispatcher</span><span class="p">:</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="o">...</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">ntt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">intt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">modmul</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>    <span class="o">...</span>
+</span></code></pre></div>
+<p>Because cuPQC accelerates individual primitives rather than complete encrypted applications, integrating it required implementing only the currently supported operations: the NTT and inverse NTT. Instead of developing a new backend from scratch, the cuPQC backend derives from the existing CUDA backend in HEAL and selectively overrides the NTT and inverse NTT operations.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="k">class</span><span class="w"> </span><span class="nc">PytorchCuPQCDispatcher</span><span class="p">(</span><span class="nc">PytorchCudaDispatcher</span><span class="p">):</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>        <span class="c1"># import a compiled torch.utils.cpp_extension.CUDAExtension</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">torch_cupqc_dispatcher</span> <span class="o">=</span> <span class="o">...</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">ntt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tensor</span><span class="p">,</span> <span class="n">mod_chain</span><span class="p">,</span> <span class="n">twiddles</span><span class="p">):</span>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">torch_cupqc_dispatcher</span><span class="o">.</span><span class="nf">apply_ntt</span><span class="p">(</span>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>            <span class="n">tensor</span><span class="p">,</span> <span class="n">mod_chain</span><span class="p">,</span> <span class="n">twiddles</span>
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>        <span class="p">)</span>
+</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>
+</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">intt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tensor</span><span class="p">,</span> <span class="n">mod_chain</span><span class="p">,</span> <span class="n">twiddles_inv</span><span class="p">,</span> <span class="n">n_inv</span><span class="p">):</span>
+</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">torch_cupqc_dispatcher</span><span class="o">.</span><span class="nf">apply_intt</span><span class="p">(</span>
+</span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>            <span class="n">tensor</span><span class="p">,</span> <span class="n">mod_chain</span><span class="p">,</span> <span class="n">twiddles_inv</span><span class="p">,</span> <span class="n">n_inv</span>
+</span><span id="__span-1-16"><a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a>        <span class="p">)</span>
+</span></code></pre></div>
+<p>Everything else, including modular arithmetic, memory management, tensor layouts, execution scheduling, and higher-level Homomorphic Encryption operations, continues to use the existing default CUDA backend of HEAL, implemented by <code>PytorchCudaDispatcher</code>.</p>
+<p>At runtime, once the <code>PytorchCuPQCDispatcher</code> receives an NTT or inverse NTT request, execution is forwarded directly to cuPQC's optimized kernels:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">cupqc</span><span class="p">;</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="k">template</span><span class="w"> </span><span class="o">&lt;</span><span class="kt">uint32_t</span><span class="w"> </span><span class="nc">N</span><span class="o">&gt;</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="k">using</span><span class="w"> </span><span class="nc">ForwardNTTFor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">decltype</span><span class="p">(</span><span class="n">Algorithm</span><span class="o">&lt;</span><span class="n">algorithm</span><span class="o">::</span><span class="nc">NTT</span><span class="o">&gt;</span><span class="p">()</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">    </span><span class="o">+</span><span class="w"> </span><span class="n">Direction</span><span class="o">&lt;</span><span class="n">nttDirection</span><span class="o">::</span><span class="nc">FORWARD</span><span class="o">&gt;</span><span class="p">()</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">    </span><span class="o">+</span><span class="w"> </span><span class="n">Precision</span><span class="o">&lt;</span><span class="nc">U_SINGLE_PRECISION</span><span class="o">&gt;</span><span class="p">()</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="w">    </span><span class="o">+</span><span class="w"> </span><span class="n">Size</span><span class="o">&lt;</span><span class="nc">N</span><span class="o">&gt;</span><span class="p">()</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="w">    </span><span class="o">+</span><span class="w"> </span><span class="nc">Block</span><span class="p">()</span>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="w">    </span><span class="o">+</span><span class="w"> </span><span class="nc">BlockDim</span><span class="o">&lt;</span><span class="mi">1024</span><span class="o">&gt;</span><span class="p">());</span>
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="k">template</span><span class="w"> </span><span class="o">&lt;</span><span class="kt">uint32_t</span><span class="w"> </span><span class="nc">N</span><span class="p">,</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="nc">M</span><span class="o">&gt;</span>
+</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="k">using</span><span class="w"> </span><span class="nc">ForwardNTTStagedFor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">decltype</span><span class="p">(</span><span class="n">Algorithm</span><span class="o">&lt;</span><span class="n">algorithm</span><span class="o">::</span><span class="nc">NTT</span><span class="o">&gt;</span><span class="p">()</span>
+</span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="w">    </span><span class="o">+</span><span class="w"> </span><span class="n">Direction</span><span class="o">&lt;</span><span class="n">nttDirection</span><span class="o">::</span><span class="nc">FORWARD</span><span class="o">&gt;</span><span class="p">()</span>
+</span><span id="__span-2-14"><a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a><span class="w">    </span><span class="o">+</span><span class="w"> </span><span class="n">Precision</span><span class="o">&lt;</span><span class="nc">U_SINGLE_PRECISION</span><span class="o">&gt;</span><span class="p">()</span>
+</span><span id="__span-2-15"><a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a><span class="w">    </span><span class="o">+</span><span class="w"> </span><span class="n">Size</span><span class="o">&lt;</span><span class="nc">N</span><span class="o">&gt;</span><span class="p">()</span>
+</span><span id="__span-2-16"><a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a><span class="w">    </span><span class="o">+</span><span class="w"> </span><span class="nc">SubSize</span><span class="o">&lt;</span><span class="nc">M</span><span class="o">&gt;</span><span class="p">()</span>
+</span><span id="__span-2-17"><a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a><span class="w">    </span><span class="o">+</span><span class="w"> </span><span class="nc">Block</span><span class="p">()</span>
+</span><span id="__span-2-18"><a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a><span class="w">    </span><span class="o">+</span><span class="w"> </span><span class="nc">BlockDim</span><span class="o">&lt;</span><span class="mi">1024</span><span class="o">&gt;</span><span class="p">());</span>
+</span><span id="__span-2-19"><a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a>
+</span><span id="__span-2-20"><a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a><span class="cm">/*</span>
+</span><span id="__span-2-21"><a id="__codelineno-2-21" name="__codelineno-2-21" href="#__codelineno-2-21"></a><span class="cm">Each CUDA block executes a single NTT using cuPQC.</span>
+</span><span id="__span-2-22"><a id="__codelineno-2-22" name="__codelineno-2-22" href="#__codelineno-2-22"></a><span class="cm">The grid dimensions map naturally to the tensor representation</span>
+</span><span id="__span-2-23"><a id="__codelineno-2-23" name="__codelineno-2-23" href="#__codelineno-2-23"></a><span class="cm">used by the HEAL runtime, allowing thousands of independent</span>
+</span><span id="__span-2-24"><a id="__codelineno-2-24" name="__codelineno-2-24" href="#__codelineno-2-24"></a><span class="cm">transforms to execute concurrently without additional scheduling logic.</span>
+</span><span id="__span-2-25"><a id="__codelineno-2-25" name="__codelineno-2-25" href="#__codelineno-2-25"></a><span class="cm">*/</span>
+</span><span id="__span-2-26"><a id="__codelineno-2-26" name="__codelineno-2-26" href="#__codelineno-2-26"></a><span class="k">template</span><span class="w"> </span><span class="o">&lt;</span><span class="kt">uint32_t</span><span class="w"> </span><span class="nc">N</span><span class="o">&gt;</span>
+</span><span id="__span-2-27"><a id="__codelineno-2-27" name="__codelineno-2-27" href="#__codelineno-2-27"></a><span class="k">__global__</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">forward_ntt_kernel</span><span class="p">(...)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-2-28"><a id="__codelineno-2-28" name="__codelineno-2-28" href="#__codelineno-2-28"></a><span class="w">    </span><span class="k">using</span><span class="w"> </span><span class="nc">ForwardNTT</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nc">ForwardNTTFor</span><span class="o">&lt;</span><span class="nc">N</span><span class="o">&gt;</span><span class="p">;</span>
+</span><span id="__span-2-29"><a id="__codelineno-2-29" name="__codelineno-2-29" href="#__codelineno-2-29"></a>
+</span><span id="__span-2-30"><a id="__codelineno-2-30" name="__codelineno-2-30" href="#__codelineno-2-30"></a><span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">batch_idx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">blockIdx</span><span class="p">.</span><span class="n">x</span><span class="p">;</span>
+</span><span id="__span-2-31"><a id="__codelineno-2-31" name="__codelineno-2-31" href="#__codelineno-2-31"></a><span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">p_idx</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="n">blockIdx</span><span class="p">.</span><span class="n">y</span><span class="p">;</span>
+</span><span id="__span-2-32"><a id="__codelineno-2-32" name="__codelineno-2-32" href="#__codelineno-2-32"></a><span class="w">    </span><span class="k">extern</span><span class="w"> </span><span class="k">__shared__</span><span class="w"> </span><span class="nc">U_SINGLE_PRECISION</span><span class="w"> </span><span class="n">sdata</span><span class="p">[];</span>
+</span><span id="__span-2-33"><a id="__codelineno-2-33" name="__codelineno-2-33" href="#__codelineno-2-33"></a>
+</span><span id="__span-2-34"><a id="__codelineno-2-34" name="__codelineno-2-34" href="#__codelineno-2-34"></a><span class="w">    </span><span class="k">auto</span><span class="o">*</span><span class="w"> </span><span class="n">poly</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">reinterpret_cast</span><span class="o">&lt;</span><span class="nc">U_SINGLE_PRECISION</span><span class="o">*&gt;</span><span class="p">(</span><span class="o">&amp;</span><span class="n">tensor</span><span class="p">[</span><span class="n">batch_idx</span><span class="p">][</span><span class="n">p_idx</span><span class="p">][</span><span class="mi">0</span><span class="p">]);</span>
+</span><span id="__span-2-35"><a id="__codelineno-2-35" name="__codelineno-2-35" href="#__codelineno-2-35"></a><span class="w">    </span><span class="k">auto</span><span class="o">*</span><span class="w"> </span><span class="n">twds</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">reinterpret_cast</span><span class="o">&lt;</span><span class="nc">U_SINGLE_PRECISION</span><span class="o">*&gt;</span><span class="p">(</span><span class="o">&amp;</span><span class="n">twiddles</span><span class="p">[</span><span class="n">p_idx</span><span class="p">][</span><span class="mi">0</span><span class="p">]);</span>
+</span><span id="__span-2-36"><a id="__codelineno-2-36" name="__codelineno-2-36" href="#__codelineno-2-36"></a>
+</span><span id="__span-2-37"><a id="__codelineno-2-37" name="__codelineno-2-37" href="#__codelineno-2-37"></a><span class="w">    </span><span class="nc">U_SINGLE_PRECISION</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">static_cast</span><span class="o">&lt;</span><span class="nc">U_SINGLE_PRECISION</span><span class="o">&gt;</span><span class="p">(</span><span class="n">mod_chain</span><span class="p">[</span><span class="n">p_idx</span><span class="p">]);</span>
+</span><span id="__span-2-38"><a id="__codelineno-2-38" name="__codelineno-2-38" href="#__codelineno-2-38"></a>
+</span><span id="__span-2-39"><a id="__codelineno-2-39" name="__codelineno-2-39" href="#__codelineno-2-39"></a><span class="w">    </span><span class="n">nttConst</span><span class="w"> </span><span class="nf">fntt_constants</span><span class="p">(</span><span class="n">p</span><span class="p">);</span>
+</span><span id="__span-2-40"><a id="__codelineno-2-40" name="__codelineno-2-40" href="#__codelineno-2-40"></a>
+</span><span id="__span-2-41"><a id="__codelineno-2-41" name="__codelineno-2-41" href="#__codelineno-2-41"></a><span class="w">    </span><span class="nc">ForwardNTT</span><span class="p">().</span><span class="nf">load_to_mont</span><span class="p">(</span><span class="n">sdata</span><span class="p">,</span><span class="w"> </span><span class="n">poly</span><span class="p">,</span><span class="w"> </span><span class="n">fntt_constants</span><span class="p">);</span>
+</span><span id="__span-2-42"><a id="__codelineno-2-42" name="__codelineno-2-42" href="#__codelineno-2-42"></a><span class="w">    </span><span class="nc">ForwardNTT</span><span class="p">().</span><span class="nf">execute</span><span class="p">(</span><span class="n">poly</span><span class="p">,</span><span class="w"> </span><span class="n">twds</span><span class="p">,</span><span class="w"> </span><span class="n">fntt_constants</span><span class="p">.</span><span class="n">p</span><span class="p">);</span>
+</span><span id="__span-2-43"><a id="__codelineno-2-43" name="__codelineno-2-43" href="#__codelineno-2-43"></a><span class="w">    </span><span class="nc">ForwardNTT</span><span class="p">().</span><span class="nf">store_from_mont</span><span class="p">(</span><span class="n">sdata</span><span class="p">,</span><span class="w"> </span><span class="n">poly</span><span class="p">,</span><span class="w"> </span><span class="n">fntt_constants</span><span class="p">);</span>
+</span><span id="__span-2-44"><a id="__codelineno-2-44" name="__codelineno-2-44" href="#__codelineno-2-44"></a><span class="p">}</span>
+</span><span id="__span-2-45"><a id="__codelineno-2-45" name="__codelineno-2-45" href="#__codelineno-2-45"></a>
+</span><span id="__span-2-46"><a id="__codelineno-2-46" name="__codelineno-2-46" href="#__codelineno-2-46"></a><span class="cm">/*</span>
+</span><span id="__span-2-47"><a id="__codelineno-2-47" name="__codelineno-2-47" href="#__codelineno-2-47"></a><span class="cm">A collection of CUDA blocks cooperates on a single NTT using cuPQC.</span>
+</span><span id="__span-2-48"><a id="__codelineno-2-48" name="__codelineno-2-48" href="#__codelineno-2-48"></a><span class="cm">The cuPQC API for larger NTT sizes uses blockIdx.x, but the remaining</span>
+</span><span id="__span-2-49"><a id="__codelineno-2-49" name="__codelineno-2-49" href="#__codelineno-2-49"></a><span class="cm">grid dimensions still map naturally to the tensor representation used</span>
+</span><span id="__span-2-50"><a id="__codelineno-2-50" name="__codelineno-2-50" href="#__codelineno-2-50"></a><span class="cm">by the HEAL runtime, allowing thousands of independent transforms to</span>
+</span><span id="__span-2-51"><a id="__codelineno-2-51" name="__codelineno-2-51" href="#__codelineno-2-51"></a><span class="cm">execute concurrently without additional scheduling logic.</span>
+</span><span id="__span-2-52"><a id="__codelineno-2-52" name="__codelineno-2-52" href="#__codelineno-2-52"></a><span class="cm">*/</span>
+</span><span id="__span-2-53"><a id="__codelineno-2-53" name="__codelineno-2-53" href="#__codelineno-2-53"></a><span class="k">template</span><span class="w"> </span><span class="o">&lt;</span><span class="kt">uint32_t</span><span class="w"> </span><span class="nc">N</span><span class="o">&gt;</span>
+</span><span id="__span-2-54"><a id="__codelineno-2-54" name="__codelineno-2-54" href="#__codelineno-2-54"></a><span class="k">__global__</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">forward_ntt_stage_1_kernel</span><span class="p">(...)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-2-55"><a id="__codelineno-2-55" name="__codelineno-2-55" href="#__codelineno-2-55"></a><span class="w">    </span><span class="k">using</span><span class="w"> </span><span class="nc">ForwardNTT</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nc">ForwardNTTStagedFor</span><span class="o">&lt;</span><span class="nc">N</span><span class="p">,</span><span class="w"> </span><span class="mi">128</span><span class="o">&gt;</span><span class="p">;</span>
+</span><span id="__span-2-56"><a id="__codelineno-2-56" name="__codelineno-2-56" href="#__codelineno-2-56"></a>
+</span><span id="__span-2-57"><a id="__codelineno-2-57" name="__codelineno-2-57" href="#__codelineno-2-57"></a><span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">batch_idx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">blockIdx</span><span class="p">.</span><span class="n">y</span><span class="p">;</span>
+</span><span id="__span-2-58"><a id="__codelineno-2-58" name="__codelineno-2-58" href="#__codelineno-2-58"></a><span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">p_idx</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="n">blockIdx</span><span class="p">.</span><span class="n">z</span><span class="p">;</span>
+</span><span id="__span-2-59"><a id="__codelineno-2-59" name="__codelineno-2-59" href="#__codelineno-2-59"></a><span class="w">    </span><span class="k">extern</span><span class="w"> </span><span class="k">__shared__</span><span class="w"> </span><span class="nc">U_SINGLE_PRECISION</span><span class="w"> </span><span class="n">sdata</span><span class="p">[];</span>
+</span><span id="__span-2-60"><a id="__codelineno-2-60" name="__codelineno-2-60" href="#__codelineno-2-60"></a>
+</span><span id="__span-2-61"><a id="__codelineno-2-61" name="__codelineno-2-61" href="#__codelineno-2-61"></a><span class="w">    </span><span class="k">auto</span><span class="o">*</span><span class="w"> </span><span class="n">poly</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">reinterpret_cast</span><span class="o">&lt;</span><span class="nc">U_SINGLE_PRECISION</span><span class="o">*&gt;</span><span class="p">(</span><span class="o">&amp;</span><span class="n">tensor</span><span class="p">[</span><span class="n">batch_idx</span><span class="p">][</span><span class="n">p_idx</span><span class="p">][</span><span class="mi">0</span><span class="p">]);</span>
+</span><span id="__span-2-62"><a id="__codelineno-2-62" name="__codelineno-2-62" href="#__codelineno-2-62"></a><span class="w">    </span><span class="k">auto</span><span class="o">*</span><span class="w"> </span><span class="n">twds</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">reinterpret_cast</span><span class="o">&lt;</span><span class="nc">U_SINGLE_PRECISION</span><span class="o">*&gt;</span><span class="p">(</span><span class="o">&amp;</span><span class="n">twiddles</span><span class="p">[</span><span class="n">p_idx</span><span class="p">][</span><span class="mi">0</span><span class="p">]);</span>
+</span><span id="__span-2-63"><a id="__codelineno-2-63" name="__codelineno-2-63" href="#__codelineno-2-63"></a>
+</span><span id="__span-2-64"><a id="__codelineno-2-64" name="__codelineno-2-64" href="#__codelineno-2-64"></a><span class="w">    </span><span class="nc">U_SINGLE_PRECISION</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">static_cast</span><span class="o">&lt;</span><span class="nc">U_SINGLE_PRECISION</span><span class="o">&gt;</span><span class="p">(</span><span class="n">mod_chain</span><span class="p">[</span><span class="n">p_idx</span><span class="p">]);</span>
+</span><span id="__span-2-65"><a id="__codelineno-2-65" name="__codelineno-2-65" href="#__codelineno-2-65"></a>
+</span><span id="__span-2-66"><a id="__codelineno-2-66" name="__codelineno-2-66" href="#__codelineno-2-66"></a><span class="w">    </span><span class="n">nttConst</span><span class="w"> </span><span class="nf">fntt_constants</span><span class="p">(</span><span class="n">p</span><span class="p">);</span>
+</span><span id="__span-2-67"><a id="__codelineno-2-67" name="__codelineno-2-67" href="#__codelineno-2-67"></a>
+</span><span id="__span-2-68"><a id="__codelineno-2-68" name="__codelineno-2-68" href="#__codelineno-2-68"></a><span class="w">    </span><span class="nc">ForwardNTT</span><span class="p">().</span><span class="nf">stage_1_load_to_mont</span><span class="p">(</span><span class="n">sdata</span><span class="p">,</span><span class="w"> </span><span class="n">poly</span><span class="p">,</span><span class="w"> </span><span class="n">blockIdx</span><span class="p">.</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">fntt_constants</span><span class="p">);</span>
+</span><span id="__span-2-69"><a id="__codelineno-2-69" name="__codelineno-2-69" href="#__codelineno-2-69"></a><span class="w">    </span><span class="nc">ForwardNTT</span><span class="p">().</span><span class="nf">stage_1_execute</span><span class="p">(</span><span class="n">sdata</span><span class="p">,</span><span class="w"> </span><span class="n">twds</span><span class="p">,</span><span class="w"> </span><span class="n">fntt_constants</span><span class="p">.</span><span class="n">p</span><span class="p">);</span>
+</span><span id="__span-2-70"><a id="__codelineno-2-70" name="__codelineno-2-70" href="#__codelineno-2-70"></a><span class="w">    </span><span class="nc">ForwardNTT</span><span class="p">().</span><span class="nf">stage_1_store</span><span class="p">(</span><span class="n">sdata</span><span class="p">,</span><span class="w"> </span><span class="n">poly</span><span class="p">,</span><span class="w"> </span><span class="n">blockIdx</span><span class="p">.</span><span class="n">x</span><span class="p">);</span>
+</span><span id="__span-2-71"><a id="__codelineno-2-71" name="__codelineno-2-71" href="#__codelineno-2-71"></a><span class="p">}</span>
+</span><span id="__span-2-72"><a id="__codelineno-2-72" name="__codelineno-2-72" href="#__codelineno-2-72"></a>
+</span><span id="__span-2-73"><a id="__codelineno-2-73" name="__codelineno-2-73" href="#__codelineno-2-73"></a><span class="k">template</span><span class="w"> </span><span class="o">&lt;</span><span class="kt">uint32_t</span><span class="w"> </span><span class="nc">N</span><span class="o">&gt;</span>
+</span><span id="__span-2-74"><a id="__codelineno-2-74" name="__codelineno-2-74" href="#__codelineno-2-74"></a><span class="k">__global__</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">forward_ntt_stage_2_kernel</span><span class="p">(...)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-2-75"><a id="__codelineno-2-75" name="__codelineno-2-75" href="#__codelineno-2-75"></a><span class="w">    </span><span class="k">using</span><span class="w"> </span><span class="nc">ForwardNTT</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nc">ForwardNTTStagedFor</span><span class="o">&lt;</span><span class="nc">N</span><span class="p">,</span><span class="w"> </span><span class="mi">128</span><span class="o">&gt;</span><span class="p">;</span>
+</span><span id="__span-2-76"><a id="__codelineno-2-76" name="__codelineno-2-76" href="#__codelineno-2-76"></a>
+</span><span id="__span-2-77"><a id="__codelineno-2-77" name="__codelineno-2-77" href="#__codelineno-2-77"></a><span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">batch_idx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">blockIdx</span><span class="p">.</span><span class="n">y</span><span class="p">;</span>
+</span><span id="__span-2-78"><a id="__codelineno-2-78" name="__codelineno-2-78" href="#__codelineno-2-78"></a><span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">p_idx</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="n">blockIdx</span><span class="p">.</span><span class="n">z</span><span class="p">;</span>
+</span><span id="__span-2-79"><a id="__codelineno-2-79" name="__codelineno-2-79" href="#__codelineno-2-79"></a><span class="w">    </span><span class="k">extern</span><span class="w"> </span><span class="k">__shared__</span><span class="w"> </span><span class="nc">U_SINGLE_PRECISION</span><span class="w"> </span><span class="n">sdata</span><span class="p">[];</span>
+</span><span id="__span-2-80"><a id="__codelineno-2-80" name="__codelineno-2-80" href="#__codelineno-2-80"></a>
+</span><span id="__span-2-81"><a id="__codelineno-2-81" name="__codelineno-2-81" href="#__codelineno-2-81"></a><span class="w">    </span><span class="k">auto</span><span class="o">*</span><span class="w"> </span><span class="n">poly</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">reinterpret_cast</span><span class="o">&lt;</span><span class="nc">U_SINGLE_PRECISION</span><span class="o">*&gt;</span><span class="p">(</span><span class="o">&amp;</span><span class="n">tensor</span><span class="p">[</span><span class="n">batch_idx</span><span class="p">][</span><span class="n">p_idx</span><span class="p">][</span><span class="mi">0</span><span class="p">]);</span>
+</span><span id="__span-2-82"><a id="__codelineno-2-82" name="__codelineno-2-82" href="#__codelineno-2-82"></a><span class="w">    </span><span class="k">auto</span><span class="o">*</span><span class="w"> </span><span class="n">twds</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">reinterpret_cast</span><span class="o">&lt;</span><span class="nc">U_SINGLE_PRECISION</span><span class="o">*&gt;</span><span class="p">(</span><span class="o">&amp;</span><span class="n">twiddles</span><span class="p">[</span><span class="n">p_idx</span><span class="p">][</span><span class="mi">0</span><span class="p">]);</span>
+</span><span id="__span-2-83"><a id="__codelineno-2-83" name="__codelineno-2-83" href="#__codelineno-2-83"></a>
+</span><span id="__span-2-84"><a id="__codelineno-2-84" name="__codelineno-2-84" href="#__codelineno-2-84"></a><span class="w">    </span><span class="nc">U_SINGLE_PRECISION</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">static_cast</span><span class="o">&lt;</span><span class="nc">U_SINGLE_PRECISION</span><span class="o">&gt;</span><span class="p">(</span><span class="n">mod_chain</span><span class="p">[</span><span class="n">p_idx</span><span class="p">]);</span>
+</span><span id="__span-2-85"><a id="__codelineno-2-85" name="__codelineno-2-85" href="#__codelineno-2-85"></a>
+</span><span id="__span-2-86"><a id="__codelineno-2-86" name="__codelineno-2-86" href="#__codelineno-2-86"></a><span class="w">    </span><span class="n">nttConst</span><span class="w"> </span><span class="nf">fntt_constants</span><span class="p">(</span><span class="n">p</span><span class="p">);</span>
+</span><span id="__span-2-87"><a id="__codelineno-2-87" name="__codelineno-2-87" href="#__codelineno-2-87"></a>
+</span><span id="__span-2-88"><a id="__codelineno-2-88" name="__codelineno-2-88" href="#__codelineno-2-88"></a><span class="w">    </span><span class="nc">ForwardNTT</span><span class="p">().</span><span class="nf">stage_2_load</span><span class="p">(</span><span class="n">sdata</span><span class="p">,</span><span class="w"> </span><span class="n">poly</span><span class="p">,</span><span class="w"> </span><span class="n">blockIdx</span><span class="p">.</span><span class="n">x</span><span class="p">);</span>
+</span><span id="__span-2-89"><a id="__codelineno-2-89" name="__codelineno-2-89" href="#__codelineno-2-89"></a><span class="w">    </span><span class="nc">ForwardNTT</span><span class="p">().</span><span class="nf">stage_2_execute</span><span class="p">(</span><span class="n">sdata</span><span class="p">,</span><span class="w"> </span><span class="n">twds</span><span class="p">,</span><span class="w"> </span><span class="n">fntt_constants</span><span class="p">.</span><span class="n">p</span><span class="p">);</span>
+</span><span id="__span-2-90"><a id="__codelineno-2-90" name="__codelineno-2-90" href="#__codelineno-2-90"></a><span class="w">    </span><span class="nc">ForwardNTT</span><span class="p">().</span><span class="nf">stage_2_store_from_mont</span><span class="p">(</span><span class="n">sdata</span><span class="p">,</span><span class="w"> </span><span class="n">poly</span><span class="p">,</span><span class="w"> </span><span class="n">blockIdx</span><span class="p">.</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">fntt_constants</span><span class="p">);</span>
+</span><span id="__span-2-91"><a id="__codelineno-2-91" name="__codelineno-2-91" href="#__codelineno-2-91"></a><span class="p">}</span>
+</span><span id="__span-2-92"><a id="__codelineno-2-92" name="__codelineno-2-92" href="#__codelineno-2-92"></a>
+</span><span id="__span-2-93"><a id="__codelineno-2-93" name="__codelineno-2-93" href="#__codelineno-2-93"></a><span class="k">template</span><span class="w"> </span><span class="o">&lt;</span><span class="kt">uint32_t</span><span class="w"> </span><span class="nc">N</span><span class="o">&gt;</span>
+</span><span id="__span-2-94"><a id="__codelineno-2-94" name="__codelineno-2-94" href="#__codelineno-2-94"></a><span class="kt">void</span><span class="w"> </span><span class="nf">launch_forward_ntt</span><span class="p">(</span><span class="n">torch</span><span class="o">::</span><span class="n">Tensor</span><span class="o">&amp;</span><span class="w"> </span><span class="n">tensor</span><span class="p">,</span><span class="w"> </span><span class="p">...)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-2-95"><a id="__codelineno-2-95" name="__codelineno-2-95" href="#__codelineno-2-95"></a><span class="w">    </span><span class="cm">/* Uses the cuPQC-NTT single-kernel regime */</span>
+</span><span id="__span-2-96"><a id="__codelineno-2-96" name="__codelineno-2-96" href="#__codelineno-2-96"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="p">(</span><span class="nc">N</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="p">(</span><span class="mi">1U</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="mi">13</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-2-97"><a id="__codelineno-2-97" name="__codelineno-2-97" href="#__codelineno-2-97"></a><span class="w">        </span><span class="k">using</span><span class="w"> </span><span class="nc">ForwardNTT</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nc">ForwardNTTFor</span><span class="o">&lt;</span><span class="nc">N</span><span class="o">&gt;</span><span class="p">;</span>
+</span><span id="__span-2-98"><a id="__codelineno-2-98" name="__codelineno-2-98" href="#__codelineno-2-98"></a>
+</span><span id="__span-2-99"><a id="__codelineno-2-99" name="__codelineno-2-99" href="#__codelineno-2-99"></a><span class="w">        </span><span class="k">constexpr</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">smem</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">...;</span>
+</span><span id="__span-2-100"><a id="__codelineno-2-100" name="__codelineno-2-100" href="#__codelineno-2-100"></a>
+</span><span id="__span-2-101"><a id="__codelineno-2-101" name="__codelineno-2-101" href="#__codelineno-2-101"></a><span class="w">        </span><span class="n">dim3</span><span class="w"> </span><span class="nf">grid</span><span class="p">(</span><span class="n">tensor</span><span class="p">.</span><span class="nf">size</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="cm">/*batch*/</span><span class="p">,</span><span class="w"> </span><span class="n">tensor</span><span class="p">.</span><span class="nf">size</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="cm">/*mod_chain*/</span><span class="p">);</span>
+</span><span id="__span-2-102"><a id="__codelineno-2-102" name="__codelineno-2-102" href="#__codelineno-2-102"></a>
+</span><span id="__span-2-103"><a id="__codelineno-2-103" name="__codelineno-2-103" href="#__codelineno-2-103"></a><span class="w">        </span><span class="n">forward_ntt_kernel</span><span class="o">&lt;</span><span class="nc">N</span><span class="o">&gt;&lt;&lt;&lt;</span><span class="n">grid</span><span class="p">,</span><span class="w"> </span><span class="nc">ForwardNTT</span><span class="o">::</span><span class="nc">BlockDim</span><span class="p">,</span><span class="w"> </span><span class="n">smem</span><span class="o">&gt;&gt;&gt;</span><span class="p">(...);</span>
+</span><span id="__span-2-104"><a id="__codelineno-2-104" name="__codelineno-2-104" href="#__codelineno-2-104"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-2-105"><a id="__codelineno-2-105" name="__codelineno-2-105" href="#__codelineno-2-105"></a><span class="w">    </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="cm">/* Uses the cuPQC-NTT multi-kernel regime */</span>
+</span><span id="__span-2-106"><a id="__codelineno-2-106" name="__codelineno-2-106" href="#__codelineno-2-106"></a><span class="w">        </span><span class="k">using</span><span class="w"> </span><span class="nc">ForwardNTT</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nc">ForwardNTTStagedFor</span><span class="o">&lt;</span><span class="nc">N</span><span class="p">,</span><span class="w"> </span><span class="mi">128</span><span class="o">&gt;</span><span class="p">;</span>
+</span><span id="__span-2-107"><a id="__codelineno-2-107" name="__codelineno-2-107" href="#__codelineno-2-107"></a>
+</span><span id="__span-2-108"><a id="__codelineno-2-108" name="__codelineno-2-108" href="#__codelineno-2-108"></a><span class="w">        </span><span class="k">constexpr</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">smem</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">...;</span>
+</span><span id="__span-2-109"><a id="__codelineno-2-109" name="__codelineno-2-109" href="#__codelineno-2-109"></a>
+</span><span id="__span-2-110"><a id="__codelineno-2-110" name="__codelineno-2-110" href="#__codelineno-2-110"></a><span class="w">        </span><span class="n">dim3</span><span class="w"> </span><span class="nf">grid</span><span class="p">(</span><span class="mi">128</span><span class="w"> </span><span class="cm">/*cuPQC NTT subsize*/</span><span class="p">,</span><span class="w"> </span><span class="n">tensor</span><span class="p">.</span><span class="nf">size</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="cm">/*batch*/</span><span class="p">,</span><span class="w"> </span><span class="n">tensor</span><span class="p">.</span><span class="nf">size</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="cm">/*mod_chain*/</span><span class="p">);</span>
+</span><span id="__span-2-111"><a id="__codelineno-2-111" name="__codelineno-2-111" href="#__codelineno-2-111"></a>
+</span><span id="__span-2-112"><a id="__codelineno-2-112" name="__codelineno-2-112" href="#__codelineno-2-112"></a><span class="w">        </span><span class="n">forward_ntt_stage_1_kernel</span><span class="o">&lt;</span><span class="nc">N</span><span class="o">&gt;&lt;&lt;&lt;</span><span class="n">grid</span><span class="p">,</span><span class="w"> </span><span class="nc">ForwardNTT</span><span class="o">::</span><span class="nc">BlockDim</span><span class="p">,</span><span class="w"> </span><span class="n">smem</span><span class="o">&gt;&gt;&gt;</span><span class="p">(...);</span>
+</span><span id="__span-2-113"><a id="__codelineno-2-113" name="__codelineno-2-113" href="#__codelineno-2-113"></a><span class="w">        </span><span class="n">forward_ntt_stage_2_kernel</span><span class="o">&lt;</span><span class="nc">N</span><span class="o">&gt;&lt;&lt;&lt;</span><span class="n">grid</span><span class="p">,</span><span class="w"> </span><span class="nc">ForwardNTT</span><span class="o">::</span><span class="nc">BlockDim</span><span class="p">,</span><span class="w"> </span><span class="n">smem</span><span class="o">&gt;&gt;&gt;</span><span class="p">(...);</span>
+</span><span id="__span-2-114"><a id="__codelineno-2-114" name="__codelineno-2-114" href="#__codelineno-2-114"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-2-115"><a id="__codelineno-2-115" name="__codelineno-2-115" href="#__codelineno-2-115"></a><span class="p">}</span>
+</span><span id="__span-2-116"><a id="__codelineno-2-116" name="__codelineno-2-116" href="#__codelineno-2-116"></a>
+</span><span id="__span-2-117"><a id="__codelineno-2-117" name="__codelineno-2-117" href="#__codelineno-2-117"></a><span class="cm">/* Entry point for the HEAL DeviceDispatcher */</span>
+</span><span id="__span-2-118"><a id="__codelineno-2-118" name="__codelineno-2-118" href="#__codelineno-2-118"></a><span class="kt">void</span><span class="w"> </span><span class="nf">apply_ntt</span><span class="p">(</span>
+</span><span id="__span-2-119"><a id="__codelineno-2-119" name="__codelineno-2-119" href="#__codelineno-2-119"></a><span class="w">    </span><span class="n">torch</span><span class="o">::</span><span class="n">Tensor</span><span class="o">&amp;</span><span class="w"> </span><span class="n">tensor</span><span class="p">,</span><span class="w">                 </span><span class="c1">// [batch, mod_chain, N]</span>
+</span><span id="__span-2-120"><a id="__codelineno-2-120" name="__codelineno-2-120" href="#__codelineno-2-120"></a><span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">torch</span><span class="o">::</span><span class="n">Tensor</span><span class="o">&amp;</span><span class="w"> </span><span class="n">mod_chain</span><span class="p">,</span><span class="w">        </span><span class="c1">//        [mod_chain]</span>
+</span><span id="__span-2-121"><a id="__codelineno-2-121" name="__codelineno-2-121" href="#__codelineno-2-121"></a><span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">torch</span><span class="o">::</span><span class="n">Tensor</span><span class="o">&amp;</span><span class="w"> </span><span class="n">twiddles</span><span class="w">          </span><span class="c1">//        [mod_chain, N]</span>
+</span><span id="__span-2-122"><a id="__codelineno-2-122" name="__codelineno-2-122" href="#__codelineno-2-122"></a><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-2-123"><a id="__codelineno-2-123" name="__codelineno-2-123" href="#__codelineno-2-123"></a><span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="nc">N</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tensor</span><span class="p">.</span><span class="nf">size</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+</span><span id="__span-2-124"><a id="__codelineno-2-124" name="__codelineno-2-124" href="#__codelineno-2-124"></a>
+</span><span id="__span-2-125"><a id="__codelineno-2-125" name="__codelineno-2-125" href="#__codelineno-2-125"></a><span class="w">    </span><span class="cm">/*</span>
+</span><span id="__span-2-126"><a id="__codelineno-2-126" name="__codelineno-2-126" href="#__codelineno-2-126"></a><span class="cm">    The runtime selects the appropriate cuPQC specialization based on the</span>
+</span><span id="__span-2-127"><a id="__codelineno-2-127" name="__codelineno-2-127" href="#__codelineno-2-127"></a><span class="cm">    polynomial degree, allowing the same integration layer to support</span>
+</span><span id="__span-2-128"><a id="__codelineno-2-128" name="__codelineno-2-128" href="#__codelineno-2-128"></a><span class="cm">    multiple HE parameter sets without changing higher software layers.</span>
+</span><span id="__span-2-129"><a id="__codelineno-2-129" name="__codelineno-2-129" href="#__codelineno-2-129"></a><span class="cm">    */</span>
+</span><span id="__span-2-130"><a id="__codelineno-2-130" name="__codelineno-2-130" href="#__codelineno-2-130"></a><span class="w">    </span><span class="k">switch</span><span class="w"> </span><span class="p">(</span><span class="nc">N</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-2-131"><a id="__codelineno-2-131" name="__codelineno-2-131" href="#__codelineno-2-131"></a><span class="w">        </span><span class="k">case</span><span class="w"> </span><span class="mi">1024</span><span class="p">:</span><span class="w">  </span><span class="n">launch_forward_ntt</span><span class="o">&lt;</span><span class="mi">1024</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tensor</span><span class="p">,</span><span class="w"> </span><span class="n">mod_chain</span><span class="p">,</span><span class="w"> </span><span class="n">twiddles</span><span class="p">);</span><span class="w">  </span><span class="k">break</span><span class="p">;</span>
+</span><span id="__span-2-132"><a id="__codelineno-2-132" name="__codelineno-2-132" href="#__codelineno-2-132"></a><span class="w">        </span><span class="p">...</span>
+</span><span id="__span-2-133"><a id="__codelineno-2-133" name="__codelineno-2-133" href="#__codelineno-2-133"></a><span class="w">        </span><span class="p">...</span><span class="w"> </span><span class="c1">// all powers of two between 2^10 and 2^16</span>
+</span><span id="__span-2-134"><a id="__codelineno-2-134" name="__codelineno-2-134" href="#__codelineno-2-134"></a><span class="w">        </span><span class="p">...</span>
+</span><span id="__span-2-135"><a id="__codelineno-2-135" name="__codelineno-2-135" href="#__codelineno-2-135"></a><span class="w">        </span><span class="k">case</span><span class="w"> </span><span class="mi">65536</span><span class="p">:</span><span class="w"> </span><span class="n">launch_forward_ntt</span><span class="o">&lt;</span><span class="mi">65536</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tensor</span><span class="p">,</span><span class="w"> </span><span class="n">mod_chain</span><span class="p">,</span><span class="w"> </span><span class="n">twiddles</span><span class="p">);</span><span class="w"> </span><span class="k">break</span><span class="p">;</span>
+</span><span id="__span-2-136"><a id="__codelineno-2-136" name="__codelineno-2-136" href="#__codelineno-2-136"></a><span class="w">        </span><span class="k">default</span><span class="o">:</span><span class="w"> </span><span class="nc">TORCH_CHECK</span><span class="p">(</span><span class="nb">false</span><span class="p">,</span><span class="w"> </span><span class="s">"Unsupported cuPQC NTT size: "</span><span class="p">,</span><span class="w"> </span><span class="nc">N</span><span class="p">);</span>
+</span><span id="__span-2-137"><a id="__codelineno-2-137" name="__codelineno-2-137" href="#__codelineno-2-137"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-2-138"><a id="__codelineno-2-138" name="__codelineno-2-138" href="#__codelineno-2-138"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>This separation between runtime orchestration and primitive execution keeps the integration compact while allowing the performance-critical computation to remain entirely within cuPQC.</p>
+<h2 id="bridging-ai-tensor-workloads-to-cupqc">Bridging AI Tensor Workloads to cuPQC</h2>
+<p>Unlike traditional Homomorphic Encryption libraries, which primarily operate on individual ciphertext objects, the Lattica Platform and HEAL are designed around tensor abstractions that naturally represent batches of ciphertexts, modulus chains, and multidimensional encrypted data. This tensor-centric design maps naturally onto cuPQC's batched execution model, allowing the runtime to preserve its existing tensor abstractions while delegating individual transforms to NVIDIA's optimized GPU kernels.</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">dim3</span><span class="w"> </span><span class="nf">grid</span><span class="p">(</span><span class="n">tensor</span><span class="p">.</span><span class="nf">size</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="cm">/*batch*/</span><span class="p">,</span><span class="w"> </span><span class="n">tensor</span><span class="p">.</span><span class="nf">size</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="cm">/*mod_chain*/</span><span class="p">);</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="n">forward_ntt_kernel</span><span class="o">&lt;</span><span class="nc">N</span><span class="o">&gt;&lt;&lt;&lt;</span><span class="n">grid</span><span class="p">,</span><span class="w"> </span><span class="nc">ForwardNTT</span><span class="o">::</span><span class="nc">BlockDim</span><span class="p">,</span><span class="w"> </span><span class="n">smem</span><span class="o">&gt;&gt;&gt;</span><span class="p">(...);</span>
+</span></code></pre></div>
+<p>Each CUDA block executes a single NTT using NVIDIA cuPQC. The grid dimensions map directly onto the batch and modulus-chain axes the runtime already uses, so thousands of independent transforms execute concurrently without any additional scheduling logic.</p>
+<h2 id="defining-the-encrypted-inference-workload">Defining the Encrypted Inference Workload</h2>
+<p>To evaluate the integration, we benchmarked a representative encrypted image classification workload from the FHE Benchmarking Suite.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">lattica_build.operators</span><span class="w"> </span><span class="kn">import</span> <span class="nc">HomLinear</span><span class="p">,</span> <span class="nc">HomSquare</span><span class="p">,</span> <span class="n">Reshape</span><span class="p">,</span> <span class="n">Softmax</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="kn">from</span><span class="w"> </span><span class="nn">lattica_build.abstract</span><span class="w"> </span><span class="kn">import</span> <span class="nc">HomomorphicPipeline</span><span class="p">,</span> <span class="nc">SequentialHomOp</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="kn">from</span><span class="w"> </span><span class="nn">lattica_build.params</span><span class="w"> </span><span class="kn">import</span> <span class="nc">HomParams</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="n">weights</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="nf">load</span><span class="p">(</span><span class="s2">"mnist_fc_workflow.pt"</span><span class="p">,</span> <span class="n">weights_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>
+</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="k">def</span><span class="w"> </span><span class="nf">build_pipeline</span><span class="p">(</span><span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nc">HomomorphicPipeline</span><span class="p">:</span>
+</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="w">    </span><span class="sd">"""</span>
+</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="sd">    ========== shape progression ============</span>
+</span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a><span class="sd">    @ denotes the FHE-packing axis</span>
+</span><span id="__span-4-13"><a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a>
+</span><span id="__span-4-14"><a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a><span class="sd">    batch &lt;= 10:</span>
+</span><span id="__span-4-15"><a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a><span class="sd">    pt:  [batch, 1,  1,  @784]</span>
+</span><span id="__span-4-16"><a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a><span class="sd">    vec:            [@50, 784]</span>
+</span><span id="__span-4-17"><a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a><span class="sd">    pt:  [batch, 1,  50]</span>
+</span><span id="__span-4-18"><a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a><span class="sd">    vec:        [@10, 50]</span>
+</span><span id="__span-4-19"><a id="__codelineno-4-19" name="__codelineno-4-19" href="#__codelineno-4-19"></a><span class="sd">    pt:  [batch, @10]</span>
+</span><span id="__span-4-20"><a id="__codelineno-4-20" name="__codelineno-4-20" href="#__codelineno-4-20"></a>
+</span><span id="__span-4-21"><a id="__codelineno-4-21" name="__codelineno-4-21" href="#__codelineno-4-21"></a><span class="sd">    batch &gt; 10:</span>
+</span><span id="__span-4-22"><a id="__codelineno-4-22" name="__codelineno-4-22" href="#__codelineno-4-22"></a><span class="sd">    pt:  [@batch, 1,  1,  784]</span>
+</span><span id="__span-4-23"><a id="__codelineno-4-23" name="__codelineno-4-23" href="#__codelineno-4-23"></a><span class="sd">    vec:             [50, 784]</span>
+</span><span id="__span-4-24"><a id="__codelineno-4-24" name="__codelineno-4-24" href="#__codelineno-4-24"></a><span class="sd">    pt:  [@batch, 1,  50]</span>
+</span><span id="__span-4-25"><a id="__codelineno-4-25" name="__codelineno-4-25" href="#__codelineno-4-25"></a><span class="sd">    vec:         [10, 50]</span>
+</span><span id="__span-4-26"><a id="__codelineno-4-26" name="__codelineno-4-26" href="#__codelineno-4-26"></a><span class="sd">    pt:  [@batch, 10]</span>
+</span><span id="__span-4-27"><a id="__codelineno-4-27" name="__codelineno-4-27" href="#__codelineno-4-27"></a>
+</span><span id="__span-4-28"><a id="__codelineno-4-28" name="__codelineno-4-28" href="#__codelineno-4-28"></a><span class="sd">    ========== scale and mod-chain progression ============</span>
+</span><span id="__span-4-29"><a id="__codelineno-4-29" name="__codelineno-4-29" href="#__codelineno-4-29"></a><span class="sd">    start        24 / 100</span>
+</span><span id="__span-4-30"><a id="__codelineno-4-30" name="__codelineno-4-30" href="#__codelineno-4-30"></a><span class="sd">    linear1      50 / 100</span>
+</span><span id="__span-4-31"><a id="__codelineno-4-31" name="__codelineno-4-31" href="#__codelineno-4-31"></a><span class="sd">    modswitch    24 /  74</span>
+</span><span id="__span-4-32"><a id="__codelineno-4-32" name="__codelineno-4-32" href="#__codelineno-4-32"></a><span class="sd">    square       48 /  74</span>
+</span><span id="__span-4-33"><a id="__codelineno-4-33" name="__codelineno-4-33" href="#__codelineno-4-33"></a><span class="sd">    modswitch    22 /  48</span>
+</span><span id="__span-4-34"><a id="__codelineno-4-34" name="__codelineno-4-34" href="#__codelineno-4-34"></a><span class="sd">    linear2      42 /  48</span>
+</span><span id="__span-4-35"><a id="__codelineno-4-35" name="__codelineno-4-35" href="#__codelineno-4-35"></a><span class="sd">    """</span>
+</span><span id="__span-4-36"><a id="__codelineno-4-36" name="__codelineno-4-36" href="#__codelineno-4-36"></a>    <span class="n">pipeline</span> <span class="o">=</span> <span class="nc">HomomorphicPipeline</span><span class="p">(</span>
+</span><span id="__span-4-37"><a id="__codelineno-4-37" name="__codelineno-4-37" href="#__codelineno-4-37"></a>        <span class="n">client_pre</span><span class="o">=</span><span class="p">[</span>
+</span><span id="__span-4-38"><a id="__codelineno-4-38" name="__codelineno-4-38" href="#__codelineno-4-38"></a>            <span class="nf">Reshape</span><span class="p">((</span><span class="n">batch_size</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">28</span> <span class="o">*</span> <span class="mi">28</span><span class="p">))</span>
+</span><span id="__span-4-39"><a id="__codelineno-4-39" name="__codelineno-4-39" href="#__codelineno-4-39"></a>        <span class="p">],</span>
+</span><span id="__span-4-40"><a id="__codelineno-4-40" name="__codelineno-4-40" href="#__codelineno-4-40"></a>        <span class="n">packing_axis</span><span class="o">=</span><span class="mi">0</span> <span class="k">if</span> <span class="n">batch_size</span> <span class="o">&gt;</span> <span class="mi">10</span> <span class="k">else</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+</span><span id="__span-4-41"><a id="__codelineno-4-41" name="__codelineno-4-41" href="#__codelineno-4-41"></a>        <span class="n">packing_scale</span><span class="o">=</span><span class="mi">2</span><span class="o">**</span><span class="mi">24</span><span class="p">,</span>
+</span><span id="__span-4-42"><a id="__codelineno-4-42" name="__codelineno-4-42" href="#__codelineno-4-42"></a>        <span class="n">hom</span><span class="o">=</span><span class="nc">SequentialHomOp</span><span class="p">(</span>
+</span><span id="__span-4-43"><a id="__codelineno-4-43" name="__codelineno-4-43" href="#__codelineno-4-43"></a>            <span class="nc">HomLinear</span><span class="p">(</span>
+</span><span id="__span-4-44"><a id="__codelineno-4-44" name="__codelineno-4-44" href="#__codelineno-4-44"></a>                <span class="n">dims</span><span class="o">=</span><span class="n">weights</span><span class="p">[</span><span class="s2">"fc1.weight"</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span>
+</span><span id="__span-4-45"><a id="__codelineno-4-45" name="__codelineno-4-45" href="#__codelineno-4-45"></a>                <span class="n">with_modswitch</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span><span id="__span-4-46"><a id="__codelineno-4-46" name="__codelineno-4-46" href="#__codelineno-4-46"></a>                <span class="n">mul_scale</span><span class="o">=</span><span class="s2">"auto"</span><span class="p">,</span>
+</span><span id="__span-4-47"><a id="__codelineno-4-47" name="__codelineno-4-47" href="#__codelineno-4-47"></a>            <span class="p">),</span>
+</span><span id="__span-4-48"><a id="__codelineno-4-48" name="__codelineno-4-48" href="#__codelineno-4-48"></a>            <span class="nc">HomSquare</span><span class="p">(</span>
+</span><span id="__span-4-49"><a id="__codelineno-4-49" name="__codelineno-4-49" href="#__codelineno-4-49"></a>                <span class="n">with_modswitch</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span><span id="__span-4-50"><a id="__codelineno-4-50" name="__codelineno-4-50" href="#__codelineno-4-50"></a>            <span class="p">),</span>
+</span><span id="__span-4-51"><a id="__codelineno-4-51" name="__codelineno-4-51" href="#__codelineno-4-51"></a>            <span class="nc">HomLinear</span><span class="p">(</span>
+</span><span id="__span-4-52"><a id="__codelineno-4-52" name="__codelineno-4-52" href="#__codelineno-4-52"></a>                <span class="n">dims</span><span class="o">=</span><span class="n">weights</span><span class="p">[</span><span class="s2">"fc2.weight"</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span>
+</span><span id="__span-4-53"><a id="__codelineno-4-53" name="__codelineno-4-53" href="#__codelineno-4-53"></a>                <span class="n">with_modswitch</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+</span><span id="__span-4-54"><a id="__codelineno-4-54" name="__codelineno-4-54" href="#__codelineno-4-54"></a>                <span class="n">mul_scale</span><span class="o">=</span><span class="mi">2</span><span class="o">**</span><span class="mi">20</span><span class="p">,</span>
+</span><span id="__span-4-55"><a id="__codelineno-4-55" name="__codelineno-4-55" href="#__codelineno-4-55"></a>            <span class="p">),</span>
+</span><span id="__span-4-56"><a id="__codelineno-4-56" name="__codelineno-4-56" href="#__codelineno-4-56"></a>        <span class="p">),</span>
+</span><span id="__span-4-57"><a id="__codelineno-4-57" name="__codelineno-4-57" href="#__codelineno-4-57"></a>        <span class="n">client_post</span><span class="o">=</span><span class="p">[</span>
+</span><span id="__span-4-58"><a id="__codelineno-4-58" name="__codelineno-4-58" href="#__codelineno-4-58"></a>            <span class="nf">Reshape</span><span class="p">((</span><span class="n">batch_size</span><span class="p">,</span> <span class="mi">10</span><span class="p">)),</span>
+</span><span id="__span-4-59"><a id="__codelineno-4-59" name="__codelineno-4-59" href="#__codelineno-4-59"></a>            <span class="nf">Softmax</span><span class="p">(</span><span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">),</span>
+</span><span id="__span-4-60"><a id="__codelineno-4-60" name="__codelineno-4-60" href="#__codelineno-4-60"></a>        <span class="p">],</span>
+</span><span id="__span-4-61"><a id="__codelineno-4-61" name="__codelineno-4-61" href="#__codelineno-4-61"></a>    <span class="p">)</span>
+</span><span id="__span-4-62"><a id="__codelineno-4-62" name="__codelineno-4-62" href="#__codelineno-4-62"></a>
+</span><span id="__span-4-63"><a id="__codelineno-4-63" name="__codelineno-4-63" href="#__codelineno-4-63"></a>    <span class="n">pipeline</span><span class="o">.</span><span class="nf">set_data</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">weights</span><span class="p">[</span><span class="s2">"fc1.weight"</span><span class="p">],</span> <span class="n">weights</span><span class="p">[</span><span class="s2">"fc1.bias"</span><span class="p">])</span>
+</span><span id="__span-4-64"><a id="__codelineno-4-64" name="__codelineno-4-64" href="#__codelineno-4-64"></a>    <span class="n">pipeline</span><span class="o">.</span><span class="nf">set_data</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">weights</span><span class="p">[</span><span class="s2">"fc2.weight"</span><span class="p">],</span> <span class="n">weights</span><span class="p">[</span><span class="s2">"fc2.bias"</span><span class="p">])</span>
+</span><span id="__span-4-65"><a id="__codelineno-4-65" name="__codelineno-4-65" href="#__codelineno-4-65"></a>
+</span><span id="__span-4-66"><a id="__codelineno-4-66" name="__codelineno-4-66" href="#__codelineno-4-66"></a>    <span class="k">return</span> <span class="n">pipeline</span>
+</span><span id="__span-4-67"><a id="__codelineno-4-67" name="__codelineno-4-67" href="#__codelineno-4-67"></a>
+</span><span id="__span-4-68"><a id="__codelineno-4-68" name="__codelineno-4-68" href="#__codelineno-4-68"></a>
+</span><span id="__span-4-69"><a id="__codelineno-4-69" name="__codelineno-4-69" href="#__codelineno-4-69"></a><span class="n">params</span> <span class="o">=</span> <span class="nc">HomParams</span><span class="p">(</span>
+</span><span id="__span-4-70"><a id="__codelineno-4-70" name="__codelineno-4-70" href="#__codelineno-4-70"></a>    <span class="n">mod_chain</span><span class="o">=</span><span class="p">(</span>
+</span><span id="__span-4-71"><a id="__codelineno-4-71" name="__codelineno-4-71" href="#__codelineno-4-71"></a>        <span class="p">(</span><span class="mi">52</span><span class="p">,</span> <span class="mi">26</span><span class="p">),</span>
+</span><span id="__span-4-72"><a id="__codelineno-4-72" name="__codelineno-4-72" href="#__codelineno-4-72"></a>        <span class="p">(</span><span class="mi">48</span><span class="p">,),</span>
+</span><span id="__span-4-73"><a id="__codelineno-4-73" name="__codelineno-4-73" href="#__codelineno-4-73"></a>    <span class="p">),</span>
+</span><span id="__span-4-74"><a id="__codelineno-4-74" name="__codelineno-4-74" href="#__codelineno-4-74"></a>    <span class="n">n</span><span class="o">=</span><span class="mi">2</span><span class="o">**</span><span class="mi">12</span><span class="p">,</span>
+</span><span id="__span-4-75"><a id="__codelineno-4-75" name="__codelineno-4-75" href="#__codelineno-4-75"></a><span class="p">)</span>
+</span></code></pre></div>
+<p>The workload consists of a two-layer encrypted neural network with a polynomial square activation. During compilation, HEAL lowers the model into hardware-independent cryptographic primitives. Because the batch dimension is part of the compiled program, a separate deployment is generated for each evaluated batch size while keeping the model weights and cryptographic parameters fixed.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">lattica_deploy.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">upload_and_deploy</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">lattica_query.client</span><span class="w"> </span><span class="kn">import</span> <span class="nc">QueryClient</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="n">batch_size</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># 10, 100, 1000, 10000</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="n">pipeline</span> <span class="o">=</span> <span class="nf">build_pipeline</span><span class="p">(</span><span class="n">batch_size</span><span class="p">)</span>
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>
+</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="n">model_id</span><span class="p">,</span> <span class="n">query_access_token</span> <span class="o">=</span> <span class="nf">upload_and_deploy</span><span class="p">(</span>
+</span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>    <span class="n">account_access_token</span><span class="p">,</span>
+</span><span id="__span-5-10"><a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a>    <span class="n">deployer</span><span class="p">,</span>
+</span><span id="__span-5-11"><a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a>    <span class="n">pipeline</span><span class="p">,</span>
+</span><span id="__span-5-12"><a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a>    <span class="n">params</span><span class="p">,</span>
+</span><span id="__span-5-13"><a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a>    <span class="n">backend</span><span class="o">=</span><span class="s2">"aws/us-east-1/g7e.2xlarge"</span><span class="p">,</span>
+</span><span id="__span-5-14"><a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a><span class="p">)</span>
+</span><span id="__span-5-15"><a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a>
+</span><span id="__span-5-16"><a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a><span class="n">query_client</span> <span class="o">=</span> <span class="nc">QueryClient</span><span class="p">(</span><span class="n">query_access_token</span><span class="p">,</span> <span class="n">generate_fresh_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="__span-5-17"><a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a><span class="n">results</span> <span class="o">=</span> <span class="n">query_client</span><span class="o">.</span><span class="nf">execute_query</span><span class="p">(</span><span class="n">model_id</span><span class="p">,</span> <span class="n">input_batch</span><span class="p">)</span>
+</span></code></pre></div>
+<p>For each compiled deployment, we measure the execution time of encrypted inference while keeping the model architecture, weights, and cryptographic parameters fixed. This isolates how increasing the amount of parallel work influences the performance of the cuPQC backend.</p>
+<h2 id="performance">Performance</h2>
+<p>We evaluated the NVIDIA cuPQC backend using the encrypted MNIST workload described in the previous section. Models were compiled for batch sizes ranging from 1 to 10,000. Since the homomorphic pipeline selects the ciphertext packing strategy during compilation, different batch sizes may use different packing layouts to maximize execution efficiency. As a CPU reference, we used the corresponding implementation from the FHE Benchmarking Suite.</p>
+<h3 id="setup">Setup</h3>
+<table class="cupqc-cap-table cupqc-cap-table--wide">
+<thead>
+<tr><th>Machine parameter</th><th>Configuration</th></tr>
+</thead>
+<tbody>
+<tr><td>Compute instance</td><td>AWS EC2 g7e.2xlarge</td></tr>
+<tr><td>GPU</td><td>1 &times; NVIDIA GB202</td></tr>
+<tr><td>GPU memory</td><td>96 GiB</td></tr>
+<tr><td>Host CPU</td><td>8 vCPUs (Intel Xeon Scalable)</td></tr>
+<tr><td>Host memory</td><td>64 GiB</td></tr>
+<tr><td>CUDA Toolkit</td><td>12.8</td></tr>
+<tr><td>NVIDIA cuPQC</td><td>v0.6.0</td></tr>
+<tr><td>Software stack</td><td>Lattica Platform + HEAL + NVIDIA cuPQC</td></tr>
+<tr><td>Workload</td><td>Encrypted MNIST inference</td></tr>
+<tr><td>Compiled batch sizes</td><td>1, 10, 100, 1,000, 10,000</td></tr>
+<tr><td>Metric</td><td>End-to-end encrypted inference latency and throughput</td></tr>
+</tbody>
+</table>
+
+<p class="cupqc-table-caption">Table 1. Benchmark machine and software configuration</p>
+
+<table class="cupqc-cap-table cupqc-cap-table--wide">
+<thead>
+<tr><th>Cryptographic parameter</th><th>Value</th></tr>
+</thead>
+<tbody>
+<tr><td>Scheme</td><td>CKKS</td></tr>
+<tr><td>Polynomial degree</td><td>2<sup>12</sup></td></tr>
+<tr><td>Modulus</td><td>52 + 48 = 100 bits</td></tr>
+</tbody>
+</table>
+
+<p class="cupqc-table-caption">Table 2. Cryptographic parameters held fixed across every compiled batch size</p>
+
+<h3 id="measurements">Measurements</h3>
+<table class="cupqc-cap-table cupqc-cap-table--metrics">
+<thead>
+<tr>
+<th>Batch size</th>
+<th>HEAL + cuPQC latency (s)</th>
+<th>CPU latency (s)</th>
+<th>HEAL + cuPQC throughput (inf/s)</th>
+<th>Speedup</th>
+</tr>
+</thead>
+<tbody>
+<tr><td>1</td><td>0.022</td><td>6.48</td><td>45.5</td><td>295&times;</td></tr>
+<tr><td>10</td><td>0.154</td><td>64.1</td><td>64.9</td><td>416&times;</td></tr>
+<tr><td>100</td><td>0.429</td><td>633.8</td><td>233</td><td>1,477&times;</td></tr>
+<tr><td>1,000</td><td>0.432</td><td>6,387.84</td><td>2,315</td><td>14,787&times;</td></tr>
+<tr><td>10,000</td><td>1.274</td><td>61,540</td><td>7,849</td><td>48,304&times;</td></tr>
+</tbody>
+</table>
+
+<p class="cupqc-table-caption">Table 3. Encrypted MNIST inference latency, throughput, and speedup by compiled batch size</p>
+
+<div class="cupqc-fig" role="img" aria-label="Log chart of encrypted inference throughput against compiled batch size. NVIDIA cuPQC with HEAL rises from 45.5 to 7,849 inferences per second as the batch grows from 1 to 10,000, while the CPU reference stays flat near 0.16.">
+<div class="cupqc-fig__header">
+<div class="cupqc-fig__titles">
+<p class="cupqc-fig__eyebrow">ENCRYPTED MNIST</p>
+<p class="cupqc-fig__title">Encrypted Inference Throughput</p>
+<p class="cupqc-fig__unit">INFERENCES / SECOND &#183; LOG SCALE</p>
+</div>
+<div class="cupqc-fig__legend">
+<span class="cupqc-fig__legend-item"><i class="cupqc-fig__swatch" style="--fig-swatch: #76B900"></i>NVIDIA cuPQC (HEAL)</span>
+<span class="cupqc-fig__legend-item"><i class="cupqc-fig__swatch" style="--fig-swatch: #5BA3D9"></i>CPU reference</span>
+</div>
+</div>
+<div class="cupqc-fig__plot">
+<svg viewBox="0 0 780 330" width="780" height="330" preserveAspectRatio="xMidYMid meet" aria-hidden="true" focusable="false">
+<line class="fig-grid" x1="58" y1="292.0" x2="754" y2="292.0"/>
+<text class="fig-tick fig-tick--y" x="50" y="295.5">0.1</text>
+<line class="fig-grid" x1="58" y1="238.0" x2="754" y2="238.0"/>
+<text class="fig-tick fig-tick--y" x="50" y="241.5">1</text>
+<line class="fig-grid" x1="58" y1="184.0" x2="754" y2="184.0"/>
+<text class="fig-tick fig-tick--y" x="50" y="187.5">10</text>
+<line class="fig-grid" x1="58" y1="130.0" x2="754" y2="130.0"/>
+<text class="fig-tick fig-tick--y" x="50" y="133.5">100</text>
+<line class="fig-grid" x1="58" y1="76.0" x2="754" y2="76.0"/>
+<text class="fig-tick fig-tick--y" x="50" y="79.5">1,000</text>
+<line class="fig-grid" x1="58" y1="22.0" x2="754" y2="22.0"/>
+<text class="fig-tick fig-tick--y" x="50.0" y="25.5">10<tspan dy="-5" class="fig-exp">4</tspan></text>
+<line class="fig-axis" x1="58" y1="292" x2="754" y2="292"/>
+<polyline fill="none" stroke="#76B900" stroke-width="2" points="127.6,148.5 266.8,140.1 406.0,110.2 545.2,56.3 684.4,27.7"/>
+<circle fill="#76B900" cx="127.6" cy="148.5" r="2.6"/><circle fill="#76B900" cx="266.8" cy="140.1" r="2.6"/><circle fill="#76B900" cx="406.0" cy="110.2" r="2.6"/><circle fill="#76B900" cx="545.2" cy="56.3" r="2.6"/><circle fill="#76B900" cx="684.4" cy="27.7" r="2.6"/>
+<text class="fig-val" fill="#76B900" x="127.6" y="139.5">45.5</text>
+<text class="fig-val" fill="#76B900" x="266.8" y="131.1">64.9</text>
+<text class="fig-val" fill="#76B900" x="406.0" y="101.2">233</text>
+<text class="fig-val" fill="#76B900" x="545.2" y="47.3">2,315</text>
+<text class="fig-val" fill="#76B900" x="684.4" y="18.7">7,849</text>
+<polyline fill="none" stroke="#5BA3D9" stroke-width="2" points="127.6,282.5 266.8,281.0 406.0,281.0 545.2,281.0 684.4,281.0"/>
+<circle fill="#5BA3D9" cx="127.6" cy="282.5" r="2.6"/><circle fill="#5BA3D9" cx="266.8" cy="281.0" r="2.6"/><circle fill="#5BA3D9" cx="406.0" cy="281.0" r="2.6"/><circle fill="#5BA3D9" cx="545.2" cy="281.0" r="2.6"/><circle fill="#5BA3D9" cx="684.4" cy="281.0" r="2.6"/>
+<text class="fig-val" fill="#5BA3D9" x="127.6" y="273.5">0.15</text>
+<text class="fig-val" fill="#5BA3D9" x="266.8" y="272.0">0.16</text>
+<text class="fig-val" fill="#5BA3D9" x="406.0" y="272.0">0.16</text>
+<text class="fig-val" fill="#5BA3D9" x="545.2" y="272.0">0.16</text>
+<text class="fig-val" fill="#5BA3D9" x="684.4" y="272.0">0.16</text>
+<text class="fig-tick fig-tick--x" x="127.6" y="308.0">1</text>
+<text class="fig-tick fig-tick--x" x="266.8" y="308.0">10</text>
+<text class="fig-tick fig-tick--x" x="406.0" y="308.0">100</text>
+<text class="fig-tick fig-tick--x" x="545.2" y="308.0">1,000</text>
+<text class="fig-tick fig-tick--x" x="684.4" y="308.0">10,000</text>
+<text class="fig-axis-title" x="406.0" y="326.0">COMPILED BATCH SIZE</text>
+</svg>
+</div>
+<p class="cupqc-fig__foot">CKKS, polynomial degree 2&#185;&#178;, 100-bit modulus &#183; NVIDIA GB202 (AWS EC2 g7e.2xlarge) vs the FHE Benchmarking Suite CPU reference</p>
+</div>
+
+<div class="cupqc-fig" role="img" aria-label="Log chart of encrypted inference latency against compiled batch size. NVIDIA cuPQC with HEAL rises from 0.022 to 1.274 seconds as the batch grows from 1 to 10,000, while the CPU reference rises from 6.48 to 61,540 seconds.">
+<div class="cupqc-fig__header">
+<div class="cupqc-fig__titles">
+<p class="cupqc-fig__eyebrow">ENCRYPTED MNIST</p>
+<p class="cupqc-fig__title">Encrypted Inference Latency</p>
+<p class="cupqc-fig__unit">SECONDS &#183; LOG SCALE</p>
+</div>
+<div class="cupqc-fig__legend">
+<span class="cupqc-fig__legend-item"><i class="cupqc-fig__swatch" style="--fig-swatch: #76B900"></i>NVIDIA cuPQC (HEAL)</span>
+<span class="cupqc-fig__legend-item"><i class="cupqc-fig__swatch" style="--fig-swatch: #5BA3D9"></i>CPU reference</span>
+</div>
+</div>
+<div class="cupqc-fig__plot">
+<svg viewBox="0 0 780 330" width="780" height="330" preserveAspectRatio="xMidYMid meet" aria-hidden="true" focusable="false">
+<line class="fig-grid" x1="58" y1="292.0" x2="754" y2="292.0"/>
+<text class="fig-tick fig-tick--y" x="50" y="295.5">0.01</text>
+<line class="fig-grid" x1="58" y1="253.4" x2="754" y2="253.4"/>
+<text class="fig-tick fig-tick--y" x="50" y="256.9">0.1</text>
+<line class="fig-grid" x1="58" y1="214.9" x2="754" y2="214.9"/>
+<text class="fig-tick fig-tick--y" x="50" y="218.4">1</text>
+<line class="fig-grid" x1="58" y1="176.3" x2="754" y2="176.3"/>
+<text class="fig-tick fig-tick--y" x="50" y="179.8">10</text>
+<line class="fig-grid" x1="58" y1="137.7" x2="754" y2="137.7"/>
+<text class="fig-tick fig-tick--y" x="50" y="141.2">100</text>
+<line class="fig-grid" x1="58" y1="99.1" x2="754" y2="99.1"/>
+<text class="fig-tick fig-tick--y" x="50" y="102.6">1,000</text>
+<line class="fig-grid" x1="58" y1="60.6" x2="754" y2="60.6"/>
+<text class="fig-tick fig-tick--y" x="50.0" y="64.1">10<tspan dy="-5" class="fig-exp">4</tspan></text>
+<line class="fig-grid" x1="58" y1="22.0" x2="754" y2="22.0"/>
+<text class="fig-tick fig-tick--y" x="50.0" y="25.5">10<tspan dy="-5" class="fig-exp">5</tspan></text>
+<line class="fig-axis" x1="58" y1="292" x2="754" y2="292"/>
+<polyline fill="none" stroke="#76B900" stroke-width="2" points="127.6,278.8 266.8,246.2 406.0,229.0 545.2,228.9 684.4,210.8"/>
+<circle fill="#76B900" cx="127.6" cy="278.8" r="2.6"/><circle fill="#76B900" cx="266.8" cy="246.2" r="2.6"/><circle fill="#76B900" cx="406.0" cy="229.0" r="2.6"/><circle fill="#76B900" cx="545.2" cy="228.9" r="2.6"/><circle fill="#76B900" cx="684.4" cy="210.8" r="2.6"/>
+<text class="fig-val" fill="#76B900" x="127.6" y="293.8">0.022</text>
+<text class="fig-val" fill="#76B900" x="266.8" y="261.2">0.154</text>
+<text class="fig-val" fill="#76B900" x="406.0" y="244.0">0.429</text>
+<text class="fig-val" fill="#76B900" x="545.2" y="243.9">0.432</text>
+<text class="fig-val" fill="#76B900" x="684.4" y="225.8">1.274</text>
+<polyline fill="none" stroke="#5BA3D9" stroke-width="2" points="127.6,183.6 266.8,145.2 406.0,106.8 545.2,68.1 684.4,30.1"/>
+<circle fill="#5BA3D9" cx="127.6" cy="183.6" r="2.6"/><circle fill="#5BA3D9" cx="266.8" cy="145.2" r="2.6"/><circle fill="#5BA3D9" cx="406.0" cy="106.8" r="2.6"/><circle fill="#5BA3D9" cx="545.2" cy="68.1" r="2.6"/><circle fill="#5BA3D9" cx="684.4" cy="30.1" r="2.6"/>
+<text class="fig-val" fill="#5BA3D9" x="127.6" y="174.6">6.48</text>
+<text class="fig-val" fill="#5BA3D9" x="266.8" y="136.2">64.1</text>
+<text class="fig-val" fill="#5BA3D9" x="406.0" y="97.8">633.8</text>
+<text class="fig-val" fill="#5BA3D9" x="545.2" y="59.1">6,387.84</text>
+<text class="fig-val" fill="#5BA3D9" x="684.4" y="21.1">61,540</text>
+<text class="fig-tick fig-tick--x" x="127.6" y="308.0">1</text>
+<text class="fig-tick fig-tick--x" x="266.8" y="308.0">10</text>
+<text class="fig-tick fig-tick--x" x="406.0" y="308.0">100</text>
+<text class="fig-tick fig-tick--x" x="545.2" y="308.0">1,000</text>
+<text class="fig-tick fig-tick--x" x="684.4" y="308.0">10,000</text>
+<text class="fig-axis-title" x="406.0" y="326.0">COMPILED BATCH SIZE</text>
+</svg>
+</div>
+<p class="cupqc-fig__foot">CKKS, polynomial degree 2&#185;&#178;, 100-bit modulus &#183; NVIDIA GB202 (AWS EC2 g7e.2xlarge) vs the FHE Benchmarking Suite CPU reference</p>
+</div>
+
+<h3 id="observations">Observations</h3>
+<p><strong>Scalability.</strong> While the workload increases by four orders of magnitude, encrypted inference latency grows much more slowly, indicating that the runtime efficiently exposes increasing amounts of parallel cryptographic work to the GPU.</p>
+<p><strong>Throughput gains.</strong> Throughput increases from 45 encrypted inferences per second for a single input to nearly 8,000 encrypted inferences per second for batches of 10,000 inputs, illustrating the benefits of executing large collections of cryptographic primitives concurrently.</p>
+<p><strong>Transparent backend acceleration.</strong> Enabling the cuPQC backend required no changes to the application or compilation pipeline. The benchmark uses the same unmodified high-level Homomorphic Encryption program.</p>
+<h2 id="looking-ahead">Looking Ahead</h2>
+<p>The current integration focuses on accelerating the Number Theoretic Transform (NTT) and inverse NTT, two of the most frequently executed primitives in modern Homomorphic Encryption schemes. For the encrypted inference workload evaluated in this article, these primitives account for approximately 21% of the end-to-end execution time, highlighting the opportunity to accelerate additional cryptographic primitives as cuPQC support expands.</p>
+<h2 id="summary">Summary</h2>
+<p>Integrating cuPQC into an AI-native, tensor-based Homomorphic Encryption runtime makes GPU-accelerated transforms available without changing application code or higher execution layers. As cuPQC expands to additional cryptographic primitives, the same backend integration model can transparently accelerate an increasingly larger fraction of encrypted AI execution without requiring changes to application code or the compilation pipeline.</p>
+<hr />
+<p><em>For more information about cuPQC SDK, visit the <a href="https://developer.nvidia.com">NVIDIA Developer website</a>.</em></p>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+              
+            </div>
+          </div>
+          
+          <aside class="cupqc-page-toc" aria-label="Table of contents">
+            
+
+
+
+
+  
+
+
+<nav class="cupqc-page-toc__nav md-nav md-nav--secondary" aria-label="Table of contents">
+  <div class="cupqc-page-toc__heading">Table of contents</div>
+  <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+    
+      <li class="md-nav__item">
+  <a href="#the-homomorphic-encryption-software-stack" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Homomorphic Encryption Software Stack
+      
+    </span>
+  </a>
+  
+</li>
+    
+      <li class="md-nav__item">
+  <a href="#integrating-nvidia-cupqc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Integrating NVIDIA cuPQC
+      
+    </span>
+  </a>
+  
+</li>
+    
+      <li class="md-nav__item">
+  <a href="#bridging-ai-tensor-workloads-to-cupqc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Bridging AI Tensor Workloads to cuPQC
+      
+    </span>
+  </a>
+  
+</li>
+    
+      <li class="md-nav__item">
+  <a href="#defining-the-encrypted-inference-workload" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Defining the Encrypted Inference Workload
+      
+    </span>
+  </a>
+  
+</li>
+    
+      <li class="md-nav__item">
+  <a href="#performance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Performance
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav cupqc-page-toc__sub" aria-label="Performance">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Setup
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#measurements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Measurements
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#observations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Observations
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+    
+      <li class="md-nav__item">
+  <a href="#looking-ahead" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Looking Ahead
+      
+    </span>
+  </a>
+  
+</li>
+    
+      <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary
+      
+    </span>
+  </a>
+  
+</li>
+    
+  </ul>
+</nav>
+
+          </aside>
+          
+        </div>
+      </article>
+    </div>
+  
+
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer cupqc-footer">
+  <div class="cupqc-footer__grid">
+    <div class="cupqc-footer__brand">
+      
+      <img src="../../../assets/nvidia-logo-white.png" alt="NVIDIA" class="cupqc-footer__logo cupqc-logo cupqc-logo--dark">
+      <img src="../../../assets/nvidia-logo.svg" alt="NVIDIA" class="cupqc-footer__logo cupqc-logo cupqc-logo--light">
+      
+      <div class="cupqc-footer__name">cuPQC SDK Developer Hub</div>
+      <p>GPU-accelerated cryptographic math primitives on the NVIDIA CUDA platform.</p>
+    </div>
+    <div class="cupqc-footer__col">
+      <div class="cupqc-footer__label">Product</div>
+      <a href="https://developer.nvidia.com/cupqc" target="_blank" rel="noopener">Product Page</a>
+      <a href="https://developer.nvidia.com/cupqc-download/" target="_blank" rel="noopener">Download SDK</a>
+      <a href="https://docs.nvidia.com/cuda/cupqc/index.html" target="_blank" rel="noopener">Documentation</a>
+    </div>
+    <div class="cupqc-footer__col">
+      <div class="cupqc-footer__label">Developers</div>
+      <a href="https://github.com/NVIDIA/cuPQC" target="_blank" rel="noopener">Sample Applications</a>
+      <a href="https://forums.developer.nvidia.com/c/cuda/cupqc/703" target="_blank" rel="noopener">Developer Forums</a>
+      <a href="https://docs.nvidia.com/cuda/cupqc/introduction/getting_started.html" target="_blank" rel="noopener">Getting Started</a>
+    </div>
+    <div class="cupqc-footer__col">
+      <div class="cupqc-footer__label">Resources</div>
+      <a href="../../">Blog &amp; Benchmarks</a>
+      <a href="../../../applications/">Applications</a>
+      <a href="https://docs.nvidia.com/cuda/cupqc/index.html#highlights" target="_blank" rel="noopener">SDK Features</a>
+    </div>
+  </div>
+  <div class="cupqc-footer__legal">
+    <p>© Copyright 2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved.</p>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["content.code.copy", "navigation.indexes", "navigation.tracking", "search.highlight", "search.share", "search.suggest"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="../../../javascripts/extra.js?h=7da01386"></script>
+      
+    
+  </body>
+</html>

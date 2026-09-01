@@ -1650,7 +1650,10 @@ a.cupqc-btn--outline:hover {
 .cupqc-section-apps .cupqc-page-intro,
 .cupqc-section-blog .cupqc-page-intro {
   margin: 0 0 18px;
-  max-width: 620px;
+  /* Room for the one-line intro; balanced wrapping so a narrower window splits
+     it evenly instead of dropping a single word onto a second line. */
+  max-width: 780px;
+  text-wrap: balance;
 }
 .cupqc-page-head__link {
   margin: 0 0 32px;
@@ -1813,6 +1816,14 @@ a.cupqc-btn--outline:hover {
   font-size: 11px;
   padding: 5px 11px;
 }
+/* An ecosystem post leads its tags with the partner's name, tinted so it reads
+   as who the post is with rather than as another topic. */
+.cupqc-app-card__tags span.is-partner {
+  color: var(--cupqc-green-chip);
+  /* A translucent tint rather than a palette colour, so the chip sits at the
+     same weight against both the light and the slate surface. */
+  background: rgba(118, 185, 0, 0.13);
+}
 .cupqc-subsection-title {
   font-size: 13px !important;
   font-family: var(--md-code-font);
@@ -1905,6 +1916,109 @@ a.cupqc-app-card.cupqc-app-card--blog {
 }
 .cupqc-app-card-grid--blog {
   margin-bottom: 8px;
+}
+/* Blog card: category and date share the top line, tags and the call to action
+   share the bottom one, so a row of cards lines up across those two edges
+   whatever the title and summary do in between. */
+.cupqc-app-card__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.cupqc-app-card__head .cupqc-app-card__kind {
+  margin-bottom: 0;
+}
+.cupqc-app-card__date {
+  font-family: var(--md-code-font);
+  font-size: 11px;
+  color: var(--cupqc-muted);
+  white-space: nowrap;
+}
+.cupqc-app-card__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--cupqc-border);
+}
+.cupqc-app-card__foot .cupqc-app-card__tags,
+.cupqc-app-card__foot .cupqc-app-card__cta {
+  margin: 0;
+}
+
+/* The newest post leads at full column width, with its detail moved out of the
+   prose into a side rail. */
+.cupqc-app-card-grid--lead {
+  grid-template-columns: 1fr;
+  margin-bottom: 22px;
+}
+/* Matches the specificity of the a.cupqc-app-card rule above, which would
+   otherwise keep this card a single flex column. */
+.md-typeset a.cupqc-app-card--lead,
+a.cupqc-app-card.cupqc-app-card--lead {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 232px;
+  gap: 34px;
+  padding: 30px 34px 34px;
+  border-top: 3px solid var(--cupqc-green);
+}
+.cupqc-app-card__lead-body {
+  display: flex;
+  flex-direction: column;
+}
+/* The lead has no date in its head — the badge sits with the category instead
+   of being pushed to the far edge. */
+.cupqc-app-card--lead .cupqc-app-card__head {
+  justify-content: flex-start;
+  gap: 14px;
+}
+.cupqc-app-card--lead h3 {
+  font-size: 30px;
+  line-height: 1.2;
+  margin: 0 0 14px;
+}
+.cupqc-app-card--lead p {
+  font-size: 14px;
+  max-width: 52ch;
+}
+.cupqc-app-card__badge {
+  font-family: var(--md-code-font);
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--cupqc-surface);
+  background: var(--cupqc-heading);
+  padding: 3px 9px;
+}
+.cupqc-app-card__rail {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  padding-left: 34px;
+  border-left: 1px solid var(--cupqc-border);
+}
+.cupqc-app-card__rail-label {
+  display: block;
+  font-family: var(--md-code-font);
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--cupqc-muted);
+  margin-bottom: 7px;
+}
+.cupqc-app-card__rail-value {
+  font-family: var(--md-code-font);
+  font-size: 13px;
+  color: var(--cupqc-heading);
+}
+.cupqc-app-card__rail .cupqc-app-card__tags {
+  margin-bottom: 0;
 }
 @media screen and (max-width: 76.1875em) {
   .cupqc-quicklink {
@@ -2845,6 +2959,13 @@ a.cupqc-app-card.cupqc-app-card--blog {
 .cupqc-fig .fig-tick--x {
   text-anchor: middle;
 }
+.cupqc-fig .fig-axis-title {
+  fill: var(--cupqc-muted);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-anchor: middle;
+}
 .cupqc-fig .fig-val {
   font-size: 11px;
   font-weight: 700;
@@ -2896,6 +3017,21 @@ a.cupqc-app-card.cupqc-app-card--blog {
 }
 .md-typeset .cupqc-hash-figure img {
   box-shadow: none;
+}
+/* Figures exported as raster images carry a baked-in white background, so they
+   need their own light canvas to stay legible under the slate colour scheme. */
+.cupqc-hash-figure--raster img {
+  box-sizing: border-box;
+  background: #fff;
+  padding: 12px;
+  margin: 0 auto;
+}
+.cupqc-hash-figure--tall img {
+  max-width: 620px;
+}
+.cupqc-hash-figure figcaption {
+  margin-top: 14px;
+  text-align: center;
 }
 
 .cupqc-get-links { display: flex; flex-wrap: wrap; gap: 13px; margin-top: 2em; }
@@ -3144,6 +3280,25 @@ a.cupqc-app-card.cupqc-app-card--blog {
   .cupqc-app-card-grid,
   .resource-grid,
   .cupqc-footer__grid { grid-template-columns: 1fr; }
+  /* Narrow column: the lead's rail drops under the summary instead of beside it. */
+  .md-typeset a.cupqc-app-card--lead,
+  a.cupqc-app-card.cupqc-app-card--lead {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 24px;
+    padding: 26px 24px 28px;
+  }
+  .cupqc-app-card--lead h3 {
+    font-size: 24px;
+  }
+  .cupqc-app-card__rail {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 14px 32px;
+    padding-left: 0;
+    padding-top: 20px;
+    border-left: 0;
+    border-top: 1px solid var(--cupqc-border);
+  }
   .cupqc-code-showcase.cupqc-section--dark {
     grid-template-columns: 1fr;
     padding: 40px 24px;
@@ -3771,6 +3926,72 @@ a.cupqc-app-card.cupqc-app-card--blog {
   font-size: 0.8em;
   font-style: italic;
   color: var(--cupqc-muted, #9a9a9a);
+}
+/* Captioned table: a fixed layout so a long cell wraps instead of pushing the
+   table wider than the column, which is what the theme's default table does. */
+.md-typeset table.cupqc-cap-table {
+  width: 100%;
+  display: table;
+  table-layout: fixed;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+  line-height: 1.45;
+  margin: 1.15em 0 0.35em;
+  border: 1px solid var(--cupqc-border);
+}
+.md-typeset table.cupqc-cap-table th {
+  background: var(--cupqc-surface);
+  color: var(--cupqc-heading);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-align: left;
+  padding: 0.6em 0.9em;
+  border-bottom: 1px solid var(--cupqc-border);
+}
+.md-typeset table.cupqc-cap-table td {
+  vertical-align: top;
+  padding: 0.72em 0.9em;
+  border-bottom: 1px solid var(--cupqc-border);
+  color: var(--cupqc-text);
+  overflow-wrap: anywhere;
+}
+.md-typeset table.cupqc-cap-table tr:last-child td {
+  border-bottom: 0;
+}
+.md-typeset table.cupqc-cap-table tbody tr:nth-child(even) td {
+  background: rgba(255, 255, 255, 0.018);
+}
+.md-typeset table.cupqc-cap-table td:first-child {
+  width: 23%;
+  color: var(--cupqc-heading);
+  font-weight: 600;
+}
+.md-typeset table.cupqc-cap-table td:first-child strong {
+  font-weight: 600;
+}
+.md-typeset table.cupqc-cap-table--wide td:first-child {
+  width: 26%;
+}
+.md-typeset table.cupqc-cap-table code {
+  font-size: 0.78em;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+/* Numeric results: even columns and figures aligned for column-wise reading */
+.md-typeset table.cupqc-cap-table--metrics td:first-child,
+.md-typeset table.cupqc-cap-table--metrics th:first-child {
+  width: 16%;
+}
+.md-typeset table.cupqc-cap-table--metrics th:not(:first-child),
+.md-typeset table.cupqc-cap-table--metrics td:not(:first-child) {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.md-typeset table.cupqc-cap-table--metrics td:last-child {
+  color: var(--cupqc-green-chip);
+  font-weight: 600;
 }
 /* Capability reference card (API surface, grouped by what it does) */
 .cupqc-capref {
