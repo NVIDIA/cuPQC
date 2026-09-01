@@ -2984,8 +2984,8 @@ a.cupqc-app-card.cupqc-app-card--blog {
 
 /* About the Authors — in-page footer on blog/application posts */
 .cupqc-authors {
-  margin-top: 48px;
-  padding-top: 32px;
+  margin-top: 40px;
+  padding-top: 28px;
   border-top: 1px solid var(--cupqc-border-soft);
 }
 .cupqc-authors__heading,
@@ -3007,23 +3007,23 @@ a.cupqc-app-card.cupqc-app-card--blog {
 .cupqc-authors__list {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 12px;
   list-style: none;
   margin: 0;
   padding: 0;
 }
 .cupqc-authors__card {
   display: grid;
-  grid-template-columns: 88px minmax(0, 1fr);
-  gap: 24px;
+  grid-template-columns: 64px minmax(0, 1fr);
+  gap: 20px;
   align-items: start;
-  padding: 28px;
+  padding: 20px 22px;
   border: 1px solid var(--cupqc-border);
   background: var(--cupqc-surface);
 }
 .cupqc-authors__avatar {
-  width: 88px;
-  height: 88px;
+  width: 64px;
+  height: 64px;
   border-radius: 50%;
   overflow: hidden;
   background: var(--cupqc-border-soft);
@@ -3037,25 +3037,25 @@ a.cupqc-app-card.cupqc-app-card--blog {
 }
 .cupqc-authors__name {
   display: block;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 700;
   color: var(--cupqc-heading);
-  margin: 0 0 4px;
+  margin: 0 0 3px;
   letter-spacing: -0.01em;
 }
 .cupqc-authors__title {
   display: block;
-  font-size: 14px;
+  font-size: 12.5px;
   font-weight: 500;
-  line-height: 1.45;
+  line-height: 1.4;
   color: var(--cupqc-green-chip);
-  margin: 0 0 12px;
+  margin: 0 0 7px;
 }
 .cupqc-authors__bio,
 .md-typeset .cupqc-authors__bio {
   margin: 0;
-  font-size: 14px;
-  line-height: 1.65;
+  font-size: 13px;
+  line-height: 1.55;
   color: var(--cupqc-subtext);
 }
 
@@ -3155,12 +3155,12 @@ a.cupqc-app-card.cupqc-app-card--blog {
   }
   .cupqc-authors__card {
     grid-template-columns: 1fr;
-    gap: 16px;
-    padding: 22px;
+    gap: 12px;
+    padding: 18px 20px;
   }
   .cupqc-authors__avatar {
-    width: 72px;
-    height: 72px;
+    width: 56px;
+    height: 56px;
   }
   .cupqc-apps-layout {
     grid-template-columns: 1fr;

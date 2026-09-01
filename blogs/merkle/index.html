@@ -15,17 +15,17 @@
       </script>
       
       
-        <meta name="description" content="CPU vs GPU throughput for SHA2, SHA3, and SHAKE with cuPQC-Hash. AMD EPYC vs NVIDIA RTX PRO 6000, 8 KB messages.">
+        <meta name="description" content="GPU-accelerated Poseidon 2 Merkle tree generation in cuPQC-Hash with Single-Block and Multi-Block modes, BabyBear benchmarks vs CPU, and use cases.">
       
       
       
-        <link rel="canonical" href="https://nvidia.github.io/cuPQC/blogs/hash-rates/">
+        <link rel="canonical" href="https://nvidia.github.io/cuPQC/blogs/merkle/">
       
       
-        <link rel="prev" href="../merkle/">
+        <link rel="prev" href="../../releases/v0.6/">
       
       
-        <link rel="next" href="../../docs-hub/">
+        <link rel="next" href="../hash-rates/">
       
       
         
@@ -38,7 +38,7 @@
   
     
       
-        <title>Hash Performance (SHA2, SHA3, SHAKE) - Benchmark - cuPQC SDK Developer Hub</title>
+        <title>Merkle Trees with Poseidon 2 - cuPQC SDK Developer Hub</title>
       
     
   
@@ -93,7 +93,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#hash-performance-sha2-sha3-shake-benchmark" class="md-skip">
+        <a href="#merkle-trees-with-poseidon-2" class="md-skip">
           Skip to content
         </a>
       
@@ -313,95 +313,144 @@
   
 
 
-<h1 id="hash-performance-sha2-sha3-shake-benchmark">Hash Performance (SHA2, SHA3, SHAKE) - Benchmark</h1>
+<h1 id="merkle-trees-with-poseidon-2">Merkle Trees with Poseidon 2</h1>
 <p class="blog-post-meta">
-  <span class="blog-meta-tag"><time datetime="2026-04-07">April 7, 2026</time></span>
-  <span class="blog-meta-tag blog-meta-tag--sdk">cuPQC SDK v0.4.1</span>
+  <span class="blog-meta-tag"><time datetime="2026-04-09">April 9, 2026</time></span>
+  <span class="blog-meta-tag blog-meta-tag--sdk">cuPQC SDK v0.6</span>
 </p>
 
-<p>Many security and proof-system pipelines spend a large share of time in hashing: integrity checks, commitments, KDFs, and similar steps. When throughput matters, moving that work off the CPU can change the overall cost profile.</p>
-<p>This post reports throughput for SHA2, SHA3, and SHAKE on one server CPU versus one professional GPU, using cuPQC-Hash from the cuPQC SDK, with the same message size and parallel batching setup on both platforms.</p>
+<p>Merkle trees are at the heart of many integrity and proof systems, including commitments and membership proofs. Building them over large datasets is compute-heavy: each level requires hashing many nodes, and doing that on a CPU can become a bottleneck. This post examines GPU-accelerated Merkle tree generation with the Poseidon 2 hash in cuPQC-Hash, covering two computation modes (<strong>Single-Block</strong> for high throughput across many trees, and <strong>Multi-Block</strong> for low latency on large individual trees) and demonstrating speedups up to <strong>169×</strong> for large trees on NVIDIA RTX PRO 6000 GPUs.</p>
+<p>cuPQC-Hash Library supports Poseidon 2 over two prime fields commonly used in ZK and proof systems: <strong>BabyBear</strong> and <strong>Koala Bear</strong>. You can choose the field that matches your proof system or protocol. The benchmarks in this post were run with BabyBear.</p>
+<h2 id="why-poseidon-2-for-merkle-trees">Why Poseidon 2 for Merkle Trees</h2>
+<p>Poseidon 2 is a ZK-friendly hash function designed to be efficient both in native computation and inside zero-knowledge proof circuits. Unlike traditional hash functions (SHA-2, SHA-3) that require thousands of constraints per hash in ZK systems, Poseidon 2 operates over prime fields and uses far fewer constraints, making proofs smaller and faster to generate.</p>
+<p>This efficiency matters for validity proofs, batched commitments, and any system where you need to prove correct Merkle tree operations inside a circuit. The GPU acceleration in cuPQC-Hash makes native Poseidon 2 hash fast enough to match its circuit efficiency, eliminating Merkle tree construction as a bottleneck in proof generation pipelines.</p>
+<h2 id="modes-and-tree-configuration">Modes and tree configuration</h2>
+<p>The cuPQC-Hash library provides two execution modes tuned for different workloads:</p>
+<table>
+<thead>
+<tr>
+<th>Mode</th>
+<th>Use case</th>
+<th>How it works</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Single‑Block</strong><br>(high throughput)</td>
+<td>Multiple trees</td>
+<td>One thread block computes one full Merkle tree. Many blocks run in parallel, so you maximize throughput when building lots of trees (e.g. batch commitments).</td>
+</tr>
+<tr>
+<td><strong>Multi‑Block</strong><br>(low latency)</td>
+<td>Single tree</td>
+<td>Multiple thread blocks work together on a single tree: each builds a subtree, then subtrees are merged. This uses more of the GPU at once and cuts latency for one big tree.</td>
+</tr>
+</tbody>
+</table>
+<p>Both modes support power-of-two leaf counts. For APIs, tree sizes, subtree ranges, and how they map to Single-Block and Multi-Block usage, see <a href="https://docs.nvidia.com/cuda/cupqc/overview/features.html#supported-merkle-tree-configurations">Supported Merkle tree configurations</a> in the cuPQC SDK docs. For large trees, Multi-Block builds subtrees in parallel on the GPU, then merges them into one full tree; the same documentation explains how Generate Sub Tree and related calls fit that flow.</p>
 <h2 id="benchmark-configuration">Benchmark Configuration</h2>
-<p>We measured throughput using <strong>cuPQC SDK v0.4.1</strong> on an AMD EPYC 9124 (16-core server processor) as the CPU baseline against an NVIDIA RTX PRO 6000 (Blackwell generation) using cuPQC-Hash. Each hash processes an 8 KB message; the workload uses parallel cores on the CPU and the GPU’s parallel execution model so many independent hash outputs are computed at once, which is how peak GB/s throughput is achieved. The figure below summarizes CPU vs GPU throughput and speedup for each algorithm.</p>
-<div class="cupqc-fig" role="img" aria-label="Hash function performance: AMD EPYC 9124 vs RTX PRO 6000 throughput in GB/s, and the GPU speedup, for SHA2-256, SHA2-512, SHA3-256, SHA3-512, SHAKE128, and SHAKE256">
+<h3 id="test-setup">Test setup</h3>
+<p>Each run builds one large tree on GPU versus CPU (Multi-Block, tuned for low latency on a single tree).</p>
+<ul>
+<li>CPU: AMD EPYC 9124 (32-core); reported CPU times use all 32 cores</li>
+<li>GPU: NVIDIA RTX PRO 6000 Blackwell Generation</li>
+<li>Library: cuPQC-Hash (cuPQC SDK)</li>
+<li>Hash: Poseidon 2-BabyBear</li>
+<li>Tree sizes: leaf-count: 2¹⁶ to 2²⁴ leaves</li>
+<li>Leaf input: 128 field elements per leaf</li>
+</ul>
+<h2 id="benchmark-results">Benchmark Results</h2>
+<p>GPU runtime stays low while CPU time grows; speedup increases toward the largest trees.</p>
+<div class="cupqc-fig" role="img" aria-label="Columns of Merkle tree speedup of an RTX PRO 6000 in Multi-Block mode over an AMD EPYC 9124, from 2^16 to 2^24 leaves, with GPU runtime in milliseconds as a line on the right axis.">
 <div class="cupqc-fig__header">
 <div class="cupqc-fig__titles">
-<p class="cupqc-fig__eyebrow">CPU VS GPU</p>
-<p class="cupqc-fig__title">Hash Function Performance</p>
-<p class="cupqc-fig__unit">THROUGHPUT &#183; GB/S &#183; 8 KB MESSAGES</p>
+<p class="cupqc-fig__eyebrow">VS CPU</p>
+<p class="cupqc-fig__title">Merkle Tree Performance</p>
+<p class="cupqc-fig__unit">SPEEDUP &#183; TIMES FASTER &#183; GPU RUNTIME &#183; MS</p>
 </div>
 <div class="cupqc-fig__legend">
-<span class="cupqc-fig__legend-item"><i class="cupqc-fig__swatch cupqc-fig__swatch--box" style="--fig-swatch: #5BA3D9"></i>AMD EPYC 9124</span>
-<span class="cupqc-fig__legend-item"><i class="cupqc-fig__swatch cupqc-fig__swatch--box" style="--fig-swatch: #76B900"></i>RTX PRO 6000</span>
+<span class="cupqc-fig__legend-item"><i class="cupqc-fig__swatch cupqc-fig__swatch--box" style="--fig-swatch: #76B900"></i>Speedup vs AMD EPYC 9124</span>
+<span class="cupqc-fig__legend-item"><i class="cupqc-fig__swatch cupqc-fig__swatch--ink"></i>GPU runtime (ms)</span>
 </div>
 </div>
 <div class="cupqc-fig__plot">
 <svg viewBox="0 0 780 348" width="780" height="348" preserveAspectRatio="xMidYMid meet" aria-hidden="true" focusable="false">
-<line class="fig-grid" x1="46" y1="22.0" x2="764" y2="22.0"/>
-<text class="fig-tick fig-tick--y" x="38" y="25.5">1000</text>
-<line class="fig-grid" x1="46" y1="76.8" x2="764" y2="76.8"/>
-<text class="fig-tick fig-tick--y" x="38" y="80.3">800</text>
-<line class="fig-grid" x1="46" y1="131.6" x2="764" y2="131.6"/>
-<text class="fig-tick fig-tick--y" x="38" y="135.1">600</text>
-<line class="fig-grid" x1="46" y1="186.4" x2="764" y2="186.4"/>
-<text class="fig-tick fig-tick--y" x="38" y="189.9">400</text>
-<line class="fig-grid" x1="46" y1="241.2" x2="764" y2="241.2"/>
-<text class="fig-tick fig-tick--y" x="38" y="244.7">200</text>
-<text class="fig-tick fig-tick--y" x="38" y="299.5">0</text>
-<line class="fig-axis" x1="46" y1="296" x2="764" y2="296"/>
-<rect fill="#5BA3D9" x="74.8" y="282.8" width="26" height="13.2" rx="2"/>
-<text class="fig-val" fill="#5BA3D9" x="87.8" y="276.8">48</text>
-<rect fill="#76B900" x="110.8" y="111.9" width="26" height="184.1" rx="2"/>
-<text class="fig-val" fill="#76B900" x="123.8" y="105.9">672</text>
-<text class="fig-tick fig-tick--x" x="105.8" y="312.0">SHA2-256</text>
-<rect class="fig-chip fig-chip--accent" x="63.8" y="322.0" width="84" height="16" rx="3"/><text class="fig-chip-t fig-chip-t--accent" x="105.8" y="333.5">14&#215; faster</text>
-<rect fill="#5BA3D9" x="194.5" y="292.2" width="26" height="3.8" rx="2"/>
-<text class="fig-val" fill="#5BA3D9" x="207.5" y="286.2">14</text>
-<rect fill="#76B900" x="230.5" y="119.0" width="26" height="177.0" rx="2"/>
-<text class="fig-val" fill="#76B900" x="243.5" y="113.0">646</text>
-<text class="fig-tick fig-tick--x" x="225.5" y="312.0">SHA2-512</text>
-<rect class="fig-chip fig-chip--accent" x="183.5" y="322.0" width="84" height="16" rx="3"/><text class="fig-chip-t fig-chip-t--accent" x="225.5" y="333.5">46&#215; faster</text>
-<rect fill="#5BA3D9" x="314.2" y="294.1" width="26" height="1.9" rx="2"/>
-<text class="fig-val" fill="#5BA3D9" x="327.2" y="288.1">7</text>
-<rect fill="#76B900" x="350.2" y="101.5" width="26" height="194.5" rx="2"/>
-<text class="fig-val" fill="#76B900" x="363.2" y="95.5">710</text>
-<text class="fig-tick fig-tick--x" x="345.2" y="312.0">SHA3-256</text>
-<rect class="fig-chip fig-chip--accent" x="303.2" y="322.0" width="84" height="16" rx="3"/><text class="fig-chip-t fig-chip-t--accent" x="345.2" y="333.5">101&#215; faster</text>
-<rect fill="#5BA3D9" x="433.8" y="294.9" width="26" height="1.1" rx="2"/>
-<text class="fig-val" fill="#5BA3D9" x="446.8" y="288.9">4</text>
-<rect fill="#76B900" x="469.8" y="189.7" width="26" height="106.3" rx="2"/>
-<text class="fig-val" fill="#76B900" x="482.8" y="183.7">388</text>
-<text class="fig-tick fig-tick--x" x="464.8" y="312.0">SHA3-512</text>
-<rect class="fig-chip fig-chip--accent" x="422.8" y="322.0" width="84" height="16" rx="3"/><text class="fig-chip-t fig-chip-t--accent" x="464.8" y="333.5">97&#215; faster</text>
-<rect fill="#5BA3D9" x="553.5" y="293.5" width="26" height="2.5" rx="2"/>
-<text class="fig-val" fill="#5BA3D9" x="566.5" y="287.5">9</text>
-<rect fill="#76B900" x="589.5" y="51.9" width="26" height="244.1" rx="2"/>
-<text class="fig-val" fill="#76B900" x="602.5" y="45.9">891</text>
-<text class="fig-tick fig-tick--x" x="584.5" y="312.0">SHAKE128</text>
-<rect class="fig-chip fig-chip--accent" x="542.5" y="322.0" width="84" height="16" rx="3"/><text class="fig-chip-t fig-chip-t--accent" x="584.5" y="333.5">99&#215; faster</text>
-<rect fill="#5BA3D9" x="673.2" y="294.1" width="26" height="1.9" rx="2"/>
-<text class="fig-val" fill="#5BA3D9" x="686.2" y="288.1">7</text>
-<rect fill="#76B900" x="709.2" y="97.9" width="26" height="198.1" rx="2"/>
-<text class="fig-val" fill="#76B900" x="722.2" y="91.9">723</text>
-<text class="fig-tick fig-tick--x" x="704.2" y="312.0">SHAKE256</text>
-<rect class="fig-chip fig-chip--accent" x="662.2" y="322.0" width="84" height="16" rx="3"/><text class="fig-chip-t fig-chip-t--accent" x="704.2" y="333.5">103&#215; faster</text>
+<line class="fig-grid" x1="46" y1="296.0" x2="736" y2="296.0"/>
+<text class="fig-tick fig-tick--y" x="38" y="299.5">0&#215;</text>
+<text class="fig-tick fig-tick--y" text-anchor="start" x="744" y="299.5">0</text>
+<line class="fig-grid" x1="46" y1="250.3" x2="736" y2="250.3"/>
+<text class="fig-tick fig-tick--y" x="38" y="253.8">30&#215;</text>
+<text class="fig-tick fig-tick--y" text-anchor="start" x="744" y="253.8">9</text>
+<line class="fig-grid" x1="46" y1="204.7" x2="736" y2="204.7"/>
+<text class="fig-tick fig-tick--y" x="38" y="208.2">60&#215;</text>
+<text class="fig-tick fig-tick--y" text-anchor="start" x="744" y="208.2">18</text>
+<line class="fig-grid" x1="46" y1="159.0" x2="736" y2="159.0"/>
+<text class="fig-tick fig-tick--y" x="38" y="162.5">90&#215;</text>
+<text class="fig-tick fig-tick--y" text-anchor="start" x="744" y="162.5">27</text>
+<line class="fig-grid" x1="46" y1="113.3" x2="736" y2="113.3"/>
+<text class="fig-tick fig-tick--y" x="38" y="116.8">120&#215;</text>
+<text class="fig-tick fig-tick--y" text-anchor="start" x="744" y="116.8">36</text>
+<line class="fig-grid" x1="46" y1="67.7" x2="736" y2="67.7"/>
+<text class="fig-tick fig-tick--y" x="38" y="71.2">150&#215;</text>
+<text class="fig-tick fig-tick--y" text-anchor="start" x="744" y="71.2">45</text>
+<line class="fig-grid" x1="46" y1="22.0" x2="736" y2="22.0"/>
+<text class="fig-tick fig-tick--y" x="38" y="25.5">180&#215;</text>
+<text class="fig-tick fig-tick--y" text-anchor="start" x="744" y="25.5">54</text>
+<line class="fig-axis" x1="46" y1="296" x2="736" y2="296"/>
+<rect fill="#76B900" fill-opacity="0.55" x="71.3" y="222.9" width="26" height="73.1" rx="2"/>
+<text class="fig-val" fill="#76B900" x="84.3" y="216.9">48&#215;</text>
+<rect fill="#76B900" fill-opacity="0.55" x="148.0" y="186.4" width="26" height="109.6" rx="2"/>
+<text class="fig-val" fill="#76B900" x="161.0" y="180.4">72&#215;</text>
+<rect fill="#76B900" fill-opacity="0.55" x="224.7" y="154.4" width="26" height="141.6" rx="2"/>
+<text class="fig-val" fill="#76B900" x="237.7" y="148.4">93&#215;</text>
+<rect fill="#76B900" fill-opacity="0.55" x="301.3" y="136.2" width="26" height="159.8" rx="2"/>
+<text class="fig-val" fill="#76B900" x="314.3" y="130.2">105&#215;</text>
+<rect fill="#76B900" fill-opacity="0.55" x="378.0" y="102.7" width="26" height="193.3" rx="2"/>
+<text class="fig-val" fill="#76B900" x="391.0" y="96.7">127&#215;</text>
+<rect fill="#76B900" fill-opacity="0.55" x="454.7" y="84.4" width="26" height="211.6" rx="2"/>
+<text class="fig-val" fill="#76B900" x="467.7" y="78.4">139&#215;</text>
+<rect fill="#76B900" fill-opacity="0.55" x="531.3" y="72.2" width="26" height="223.8" rx="2"/>
+<text class="fig-val" fill="#76B900" x="544.3" y="66.2">147&#215;</text>
+<rect fill="#76B900" fill-opacity="0.55" x="608.0" y="41.8" width="26" height="254.2" rx="2"/>
+<text class="fig-val" fill="#76B900" x="621.0" y="35.8">167&#215;</text>
+<rect fill="#76B900" fill-opacity="0.55" x="684.7" y="38.7" width="26" height="257.3" rx="2"/>
+<text class="fig-val" fill="#76B900" x="697.7" y="32.7">169&#215;</text>
+<polyline class="fig-ink" fill="none" stroke-width="2" points="84.3,291.7 161.0,291.2 237.7,289.7 314.3,285.9 391.0,279.1 467.7,265.0 544.3,237.6 621.0,195.1 697.7,97.4"/>
+<circle class="fig-ink-f" cx="84.3" cy="291.7" r="2.6"/><circle class="fig-ink-f" cx="161.0" cy="291.2" r="2.6"/><circle class="fig-ink-f" cx="237.7" cy="289.7" r="2.6"/><circle class="fig-ink-f" cx="314.3" cy="285.9" r="2.6"/><circle class="fig-ink-f" cx="391.0" cy="279.1" r="2.6"/><circle class="fig-ink-f" cx="467.7" cy="265.0" r="2.6"/><circle class="fig-ink-f" cx="544.3" cy="237.6" r="2.6"/><circle class="fig-ink-f" cx="621.0" cy="195.1" r="2.6"/><circle class="fig-ink-f" cx="697.7" cy="97.4" r="2.6"/>
+<text class="fig-val fig-val--plain" x="84.3" y="280.7">0.84 ms</text>
+<text class="fig-val fig-val--plain" x="161.0" y="280.2">0.94 ms</text>
+<text class="fig-val fig-val--plain" x="237.7" y="278.7">1.24 ms</text>
+<text class="fig-val fig-val--plain" x="314.3" y="274.9">2.00 ms</text>
+<text class="fig-val fig-val--plain" x="391.0" y="268.1">3.34 ms</text>
+<text class="fig-val fig-val--plain" x="467.7" y="254.0">6.10 ms</text>
+<text class="fig-val fig-val--plain" x="544.3" y="226.6">11.50 ms</text>
+<text class="fig-val fig-val--plain" x="621.0" y="184.1">19.88 ms</text>
+<text class="fig-val fig-val--plain" x="697.7" y="86.4">39.14 ms</text>
+<text class="fig-tick fig-tick--x" x="84.3" y="312.0">2<tspan dy="-5" class="fig-exp">16</tspan></text>
+<text class="fig-tick fig-tick--x" x="161.0" y="312.0">2<tspan dy="-5" class="fig-exp">17</tspan></text>
+<text class="fig-tick fig-tick--x" x="237.7" y="312.0">2<tspan dy="-5" class="fig-exp">18</tspan></text>
+<text class="fig-tick fig-tick--x" x="314.3" y="312.0">2<tspan dy="-5" class="fig-exp">19</tspan></text>
+<text class="fig-tick fig-tick--x" x="391.0" y="312.0">2<tspan dy="-5" class="fig-exp">20</tspan></text>
+<text class="fig-tick fig-tick--x" x="467.7" y="312.0">2<tspan dy="-5" class="fig-exp">21</tspan></text>
+<text class="fig-tick fig-tick--x" x="544.3" y="312.0">2<tspan dy="-5" class="fig-exp">22</tspan></text>
+<text class="fig-tick fig-tick--x" x="621.0" y="312.0">2<tspan dy="-5" class="fig-exp">23</tspan></text>
+<text class="fig-tick fig-tick--x" x="697.7" y="312.0">2<tspan dy="-5" class="fig-exp">24</tspan></text>
 </svg>
 </div>
-<p class="cupqc-fig__foot">NVIDIA RTX PRO 6000 (Blackwell) vs AMD EPYC 9124 (16 cores) &#183; 8 KB messages &#183; cuPQC SDK v0.4.1</p>
+<p class="cupqc-fig__foot">Poseidon 2-BabyBear, Multi-Block &#183; 128 field elements per leaf &#183; leaf count on the x axis.</p>
 </div>
 
-<h2 id="benchmark-analysis">Benchmark Analysis</h2>
-<h3 id="sha-2">SHA-2</h3>
-<p>The SHA2-256 algorithm achieves 672 GB/s throughput on the RTX PRO 6000, representing a 14× speedup over the CPU baseline. SHA2-512 shows even more dramatic improvement at 46× faster, reaching 646 GB/s.</p>
-<h3 id="sha-3-and-shake">SHA-3 and SHAKE</h3>
-<p>The SHA-3 family demonstrates the most impressive acceleration results in our benchmark. SHA3-256 achieves a 101× speedup at 710 GB/s, while SHAKE128 reaches the highest absolute hash rate at 891 GB/s with 99× acceleration. SHAKE256 leads in relative performance with 103× speedup, processing 723 GB/s.</p>
-<p>These exceptional gains stem from SHA-3's sponge construction, which exposes substantial parallelism that GPU architectures can exploit effectively. The Keccak permutation at SHA-3's core maps naturally to GPU compute units.</p>
-<p>In cuPQC-Hash, these primitives are implemented as batched CUDA kernels with shared memory and per-family layout choices so the GPU can stay in a throughput-oriented regime rather than serializing work.</p>
-<h3 id="performance-impact-on-cryptographic-workloads">Performance impact on cryptographic workloads</h3>
-<p>When hashing is a dominant part of the workload, higher SHA2/SHA3/SHAKE throughput can shorten wall-clock time for the surrounding pipeline. That pattern shows up in different designs depending on where time goes: for example hash-based signatures, Merkle-tree commitments and updates, and some zero-knowledge / proof-system stacks that evaluate many hashes in parallel can be sensitive to raw hash throughput.</p>
-<p>Taken together, the figure and the sections above highlight where GPU acceleration is strongest: SHA3 and SHAKE see the largest relative gains, while SHA2-256 still improves meaningfully on the GPU even though the CPU baseline is already high.</p>
+<h2 id="analysis">Analysis</h2>
+<p>CPU time scales roughly linearly with leaf count; GPU time rises much more slowly, so speedup widens as trees get larger. Multi-Block can use more of the GPU on bigger trees, which helps explain why the gap is largest at the top end, which matters for large state commitments and similar workloads.</p>
+<p>At the largest size (2²⁴ leaves), runtime is ~6.6 s on CPU versus ~39 ms on GPU. For proof pipelines, validity systems, or other workloads where Merkle construction was on the critical path, the GPU side of that gap often means tree build stops being what you optimize first.</p>
+<h2 id="use-cases">Use Cases</h2>
+<p><strong>Validity proofs and large Merkle commitments.</strong> STARKs and similar proof systems use Merkle trees over execution traces, polynomial data, or other large witnesses; trees on the order of 2²⁰–2²⁴ leaves often show up in demanding workloads. Pipelines that keep Merkle roots over evolving state need the same native tree work to stay fast. GPU-accelerated construction cuts the hash time that sits ahead of circuit generation and proof steps.</p>
+<p><strong>Membership proofs and evolving datasets.</strong> Verifiable databases, authenticated data structures, and privacy-preserving designs issue membership (and non-membership) proofs as data changes. When tree updates stay cheap, proof generation and verification stay responsive as the underlying set grows or drifts.</p>
+<p><strong>Many independent trees (Single-Block).</strong> When you commit to many unrelated datasets in one shot, Single-Block mode assigns one Merkle tree per thread block and runs many blocks in parallel, tuning for aggregate throughput rather than a single huge tree.</p>
 <h2 id="get-started">Get started</h2>
-<p>cuPQC-Hash exposes GPU-accelerated SHA2, SHA3, SHAKE, and Posiedon 2 with a consistent API. For the full API (hash primitives), see the <a href="https://docs.nvidia.com/cuda/cupqc/libraries/cupqc_hash/cupqc_hash_api.html">cuPQC-Hash API reference</a>. On this hub, the <a href="../../applications/sha2-hash/">SHA-2 Hash Function</a> tutorial walks through an example application. </p>
+<p>Merkle tree APIs (Generate Tree, Generate Sub Tree, Generate Proof, Verify Proof) and Poseidon 2 hash are part of cuPQC-Hash. Both BabyBear and Koala Bear fields are supported; choose the one that matches your proof system. For Multi-Block usage, tree sizes, and code samples, see the <a href="https://docs.nvidia.com/cuda/cupqc/guides/cupqc_hash_usage.html">cuPQC-Hash documentation</a>, the <a href="https://github.com/NVIDIA/cuPQC/tree/main/applications/merkle_proof_poseidon2_bb">Merkle proof application (BabyBear)</a> in the cuPQC repo, and the <a href="https://docs.nvidia.com/cuda/cupqc/api/cupqc_hash/hash/operators.html">Poseidon2 operators reference</a> for supported BabyBear and Koala Bear configurations.</p>
+<hr />
+<p><em>For more information about cuPQC SDK and cuPQC-Hash, visit the <a href="https://developer.nvidia.com">NVIDIA Developer website</a>.</em></p>
 
 
 
@@ -490,6 +539,28 @@
   <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
     
       <li class="md-nav__item">
+  <a href="#why-poseidon-2-for-merkle-trees" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why Poseidon 2 for Merkle Trees
+      
+    </span>
+  </a>
+  
+</li>
+    
+      <li class="md-nav__item">
+  <a href="#modes-and-tree-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Modes and tree configuration
+      
+    </span>
+  </a>
+  
+</li>
+    
+      <li class="md-nav__item">
   <a href="#benchmark-configuration" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -498,47 +569,14 @@
     </span>
   </a>
   
-</li>
-    
-      <li class="md-nav__item">
-  <a href="#benchmark-analysis" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Benchmark Analysis
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav cupqc-page-toc__sub" aria-label="Benchmark Analysis">
+    <nav class="md-nav cupqc-page-toc__sub" aria-label="Benchmark Configuration">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#sha-2" class="md-nav__link">
+  <a href="#test-setup" class="md-nav__link">
     <span class="md-ellipsis">
       
-        SHA-2
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#sha-3-and-shake" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        SHA-3 and SHAKE
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#performance-impact-on-cryptographic-workloads" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Performance impact on cryptographic workloads
+        Test setup
       
     </span>
   </a>
@@ -547,6 +585,39 @@
         
       </ul>
     </nav>
+  
+</li>
+    
+      <li class="md-nav__item">
+  <a href="#benchmark-results" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Benchmark Results
+      
+    </span>
+  </a>
+  
+</li>
+    
+      <li class="md-nav__item">
+  <a href="#analysis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Analysis
+      
+    </span>
+  </a>
+  
+</li>
+    
+      <li class="md-nav__item">
+  <a href="#use-cases" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Use Cases
+      
+    </span>
+  </a>
   
 </li>
     
