@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1040 268" width="1040" height="268" role="img" aria-labelledby="nttTitle nttDesc">
+  <title id="nttTitle">NTT polynomial multiply pipeline</title>
+  <desc id="nttDesc">Separate forward NTTs take a to A-hat and b to B-hat, C-hat equals A-hat pointwise times B-hat, c equals inv-NTT of C-hat</desc>
+  <style>
+    .box { fill: #1c1c1c; stroke: #3a3a3a; stroke-width: 1.5; }
+    .box-accent { fill: #141414; stroke: #76B900; stroke-width: 2; }
+    .var { fill: #f0f0f0; font-family: NVIDIA Sans, Inter, Helvetica, Arial, sans-serif; font-size: 22px; font-weight: 600; text-anchor: middle; }
+    .hat { fill: none; stroke: #f0f0f0; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .sub { fill: #9a9a9a; font-family: NVIDIA Sans, Inter, Helvetica, Arial, sans-serif; font-size: 11px; text-anchor: middle; }
+    .op { fill: #76B900; font-family: NVIDIA Sans, Inter, Helvetica, Arial, sans-serif; font-size: 12px; font-weight: 700; text-anchor: middle; letter-spacing: 0.06em; }
+    .arrow { fill: none; stroke: #76B900; stroke-width: 2; marker-end: url(#arrowHead); }
+  </style>
+  <defs>
+    <marker id="arrowHead" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#76B900"/>
+    </marker>
+  </defs>
+
+  <rect class="box" x="16" y="30" width="88" height="68" rx="6"/>
+  <text class="var" x="60" y="68">a</text>
+  <text class="sub" x="60" y="86">coefficients</text>
+
+  <rect class="box" x="16" y="162" width="88" height="68" rx="6"/>
+  <text class="var" x="60" y="200">b</text>
+  <text class="sub" x="60" y="218">coefficients</text>
+
+  <path class="arrow" d="M112,64 H160"/>
+  <path class="arrow" d="M112,196 H160"/>
+
+  <rect class="box-accent" x="168" y="30" width="108" height="68" rx="8"/>
+  <text class="op" x="222" y="56">FORWARD</text>
+  <text class="op" x="222" y="76">NTT</text>
+
+  <rect class="box-accent" x="168" y="162" width="108" height="68" rx="8"/>
+  <text class="op" x="222" y="188">FORWARD</text>
+  <text class="op" x="222" y="208">NTT</text>
+
+  <path class="arrow" d="M284,64 H332"/>
+  <path class="arrow" d="M284,196 H332"/>
+
+  <rect class="box" x="340" y="30" width="92" height="68" rx="6"/>
+  <text class="var" x="386" y="68">A</text>
+  <path class="hat" d="M378.5,47 L386,39.5 L393.5,47"/>
+  <text class="sub" x="386" y="86">NTT domain</text>
+
+  <rect class="box" x="340" y="162" width="92" height="68" rx="6"/>
+  <text class="var" x="386" y="200">B</text>
+  <path class="hat" d="M378.5,179 L386,171.5 L393.5,179"/>
+  <text class="sub" x="386" y="218">NTT domain</text>
+
+  <path class="arrow" d="M440,64 H512 V100"/>
+  <path class="arrow" d="M440,196 H512 V160"/>
+
+  <circle cx="512" cy="130" r="22" fill="#76B900"/>
+  <text class="var" x="512" y="138" style="fill:#111">&#8857;</text>
+
+  <path class="arrow" d="M542,130 H590"/>
+
+  <rect class="box" x="598" y="96" width="108" height="68" rx="6"/>
+  <text class="var" x="652" y="134">C</text>
+  <path class="hat" d="M644.5,113 L652,105.5 L659.5,113"/>
+  <text class="sub" x="652" y="152">pointwise product</text>
+
+  <path class="arrow" d="M714,130 H746"/>
+
+  <rect class="box-accent" x="754" y="96" width="108" height="68" rx="8"/>
+  <text class="op" x="808" y="122">INVERSE</text>
+  <text class="op" x="808" y="142">NTT</text>
+
+  <path class="arrow" d="M870,130 H918"/>
+
+  <rect class="box" x="926" y="96" width="92" height="68" rx="6"/>
+  <text class="var" x="972" y="134">c</text>
+  <text class="sub" x="972" y="152">coefficients</text>
+</svg>

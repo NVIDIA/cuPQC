@@ -24,3 +24,50 @@ steven-reeves:
     for a variety of organizations, notably Lawrence Berkeley National
     Laboratory, bringing up high-performance mathematical libraries.
   photo: authors/steven-reeves.jpg
+
+elena-tyuleneva:
+  name: Elena Tyuleneva
+  title: Senior Math Libraries Engineer, cuPQC SDK, NVIDIA Math Libraries
+  bio_full: >-
+    Elena Tyuleneva is a senior math libraries engineer working on the cuPQC SDK
+    in NVIDIA’s Math Libraries Group, where she optimizes core cryptographic
+    functionality on GPUs. She holds a master's degree in information security
+    from Lobachevsky State University of Nizhny Novgorod, with a focus on
+    communication theory and cryptography. Prior to NVIDIA, Elena spent seven
+    years at Intel developing and optimizing cryptographic algorithms, where she
+    led the development of a cryptographic primitives library.
+  photo: authors/elena-tyuleneva.png
+
+simon-byrne:
+  name: Simon Byrne
+  title: Senior Developer Technology Engineer, NVIDIA
+  bio_full: >-
+    Simon Byrne is a senior developer technology engineer at NVIDIA, where he
+    works on accelerating applications on GPUs. He holds a PhD in mathematics
+    from the University of Cambridge, and has worked across many domains,
+    including insurance, finance, statistics, pharmacology, and climate science.
+  photo: authors/simon-byrne.png
+
+ben-pinzone:
+  name: Ben Pinzone
+  title: Senior Compute Developer Technology Engineer, NVIDIA
+  bio_full: >-
+    Ben Pinzone is a senior compute developer technology engineer at NVIDIA,
+    focusing on system and kernel level performance optimization in domains
+    ranging from cryptography, computational geometry, and automatic speech
+    recognition. He is also involved in improving the NCU kernel profiler
+    metrics, workflows, and user experience. He holds bachelor's and master's
+    degrees in computer science engineering from the University of Michigan.
+  photo: authors/ben-pinzone.png
+
+tim-martin:
+  name: Tim Martin
+  title: Principal Software Engineer, NVIDIA
+  bio_full: >-
+    Tim Martin is a principal software engineer at NVIDIA specializing in
+    high-performance, GPU-accelerated algorithms and software across digital
+    communications, image processing, signal processing, and wireless systems.
+    He contributes to NVIDIA’s Aerial 5G/6G CUDA-Accelerated RAN, CUTLASS,
+    cuPQC, DAQIRI, MatX, and NVSHMEM ecosystems, as well as the open-source
+    Data Plane Development Kit (DPDK).
+  photo: authors/tim-martin.png
