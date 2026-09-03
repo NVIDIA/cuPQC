@@ -61,7 +61,7 @@
       
     
     
-      <link rel="stylesheet" href="../../stylesheets/extra.css?h=1708b007">
+      <link rel="stylesheet" href="../../stylesheets/extra.css?h=84185379">
     
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -745,6 +745,8 @@
 <li><strong>GPU:</strong> NVIDIA L40S.</li>
 <li><strong>Metrics:</strong> Throughput in operations per second (mean of 20 samples). <em>Note: Because GMP is single-threaded and lacks a batch API, a single CPU core serves as the baseline.</em></li>
 </ul>
+<p><strong>Reading These Numbers</strong></p>
+<p>Each rate below times one operation in isolation, measured end to end, so every operation loads its operands from global memory and stores its result back. That keeps the widths and operations directly comparable, but it also charges each one for a memory round trip that a real kernel pays only once across many operations. Because cuPQC-BigInt runs device-side, a larger computation composed inside a single kernel holds its intermediate values in registers instead. A workload that stays register-resident can therefore be expected to exceed the per-operation rates reported here, and these figures are best read as a floor for comparing widths, execution models, and reduction paths rather than as a ceiling on achievable throughput.</p>
 <div class="cupqc-figgrid">
 <div class="cupqc-figgrid__head">
 <p class="cupqc-figgrid__title">Operations 1</p>
